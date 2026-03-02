@@ -1,2 +1,1199 @@
 <!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>Temp</title></head><body>Loading…</body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Advanced Study Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Excel export library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg-main: #050816;
+      --bg-card: #0b1120;
+      --bg-soft: #020617;
+      --accent: #38bdf8;
+      --accent-2: #a855f7;
+      --accent-soft: rgba(56, 189, 248, 0.18);
+      --danger: #f97373;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: rgba(148, 163, 184, 0.4);
+      --radius: 12px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000 90%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 14px;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      padding: 18px 16px;
+      border-radius: var(--radius);
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 65%);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .quote {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .actions-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 0.72rem;
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.7);
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.35), transparent 70%);
+      color: var(--accent);
+      font-size: 0.78rem;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-danger {
+      border-color: rgba(248, 113, 113, 0.8);
+      color: var(--danger);
+      background: radial-gradient(circle at top, rgba(248, 113, 113, 0.3), transparent 70%);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .layout-main {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .layout-right {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, var(--bg-card), var(--bg-soft));
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 12px 12px 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .chip {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--muted);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    @media (max-width: 700px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      font-size: 0.8rem;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: rgba(56, 189, 248, 0.85);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .small {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .table-wrap {
+      border-radius: 10px;
+      border: 1px solid rgba(30, 64, 175, 0.8);
+      background: rgba(15, 23, 42, 0.96);
+      overflow: hidden;
+      max-height: 220px;
+      overflow-y: auto;
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    th,
+    td {
+      padding: 6px 7px;
+      border-bottom: 1px solid rgba(30, 64, 175, 0.6);
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 23, 42, 0.98);
+      font-weight: 600;
+      text-align: left;
+      z-index: 1;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .status-pill {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: inline-block;
+    }
+
+    .status-complete {
+      border-color: rgba(74, 222, 128, 0.8);
+      color: var(--success);
+    }
+
+    .status-pending {
+      border-color: rgba(248, 250, 252, 0.4);
+      color: var(--muted);
+    }
+
+    .status-overdue {
+      border-color: rgba(248, 113, 113, 0.8);
+      color: var(--danger);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .priority-low {
+      color: var(--muted);
+    }
+
+    .priority-medium {
+      color: var(--accent);
+    }
+
+    .priority-high {
+      color: var(--warning);
+    }
+
+    .priority-top {
+      color: var(--danger);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .dash-card {
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 1));
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 8px 9px;
+    }
+
+    .dash-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .dash-value {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .dash-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      margin-top: 4px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 1);
+      overflow: hidden;
+      border: 1px solid rgba(30, 64, 175, 0.9);
+    }
+
+    .progress-inner {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .anime-strip {
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      padding: 8px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .anime-strip span:last-child {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .hint {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mt-4 {
+      margin-top: 4px;
+    }
+
+    .mt-6 {
+      margin-top: 6px;
+    }
+
+    .mt-8 {
+      margin-top: 8px;
+    }
+
+    .link {
+      color: var(--accent);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="title-block">
+        <div class="title">Advanced Study Tracker</div>
+        <div class="subtitle">
+          Plan subjects, execute tasks, move daily – and keep proof for every win.
+        </div>
+        <div class="quote">
+          “Small daily victories turn into semester‑long dominance.”
+        </div>
+      </div>
+      <div class="actions-header">
+        <span class="pill">Semester Tracker · Tasks · Physical · Reading</span>
+        <button id="exportExcelBtn" class="btn" type="button">
+          📥 Monthly Excel
+        </button>
+        <button id="clearAllBtn" class="btn btn-danger" type="button">
+          🗑 Clear All Data
+        </button>
+      </div>
+    </header>
+
+    <!-- LEFT: SUBJECTS + TASKS -->
+    <main class="layout-main">
+      <!-- Subjects & Syllabus -->
+      <section class="card" id="subjectsSection">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Subjects & Syllabus</div>
+            <div class="card-subtitle">
+              Define subjects with credits and upload syllabus. Everything else links to this.
+            </div>
+          </div>
+          <span class="chip" id="subjectsCountLabel">0 subjects · 0 credits</span>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="subjectCodeInput">Subject Code</label>
+            <input id="subjectCodeInput" placeholder="ME6701" />
+
+            <label for="subjectNameInput">Subject Name</label>
+            <input id="subjectNameInput" placeholder="Design of Machine Elements" />
+
+            <label for="subjectCreditsInput">Credits</label>
+            <input id="subjectCreditsInput" type="number" min="0" step="0.5" placeholder="3" />
+
+            <div class="mt-4">
+              <button id="addSubjectBtn" class="btn" type="button">➕ Save / Update Subject</button>
+            </div>
+            <div class="hint">
+              Editing: type existing subject code and change name/credits to update.
+            </div>
+          </div>
+
+          <div>
+            <label for="subjectSyllabusInput">Upload / Update Syllabus (PDF / Image, &lt; 2 MB)</label>
+            <input id="subjectSyllabusInput" type="file" accept=".pdf,image/*" />
+
+            <div class="mt-4">
+              <label>Quick Preview</label>
+              <div id="syllabusPreview" class="table-wrap" style="max-height:130px;padding:6px;">
+                <div class="small">
+                  Type a subject code or select from the table to preview its syllabus.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 small">Subjects list</div>
+        <div class="table-wrap">
+          <table id="subjectsTable">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Credits</th>
+                <th>Syllabus</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tasks -->
+      <section class="card" id="tasksSection">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Subject Tasks</div>
+            <div class="card-subtitle">
+              Link every task to a subject & lesson. Completion requires proof – no shortcuts.
+            </div>
+          </div>
+          <span class="chip" id="tasksCountLabel">0 tasks · 0 completed</span>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="taskSubjectCodeInput">Subject Code</label>
+            <input id="taskSubjectCodeInput" placeholder="Type subject code (e.g., ME6701)" />
+
+            <label for="taskLessonInput">Lesson / Unit / Problem No.</label>
+            <input id="taskLessonInput" placeholder="Unit 3 · Problem 12" />
+
+            <label for="taskTopicInput">Topic / Details</label>
+            <input id="taskTopicInput" placeholder="Fatigue design problem – alternating stress" />
+
+            <label for="taskTypeSelect">Type</label>
+            <select id="taskTypeSelect">
+              <option value="Theory">Theory</option>
+              <option value="Problem">Problem</option>
+              <option value="Revision">Revision</option>
+              <option value="Test">Test</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="taskPrioritySelect">Priority</label>
+            <select id="taskPrioritySelect">
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+              <option value="Top">Top priority</option>
+            </select>
+
+            <label for="taskDeadlineDateInput">Deadline Date</label>
+            <input id="taskDeadlineDateInput" type="date" />
+
+            <label for="taskDeadlineTimeInput">Deadline Time</label>
+            <input id="taskDeadlineTimeInput" type="time" />
+
+            <label for="taskProofInput">Completion Proof (PDF / Image, &lt; 2 MB)</label>
+            <input id="taskProofInput" type="file" accept=".pdf,image/*" />
+            <div class="small">Completion can be set to “Yes” only if proof is attached.</div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button id="addTaskBtn" class="btn" type="button">➕ Add Task</button>
+        </div>
+
+        <div class="mt-6 small">Task list</div>
+        <div class="table-wrap">
+          <table id="tasksTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Sub</th>
+                <th>Lesson / Topic</th>
+                <th>Type</th>
+                <th>Priority</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Proof</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- RIGHT: PHYSICAL + READING + DASHBOARD -->
+    <aside class="layout-right">
+      <!-- Dashboard -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Dashboard</div>
+            <div class="card-subtitle">
+              Today’s snapshot of tasks, movement, and reading.
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dash-card">
+            <div class="dash-label">Tasks</div>
+            <div class="dash-value" id="dashTasksTotal">0</div>
+            <div class="dash-sub">
+              Completed: <span id="dashTasksCompleted">0</span> · Overdue:
+              <span id="dashTasksOverdue">0</span>
+            </div>
+            <div class="progress-bar">
+              <div id="dashTasksProgress" class="progress-inner"></div>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-label">Physical Activity</div>
+            <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
+            <div class="dash-sub">Deadline: 10:00 PM daily</div>
+            <div class="progress-bar">
+              <div id="dashPhysicalProgress" class="progress-inner"></div>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-label">Reading</div>
+            <div class="dash-value" id="dashReadingToday">0 / 1</div>
+            <div class="dash-sub">Make at least one serious reading block.</div>
+            <div class="progress-bar">
+              <div id="dashReadingProgress" class="progress-inner"></div>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-label">Credits</div>
+            <div class="dash-value" id="dashCreditsTotal">0</div>
+            <div class="dash-sub">Across <span id="dashSubjectsCount">0</span> subjects</div>
+          </div>
+        </div>
+
+        <div class="anime-strip">
+          <span>“No chakra, only discipline – that’s your real power.”</span>
+          <span>Naruto‑style grind mode ON.</span>
+        </div>
+      </section>
+
+      <!-- Physical Activity -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Daily Physical Activity</div>
+            <div class="card-subtitle">
+              One move every day – proof required. Auto‑deadline: today, 10:00 PM.
+            </div>
+          </div>
+        </div>
+
+        <label for="physNameInput">Activity Name</label>
+        <input id="physNameInput" placeholder="Evening run, push‑ups, skipping, etc." />
+
+        <label for="physCategorySelect">Category</label>
+        <select id="physCategorySelect">
+          <option>Cardio</option>
+          <option>Strength</option>
+          <option>Sports</option>
+          <option>Mobility / Stretch</option>
+        </select>
+
+        <label for="physDescriptionInput">Description</label>
+        <textarea id="physDescriptionInput" placeholder="What did you plan to do? (e.g., 3 km run)"></textarea>
+
+        <label for="physProofInput">Proof (Image / PDF, &lt; 2 MB)</label>
+        <input id="physProofInput" type="file" accept=".pdf,image/*" />
+
+        <div class="mt-4">
+          <button id="addPhysicalBtn" class="btn" type="button">
+            ✅ Mark Physical Completed
+          </button>
+        </div>
+        <div class="hint">
+          If no proof is added, it will be stored as “not completed” and asks a reason.
+        </div>
+      </section>
+
+      <!-- Reading -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Daily Reading</div>
+            <div class="card-subtitle">
+              Log one focused reading block – same fool‑proof idea.
+            </div>
+          </div>
+        </div>
+
+        <label for="readTitleInput">Book / Article</label>
+        <input id="readTitleInput" placeholder="Book or article title" />
+
+        <label for="readPagesInput">Pages / Chapters Completed</label>
+        <input id="readPagesInput" placeholder="e.g., 15 pages or Ch 3" />
+
+        <label for="readNotesInput">Notes / Reflection</label>
+        <textarea id="readNotesInput" placeholder="Key ideas, what you understood, questions."></textarea>
+
+        <label for="readProofInput">Proof (Image / PDF, &lt; 2 MB)</label>
+        <input id="readProofInput" type="file" accept=".pdf,image/*" />
+
+        <div class="mt-4">
+          <button id="addReadingBtn" class="btn" type="button">
+            📖 Mark Reading Completed
+          </button>
+        </div>
+        <div class="hint">
+          If you skip proof, it will be saved as “not completed” with reason.
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    // --- Simple local in-memory storage (can later be replaced with backend) ---
+    let subjects = [];
+    let tasks = [];
+    let physicalEntries = [];
+    let readingEntries = [];
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    }
+
+    function readFileAsDataURL(file, callback) {
+      if (!file) {
+        callback(null);
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        alert("File must be less than 2 MB.");
+        callback(null);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => callback(reader.result);
+      reader.onerror = () => {
+        alert("Error reading file.");
+        callback(null);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ------- SUBJECTS -------
+    const subjectCodeInput = document.getElementById("subjectCodeInput");
+    const subjectNameInput = document.getElementById("subjectNameInput");
+    const subjectCreditsInput = document.getElementById("subjectCreditsInput");
+    const subjectSyllabusInput = document.getElementById("subjectSyllabusInput");
+    const subjectsTableBody = document.querySelector("#subjectsTable tbody");
+    const subjectsCountLabel = document.getElementById("subjectsCountLabel");
+    const syllabusPreview = document.getElementById("syllabusPreview");
+
+    document.getElementById("addSubjectBtn").addEventListener("click", () => {
+      const code = subjectCodeInput.value.trim();
+      const name = subjectNameInput.value.trim();
+      const credits = parseFloat(subjectCreditsInput.value || "0");
+
+      if (!code || !name) {
+        alert("Subject code and name are required.");
+        return;
+      }
+
+      const existing = subjects.find((s) => s.code === code);
+
+      const handleSave = (fileDataUrl) => {
+        if (existing) {
+          existing.name = name;
+          existing.credits = credits;
+          if (fileDataUrl !== null) existing.syllabus = fileDataUrl;
+        } else {
+          subjects.push({
+            id: uid(),
+            code,
+            name,
+            credits,
+            syllabus: fileDataUrl,
+          });
+        }
+        renderSubjects();
+        subjectSyllabusInput.value = "";
+      };
+
+      const file = subjectSyllabusInput.files[0];
+      if (file) {
+        readFileAsDataURL(file, handleSave);
+      } else {
+        handleSave(null);
+      }
+    });
+
+    function renderSubjects() {
+      subjectsTableBody.innerHTML = "";
+      let totalCredits = 0;
+      subjects.forEach((s) => {
+        totalCredits += s.credits || 0;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><span class="link subj-link" data-code="${s.code}">${s.code}</span></td>
+          <td>${s.name}</td>
+          <td>${s.credits || ""}</td>
+          <td>${s.syllabus ? '<span class="link" data-code="' + s.code + '">View</span>' : "<span class='small'>No file</span>"}</td>
+        `;
+        subjectsTableBody.appendChild(tr);
+      });
+
+      subjectsCountLabel.textContent = `${subjects.length} subjects · ${totalCredits} credits`;
+      document.getElementById("dashCreditsTotal").textContent = totalCredits;
+      document.getElementById("dashSubjectsCount").textContent = subjects.length;
+
+      // click handlers
+      subjectsTableBody.querySelectorAll(".subj-link").forEach((el) => {
+        el.addEventListener("click", () => {
+          const code = el.getAttribute("data-code");
+          const subj = subjects.find((s) => s.code === code);
+          if (!subj) return;
+          subjectCodeInput.value = subj.code;
+          subjectNameInput.value = subj.name;
+          subjectCreditsInput.value = subj.credits || "";
+          previewSyllabus(subj);
+        });
+      });
+      subjectsTableBody
+        .querySelectorAll("td:nth-child(4) .link")
+        .forEach((el) => {
+          el.addEventListener("click", () => {
+            const code = el.getAttribute("data-code");
+            const subj = subjects.find((s) => s.code === code);
+            previewSyllabus(subj);
+          });
+        });
+    }
+
+    function previewSyllabus(subj) {
+      if (!subj) {
+        syllabusPreview.innerHTML =
+          '<div class="small">No subject selected.</div>';
+        return;
+      }
+      if (!subj.syllabus) {
+        syllabusPreview.innerHTML =
+          '<div class="small">No syllabus file uploaded for ' +
+          subj.code +
+          ".</div>";
+        return;
+      }
+      const isPdf = subj.syllabus.startsWith("data:application/pdf");
+      if (isPdf) {
+        syllabusPreview.innerHTML =
+          '<object data="' +
+          subj.syllabus +
+          '" type="application/pdf" width="100%" height="120px">PDF preview not supported.</object>';
+      } else {
+        syllabusPreview.innerHTML =
+          '<img src="' +
+          subj.syllabus +
+          '" alt="Syllabus" style="max-width:100%;max-height:120px;border-radius:8px;" />';
+      }
+    }
+
+    // ------- TASKS -------
+    const taskSubjectCodeInput = document.getElementById("taskSubjectCodeInput");
+    const taskLessonInput = document.getElementById("taskLessonInput");
+    const taskTopicInput = document.getElementById("taskTopicInput");
+    const taskTypeSelect = document.getElementById("taskTypeSelect");
+    const taskPrioritySelect = document.getElementById("taskPrioritySelect");
+    const taskDeadlineDateInput = document.getElementById("taskDeadlineDateInput");
+    const taskDeadlineTimeInput = document.getElementById("taskDeadlineTimeInput");
+    const taskProofInput = document.getElementById("taskProofInput");
+    const tasksTableBody = document.querySelector("#tasksTable tbody");
+    const tasksCountLabel = document.getElementById("tasksCountLabel");
+
+    document.getElementById("addTaskBtn").addEventListener("click", () => {
+      const subCode = taskSubjectCodeInput.value.trim();
+      const lesson = taskLessonInput.value.trim();
+      const topic = taskTopicInput.value.trim();
+      const type = taskTypeSelect.value;
+      const priority = taskPrioritySelect.value;
+      const date = taskDeadlineDateInput.value;
+      const time = taskDeadlineTimeInput.value;
+
+      if (!subCode || !lesson || !topic || !date || !time) {
+        alert("Subject code, lesson, topic, and deadline date/time are required.");
+        return;
+      }
+
+      const subj = subjects.find((s) => s.code === subCode);
+      if (!subj) {
+        if (
+          !confirm(
+            "Subject code not found in list. Add task anyway (subjectless)?"
+          )
+        ) {
+          return;
+        }
+      }
+
+      readFileAsDataURL(taskProofInput.files[0], (fileDataUrl) => {
+        const status =
+          fileDataUrl ? "Completed" : "Pending"; // fool-proof: completion only when proof exists
+
+        const deadline = `${date} ${time}`;
+        tasks.push({
+          id: uid(),
+          subjectCode: subCode,
+          subjectName: subj ? subj.name : "",
+          lesson,
+          topic,
+          type,
+          priority,
+          deadline,
+          proof: fileDataUrl,
+          status,
+        });
+        renderTasks();
+        taskLessonInput.value = "";
+        taskTopicInput.value = "";
+        taskProofInput.value = "";
+      });
+    });
+
+    function renderTasks() {
+      tasksTableBody.innerHTML = "";
+      let completed = 0;
+      let overdue = 0;
+      const now = new Date();
+
+      tasks.forEach((t, idx) => {
+        const deadlineDate = new Date(t.deadline.replace(" ", "T"));
+        let statusClass = "status-pending";
+        let statusLabel = "Pending";
+
+        if (t.status === "Completed") {
+          statusClass = "status-complete";
+          statusLabel = "Completed";
+          completed += 1;
+        } else if (deadlineDate < now) {
+          statusClass = "status-overdue";
+          statusLabel = "Overdue";
+          overdue += 1;
+        }
+
+        const priorityClass =
+          t.priority === "Low"
+            ? "priority-low"
+            : t.priority === "Medium"
+            ? "priority-medium"
+            : t.priority === "High"
+            ? "priority-high"
+            : "priority-top";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${t.subjectCode}</td>
+          <td>${t.lesson}<br/><span class="small">${t.topic}</span></td>
+          <td>${t.type}</td>
+          <td><span class="badge ${priorityClass}">${t.priority}</span></td>
+          <td><span class="small">${t.deadline}</span></td>
+          <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+          <td>${
+            t.proof
+              ? '<span class="link" data-id="' + t.id + '">View</span>'
+              : "<span class='small'>No proof</span>"
+          }</td>
+        `;
+        tasksTableBody.appendChild(tr);
+      });
+
+      tasksCountLabel.textContent = `${tasks.length} tasks · ${completed} completed`;
+      document.getElementById("dashTasksTotal").textContent = tasks.length;
+      document.getElementById("dashTasksCompleted").textContent = completed;
+      document.getElementById("dashTasksOverdue").textContent = overdue;
+
+      const progress = tasks.length ? (completed / tasks.length) * 100 : 0;
+      document.getElementById(
+        "dashTasksProgress"
+      ).style.width = `${progress}%`;
+
+      // proof view handlers
+      tasksTableBody.querySelectorAll("td:last-child .link").forEach((el) => {
+        el.addEventListener("click", () => {
+          const id = el.getAttribute("data-id");
+          const task = tasks.find((t) => t.id === id);
+          if (!task || !task.proof) return;
+          const win = window.open();
+          win.document.write(
+            '<iframe src="' +
+              task.proof +
+              '" style="border:none;width:100%;height:100%;"></iframe>'
+          );
+        });
+      });
+    }
+
+    // ------- PHYSICAL -------
+    document.getElementById("addPhysicalBtn").addEventListener("click", () => {
+      const name = document.getElementById("physNameInput").value.trim();
+      const cat = document.getElementById("physCategorySelect").value;
+      const desc = document.getElementById("physDescriptionInput").value.trim();
+      const file = document.getElementById("physProofInput").files[0];
+
+      if (!name) {
+        alert("Activity name is required.");
+        return;
+      }
+
+      const date = new Date();
+      const dateStr = date.toISOString().slice(0, 10);
+      const deadline = `${dateStr} 22:00`;
+
+      readFileAsDataURL(file, (dataUrl) => {
+        let status = "Not completed";
+        let reason = "";
+        if (dataUrl) {
+          status = "Completed";
+        } else {
+          reason = prompt("No proof uploaded. Reason for not completing?") || "";
+        }
+
+        physicalEntries.push({
+          id: uid(),
+          date: dateStr,
+          name,
+          category: cat,
+          description: desc,
+          deadline,
+          proof: dataUrl,
+          status,
+          reason,
+        });
+
+        updatePhysicalDashboard();
+        document.getElementById("physNameInput").value = "";
+        document.getElementById("physDescriptionInput").value = "";
+        document.getElementById("physProofInput").value = "";
+      });
+    });
+
+    function updatePhysicalDashboard() {
+      const today = new Date().toISOString().slice(0, 10);
+      const todayEntries = physicalEntries.filter((p) => p.date === today);
+      const completed = todayEntries.filter((p) => p.status === "Completed").length;
+      document.getElementById(
+        "dashPhysicalToday"
+      ).textContent = `${completed} / 1`;
+      document.getElementById(
+        "dashPhysicalProgress"
+      ).style.width = `${completed >= 1 ? 100 : 0}%`;
+    }
+
+    // ------- READING -------
+    document.getElementById("addReadingBtn").addEventListener("click", () => {
+      const title = document.getElementById("readTitleInput").value.trim();
+      const pages = document.getElementById("readPagesInput").value.trim();
+      const notes = document.getElementById("readNotesInput").value.trim();
+      const file = document.getElementById("readProofInput").files[0];
+
+      if (!title || !pages) {
+        alert("Title and pages/chapters are required.");
+        return;
+      }
+
+      const date = new Date();
+      const dateStr = date.toISOString().slice(0, 10);
+
+      readFileAsDataURL(file, (dataUrl) => {
+        let status = "Not completed";
+        let reason = "";
+        if (dataUrl) {
+          status = "Completed";
+        } else {
+          reason =
+            prompt("No proof uploaded for reading. Reason?") ||
+            "";
+        }
+
+        readingEntries.push({
+          id: uid(),
+          date: dateStr,
+          title,
+          pages,
+          notes,
+          proof: dataUrl,
+          status,
+          reason,
+        });
+
+        updateReadingDashboard();
+        document.getElementById("readTitleInput").value = "";
+        document.getElementById("readPagesInput").value = "";
+        document.getElementById("readNotesInput").value = "";
+        document.getElementById("readProofInput").value = "";
+      });
+    });
+
+    function updateReadingDashboard() {
+      const today = new Date().toISOString().slice(0, 10);
+      const todayEntries = readingEntries.filter((r) => r.date === today);
+      const completed = todayEntries.filter((r) => r.status === "Completed")
+        .length;
+      document.getElementById("dashReadingToday").textContent = `${completed} / 1`;
+      document.getElementById(
+        "dashReadingProgress"
+      ).style.width = `${completed >= 1 ? 100 : 0}%`;
+    }
+
+    // ------- EXPORT TO EXCEL -------
+    document.getElementById("exportExcelBtn").addEventListener("click", () => {
+      if (!subjects.length && !tasks.length && !physicalEntries.length && !readingEntries.length) {
+        alert("No data to export yet.");
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+
+      // Subjects sheet
+      if (subjects.length) {
+        const subjData = subjects.map((s, idx) => ({
+          "S.No": idx + 1,
+          "Subject Code": s.code,
+          "Subject Name": s.name,
+          Credits: s.credits || "",
+          "Has Syllabus?": s.syllabus ? "Yes" : "No",
+        }));
+        const ws = XLSX.utils.json_to_sheet(subjData);
+        XLSX.utils.book_append_sheet(wb, ws, "Subjects");
+      }
+
+      // Tasks sheet
+      if (tasks.length) {
+        const taskData = tasks.map((t, idx) => ({
+          "S.No": idx + 1,
+          "Subject Code": t.subjectCode,
+          "Subject Name": t.subjectName,
+          "Lesson/Unit": t.lesson,
+          Topic: t.topic,
+          Type: t.type,
+          Priority: t.priority,
+          Deadline: t.deadline,
+          Status: t.status,
+          "Has Proof?": t.proof ? "Yes" : "No",
+        }));
+        const ws = XLSX.utils.json_to_sheet(taskData);
+        XLSX.utils.book_append_sheet(wb, ws, "Tasks");
+      }
+
+      // Physical sheet
+      if (physicalEntries.length) {
+        const physData = physicalEntries.map((p, idx) => ({
+          "S.No": idx + 1,
+          Date: p.date,
+          Activity: p.name,
+          Category: p.category,
+          Description: p.description,
+          Deadline: p.deadline,
+          Status: p.status,
+          "Has Proof?": p.proof ? "Yes" : "No",
+          Reason: p.reason,
+        }));
+        const ws = XLSX.utils.json_to_sheet(physData);
+        XLSX.utils.book_append_sheet(wb, ws, "Physical");
+      }
+
+      // Reading sheet
+      if (readingEntries.length) {
+        const readData = readingEntries.map((r, idx) => ({
+          "S.No": idx + 1,
+          Date: r.date,
+          Title: r.title,
+          Progress: r.pages,
+          Notes: r.notes,
+          Status: r.status,
+          "Has Proof?": r.proof ? "Yes" : "No",
+          Reason: r.reason,
+        }));
+        const ws = XLSX.utils.json_to_sheet(readData);
+        XLSX.utils.book_append_sheet(wb, ws, "Reading");
+      }
+
+      const monthLabel = new Date().toISOString().slice(0, 7); // YYYY-MM
+      XLSX.writeFile(wb, `Advanced-Study-Tracker-${monthLabel}.xlsx`);
+    });
+
+    // ------- CLEAR ALL -------
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      if (
+        !confirm(
+          "This will clear all subjects, tasks, physical and reading entries from this browser. Continue?"
+        )
+      )
+        return;
+      subjects = [];
+      tasks = [];
+      physicalEntries = [];
+      readingEntries = [];
+      renderSubjects();
+      renderTasks();
+      updatePhysicalDashboard();
+      updateReadingDashboard();
+      alert("All data cleared in this browser.");
+    });
+
+    // initial
+    renderSubjects();
+    renderTasks();
+    updatePhysicalDashboard();
+    updateReadingDashboard();
+  </script>
+</body>
+</html>
