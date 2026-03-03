@@ -750,6 +750,15 @@ async function apiSend(path, method, body) {
 async function savePhysicalEntry(entry) {
   return apiSend("/physical", "POST", entry);
 }
+    
+    async function fetchReadingEntries() {
+  return apiGet("/reading");
+}
+
+async function saveReadingEntry(entry) {
+  return apiSend("/reading", "POST", entry);
+}
+
 
     
     // --- Simple local in-memory storage (can later be replaced with backend) ---
@@ -1131,50 +1140,67 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
       ).style.width = `${completed >= 1 ? 100 : 0}%`;
     }
 
-    // ------- READING -------
-    document.getElementById("addReadingBtn").addEventListener("click", () => {
-      const title = document.getElementById("readTitleInput").value.trim();
-      const pages = document.getElementById("readPagesInput").value.trim();
-      const notes = document.getElementById("readNotesInput").value.trim();
-      const file = document.getElementById("readProofInput").files[0];
+// ------- READING -------
+document.getElementById("addReadingBtn").addEventListener("click", () => {
+  const title = document.getElementById("readTitleInput").value.trim();
+  const pages = document.getElementById("readPagesInput").value.trim();
+  const notes = document.getElementById("readNotesInput").value.trim();
+  const file = document.getElementById("readProofInput").files[0];
 
-      if (!title || !pages) {
-        alert("Title and pages/chapters are required.");
-        return;
-      }
+  if (!title || !pages) {
+    alert("Title and pages/chapters are required.");
+    return;
+  }
 
-      const date = new Date();
-      const dateStr = date.toISOString().slice(0, 10);
+  const date = new Date();
+  const dateStr = date.toISOString().slice(0, 10);
 
-      readFileAsDataURL(file, (dataUrl) => {
-        let status = "Not completed";
-        let reason = "";
-        if (dataUrl) {
-          status = "Completed";
-        } else {
-          reason =
-            prompt("No proof uploaded for reading. Reason?") ||
-            "";
-        }
+  readFileAsDataURL(file, async (dataUrl) => {
+    let status = "Not completed";
+    let reason = "";
+    if (dataUrl) {
+      status = "Completed";
+    } else {
+      reason =
+        prompt("No proof uploaded for reading. Reason?") || "";
+    }
 
-        readingEntries.push({
-          id: uid(),
-          date: dateStr,
-          title,
-          pages,
-          notes,
-          proof: dataUrl,
-          status,
-          reason,
-        });
+    const entry = {
+      date: dateStr,
+      title,
+      pages,
+      notes,
+      status,
+      reason,
+      proofBase64: dataUrl || null,
+    };
 
-        updateReadingDashboard();
-        document.getElementById("readTitleInput").value = "";
-        document.getElementById("readPagesInput").value = "";
-        document.getElementById("readNotesInput").value = "";
-        document.getElementById("readProofInput").value = "";
+    try {
+      const saved = await saveReadingEntry(entry);
+
+      readingEntries.push({
+        id: saved.id,
+        date: saved.date,
+        title: saved.title,
+        pages: saved.pages,
+        notes: saved.notes,
+        status: saved.status,
+        reason: saved.reason,
+        proof: saved.proofBase64 || null,
       });
-    });
+
+      updateReadingDashboard();
+      document.getElementById("readTitleInput").value = "";
+      document.getElementById("readPagesInput").value = "";
+      document.getElementById("readNotesInput").value = "";
+      document.getElementById("readProofInput").value = "";
+      alert("Reading entry saved to server.");
+    } catch (err) {
+      console.error(err);
+      alert("Could not save reading entry to server.");
+    }
+  });
+});
 
     function updateReadingDashboard() {
       const today = new Date().toISOString().slice(0, 10);
@@ -1328,11 +1354,12 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
     // initial
     async function loadInitialData() {
   try {
-    const [subjectsData, tasksData, physicalData] = await Promise.all([
-  apiGet("/subjects"),
-  apiGet("/tasks"),
-  fetchPhysicalEntries(),
-]);
+        const [subjectsData, tasksData, physicalData, readingData] = await Promise.all([
+      apiGet("/subjects"),
+      apiGet("/tasks"),
+      fetchPhysicalEntries(),
+      fetchReadingEntries(),
+    ]);
 
     subjects = subjectsData.map((s) => ({
       id: s.id,
@@ -1366,6 +1393,18 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
   status: p.status,
   reason: p.reason,
 }));
+    
+    readingEntries = readingData.map((r) => ({
+      id: r.id,
+      date: r.date,
+      title: r.title,
+      pages: r.pages,
+      notes: r.notes,
+      proof: r.proofBase64 || null,
+      status: r.status,
+      reason: r.reason,
+    }));
+
 
     renderSubjects();
     renderTasks();
