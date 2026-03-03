@@ -743,6 +743,15 @@ async function apiSend(path, method, body) {
   return res.json();
 }
     
+    async function fetchPhysicalEntries() {
+  return apiGet("/physical");
+}
+
+async function savePhysicalEntry(entry) {
+  return apiSend("/physical", "POST", entry);
+}
+
+    
     // --- Simple local in-memory storage (can later be replaced with backend) ---
     let subjects = [];
     let tasks = [];
@@ -1066,7 +1075,7 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
       });
     }
 
-    // ------- PHYSICAL -------
+    // -------  -------
     document.getElementById("addPhysicalBtn").addEventListener("click", () => {
       const name = document.getElementById("physNameInput").value.trim();
       const cat = document.getElementById("physCategorySelect").value;
@@ -1218,7 +1227,7 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
         XLSX.utils.book_append_sheet(wb, ws, "Tasks");
       }
 
-      // Physical sheet
+      //  sheet
       if (physicalEntries.length) {
         const physData = physicalEntries.map((p, idx) => ({
           "S.No": idx + 1,
@@ -1232,7 +1241,7 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
           Reason: p.reason,
         }));
         const ws = XLSX.utils.json_to_sheet(physData);
-        XLSX.utils.book_append_sheet(wb, ws, "Physical");
+        XLSX.utils.book_append_sheet(wb, ws, "");
       }
 
       // Reading sheet
@@ -1319,10 +1328,11 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
     // initial
     async function loadInitialData() {
   try {
-    const [subjectsData, tasksData] = await Promise.all([
-      apiGet("/subjects"),
-      apiGet("/tasks"),
-    ]);
+    const [subjectsData, tasksData, physicalData] = await Promise.all([
+  apiGet("/subjects"),
+  apiGet("/tasks"),
+  fetchPhysicalEntries(),
+]);
 
     subjects = subjectsData.map((s) => ({
       id: s.id,
@@ -1344,6 +1354,18 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
       status: t.status,
       proof: t.proofBase64 || null,
     }));
+    
+    physicalEntries = physicalData.map((p) => ({
+  id: p.id,
+  date: p.date,
+  name: p.name,
+  category: p.category,
+  description: p.description,
+  deadline: p.deadline,
+  proof: p.proofBase64 || null,
+  status: p.status,
+  reason: p.reason,
+}));
 
     renderSubjects();
     renderTasks();
