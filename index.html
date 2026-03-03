@@ -1437,7 +1437,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
       alert("All data cleared in this browser.");
     });
 
-    // ------- EMAIL POPUP (ONCE PER DEVICE) -------
+       // ------- EMAIL POPUP (ONCE PER DEVICE) -------
     const emailModal = document.getElementById("emailModal");
     const emailInput = document.getElementById("emailInput");
     const emailSaveBtn = document.getElementById("emailSaveBtn");
@@ -1479,7 +1479,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
       hideEmailModal();
     });
 
-    // initial
+    // ------- INITIAL LOAD -------
     async function loadInitialData() {
       try {
         const [subjectsData, tasksData, physicalData, readingData] = await Promise.all([
