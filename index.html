@@ -157,7 +157,7 @@
 }
 
 @media (max-width: 600px) {
-  .actions-header {
+  .
     justify-content: flex-start;
   }
 }
@@ -1150,7 +1150,7 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
       });
     }
 
-    // -------  -------
+       // ------- PHYSICAL -------
     document.getElementById("addPhysicalBtn").addEventListener("click", () => {
       const name = document.getElementById("physNameInput").value.trim();
       const cat = document.getElementById("physCategorySelect").value;
@@ -1166,7 +1166,7 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
       const dateStr = date.toISOString().slice(0, 10);
       const deadline = `${dateStr} 22:00`;
 
-      readFileAsDataURL(file, (dataUrl) => {
+      readFileAsDataURL(file, async (dataUrl) => {
         let status = "Not completed";
         let reason = "";
         if (dataUrl) {
@@ -1175,22 +1175,41 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
           reason = prompt("No proof uploaded. Reason for not completing?") || "";
         }
 
-        physicalEntries.push({
-          id: uid(),
+        const entry = {
           date: dateStr,
           name,
           category: cat,
           description: desc,
           deadline,
-          proof: dataUrl,
           status,
           reason,
-        });
+          proofBase64: dataUrl || null,
+        };
 
-        updatePhysicalDashboard();
-        document.getElementById("physNameInput").value = "";
-        document.getElementById("physDescriptionInput").value = "";
-        document.getElementById("physProofInput").value = "";
+        try {
+          const saved = await savePhysicalEntry(entry);
+
+          physicalEntries.push({
+            id: saved.id,
+            date: saved.date,
+            name: saved.name,
+            category: saved.category,
+            description: saved.description,
+            deadline: saved.deadline,
+            status: saved.status,
+            reason: saved.reason,
+            proof: saved.proofBase64 || null,
+          });
+
+          updatePhysicalDashboard();
+          document.getElementById("physNameInput").value = "";
+          document.getElementById("physDescriptionInput").value = "";
+          document.getElementById("physProofInput").value = "";
+          alert("Physical entry saved to server.");
+        } catch (err) {
+          console.error(err);
+          alert("Could not save physical entry to server.");
+        }
       });
     });
 
@@ -1319,7 +1338,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
         XLSX.utils.book_append_sheet(wb, ws, "Tasks");
       }
 
-      //  sheet
+           // Physical sheet
       if (physicalEntries.length) {
         const physData = physicalEntries.map((p, idx) => ({
           "S.No": idx + 1,
@@ -1333,7 +1352,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
           Reason: p.reason,
         }));
         const ws = XLSX.utils.json_to_sheet(physData);
-        XLSX.utils.book_append_sheet(wb, ws, "");
+        XLSX.utils.book_append_sheet(wb, ws, "Physical");
       }
 
       // Reading sheet
