@@ -1305,7 +1305,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
         return;
       }
 
-      const wb = XLSX.utils.book_new();
+            const wb = XLSX.utils.book_new();
 
       // Subjects sheet
       if (subjects.length) {
@@ -1322,58 +1322,86 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
 
       // Tasks sheet
       if (tasks.length) {
-        const taskData = tasks.map((t, idx) => ({
-          "S.No": idx + 1,
-          "Subject Code": t.subjectCode,
-          "Subject Name": t.subjectName,
-          "Lesson/Unit": t.lesson,
-          Topic: t.topic,
-          Type: t.type,
-          Priority: t.priority,
-          Deadline: t.deadline,
-          Status: t.status,
-          "Has Proof?": t.proof ? "Yes" : "No",
-        }));
+        const taskData = tasks.map((t, idx) => {
+          let proofInfo = "";
+          if (t.proof) {
+            const [meta, base64] = t.proof.split(",");
+            proofInfo = meta + " | " + (base64 ? base64.slice(0, 40) + "..." : "");
+          }
+
+          return {
+            "S.No": idx + 1,
+            "Subject Code": t.subjectCode,
+            "Subject Name": t.subjectName,
+            "Lesson/Unit": t.lesson,
+            Topic: t.topic,
+            Type: t.type,
+            Priority: t.priority,
+            Deadline: t.deadline,
+            Status: t.status,
+            "Has Proof?": t.proof ? "Yes" : "No",
+            "Proof Info": proofInfo,
+          };
+        });
+
         const ws = XLSX.utils.json_to_sheet(taskData);
         XLSX.utils.book_append_sheet(wb, ws, "Tasks");
       }
 
-           // Physical sheet
+      // Physical sheet
       if (physicalEntries.length) {
-        const physData = physicalEntries.map((p, idx) => ({
-          "S.No": idx + 1,
-          Date: p.date,
-          Activity: p.name,
-          Category: p.category,
-          Description: p.description,
-          Deadline: p.deadline,
-          Status: p.status,
-          "Has Proof?": p.proof ? "Yes" : "No",
-          Reason: p.reason,
-        }));
+        const physData = physicalEntries.map((p, idx) => {
+          let proofInfo = "";
+          if (p.proof) {
+            const [meta, base64] = p.proof.split(",");
+            proofInfo = meta + " | " + (base64 ? base64.slice(0, 40) + "..." : "");
+          }
+
+          return {
+            "S.No": idx + 1,
+            Date: p.date,
+            Activity: p.name,
+            Category: p.category,
+            Description: p.description,
+            Deadline: p.deadline,
+            Status: p.status,
+            "Has Proof?": p.proof ? "Yes" : "No",
+            "Proof Info": proofInfo,
+            Reason: p.reason,
+          };
+        });
         const ws = XLSX.utils.json_to_sheet(physData);
         XLSX.utils.book_append_sheet(wb, ws, "Physical");
       }
 
       // Reading sheet
       if (readingEntries.length) {
-        const readData = readingEntries.map((r, idx) => ({
-          "S.No": idx + 1,
-          Date: r.date,
-          Title: r.title,
-          Progress: r.pages,
-          Notes: r.notes,
-          Status: r.status,
-          "Has Proof?": r.proof ? "Yes" : "No",
-          Reason: r.reason,
-        }));
+        const readData = readingEntries.map((r, idx) => {
+          let proofInfo = "";
+          if (r.proof) {
+            const [meta, base64] = r.proof.split(",");
+            proofInfo = meta + " | " + (base64 ? base64.slice(0, 40) + "..." : "");
+          }
+
+          return {
+            "S.No": idx + 1,
+            Date: r.date,
+            Title: r.title,
+            Progress: r.pages,
+            Notes: r.notes,
+            Status: r.status,
+            "Has Proof?": r.proof ? "Yes" : "No",
+            "Proof Info": proofInfo,
+            Reason: r.reason,
+          };
+        });
         const ws = XLSX.utils.json_to_sheet(readData);
         XLSX.utils.book_append_sheet(wb, ws, "Reading");
       }
 
       const monthLabel = new Date().toISOString().slice(0, 7); // YYYY-MM
       XLSX.writeFile(wb, `Advanced-Study-Tracker-${monthLabel}.xlsx`);
-    });
+
 
        // ------- CLEAR ALL -------
     document.getElementById("clearAllBtn").addEventListener("click", () => {
