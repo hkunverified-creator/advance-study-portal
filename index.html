@@ -13,6 +13,7 @@
       --bg-soft: #020617;
       --accent: #38bdf8;
       --accent-2: #a855f7;
+      --accent-soft-2: rgba(168, 85, 247, 0.3);
       --accent-soft: rgba(56, 189, 248, 0.18);
       --danger: #f97373;
       --success: #4ade80;
@@ -57,7 +58,11 @@
       grid-column: 1 / -1;
       padding: 18px 16px;
       border-radius: var(--radius);
-      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 65%);
+        background:
+    radial-gradient(circle at top left, var(--accent-soft), transparent 60%),
+    radial-gradient(circle at top right, var(--accent-soft-2), transparent 60%),
+    linear-gradient(135deg, #020617, #020617);
+
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       display: flex;
@@ -311,17 +316,30 @@
     }
 
     .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
 
-    .dash-card {
-      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 1));
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      padding: 8px 9px;
-    }
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dash-card {
+  background: radial-gradient(circle at top, rgba(56, 189, 248, 0.22), rgba(15, 23, 42, 1));
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  padding: 10px 11px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.9);
+}
 
     .dash-label {
       font-size: 0.7rem;
@@ -451,6 +469,61 @@
         </button>
       </div>
     </header>
+
+      <!-- Dashboard -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Dashboard</div>
+            <div class="card-subtitle">
+              Today’s snapshot of tasks, movement, and reading.
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dash-card">
+            <div class="dash-label">Tasks</div>
+            <div class="dash-value" id="dashTasksTotal">0</div>
+            <div class="dash-sub">
+              Completed: <span id="dashTasksCompleted">0</span> · Overdue:
+              <span id="dashTasksOverdue">0</span>
+            </div>
+            <div class="progress-bar">
+              <div id="dashTasksProgress" class="progress-inner"></div>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-label">Physical Activity</div>
+            <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
+            <div class="dash-sub">Deadline: 10:00 PM daily</div>
+            <div class="progress-bar">
+              <div id="dashPhysicalProgress" class="progress-inner"></div>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-label">Reading</div>
+            <div class="dash-value" id="dashReadingToday">0 / 1</div>
+            <div class="dash-sub">Make at least one serious reading block.</div>
+            <div class="progress-bar">
+              <div id="dashReadingProgress" class="progress-inner"></div>
+            </div>
+          </div>
+
+          <div class="dash-card">
+            <div class="dash-label">Credits</div>
+            <div class="dash-value" id="dashCreditsTotal">0</div>
+            <div class="dash-sub">Across <span id="dashSubjectsCount">0</span> subjects</div>
+          </div>
+        </div>
+
+        <div class="anime-strip">
+          <span>“No chakra, only discipline – that’s your real power.”</span>
+          <span>Naruto‑style grind mode ON.</span>
+        </div>
+      </section>
 
     <!-- LEFT: SUBJECTS + TASKS -->
     <main class="layout-main">
@@ -594,62 +667,8 @@
       </section>
     </main>
 
-    <!-- RIGHT: PHYSICAL + READING + DASHBOARD -->
+    <!-- RIGHT: PHYSICAL + READING -->
     <aside class="layout-right">
-      <!-- Dashboard -->
-      <section class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Dashboard</div>
-            <div class="card-subtitle">
-              Today’s snapshot of tasks, movement, and reading.
-            </div>
-          </div>
-        </div>
-
-        <div class="dashboard-grid">
-          <div class="dash-card">
-            <div class="dash-label">Tasks</div>
-            <div class="dash-value" id="dashTasksTotal">0</div>
-            <div class="dash-sub">
-              Completed: <span id="dashTasksCompleted">0</span> · Overdue:
-              <span id="dashTasksOverdue">0</span>
-            </div>
-            <div class="progress-bar">
-              <div id="dashTasksProgress" class="progress-inner"></div>
-            </div>
-          </div>
-
-          <div class="dash-card">
-            <div class="dash-label">Physical Activity</div>
-            <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
-            <div class="dash-sub">Deadline: 10:00 PM daily</div>
-            <div class="progress-bar">
-              <div id="dashPhysicalProgress" class="progress-inner"></div>
-            </div>
-          </div>
-
-          <div class="dash-card">
-            <div class="dash-label">Reading</div>
-            <div class="dash-value" id="dashReadingToday">0 / 1</div>
-            <div class="dash-sub">Make at least one serious reading block.</div>
-            <div class="progress-bar">
-              <div id="dashReadingProgress" class="progress-inner"></div>
-            </div>
-          </div>
-
-          <div class="dash-card">
-            <div class="dash-label">Credits</div>
-            <div class="dash-value" id="dashCreditsTotal">0</div>
-            <div class="dash-sub">Across <span id="dashSubjectsCount">0</span> subjects</div>
-          </div>
-        </div>
-
-        <div class="anime-strip">
-          <span>“No chakra, only discipline – that’s your real power.”</span>
-          <span>Naruto‑style grind mode ON.</span>
-        </div>
-      </section>
 
       <!-- Physical Activity -->
       <section class="card">
