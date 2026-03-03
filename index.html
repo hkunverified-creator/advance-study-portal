@@ -1481,77 +1481,77 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
 
     // initial
     async function loadInitialData() {
-  try {
+      try {
         const [subjectsData, tasksData, physicalData, readingData] = await Promise.all([
-      apiGet("/subjects"),
-      apiGet("/tasks"),
-      fetchPhysicalEntries(),
-      fetchReadingEntries(),
-    ]);
+          apiGet("/subjects"),
+          apiGet("/tasks"),
+          fetchPhysicalEntries(),
+          fetchReadingEntries(),
+        ]);
 
-    subjects = subjectsData.map((s) => ({
-      id: s.id,
-      code: s.code,
-      name: s.name,
-      credits: s.credits,
-      syllabus: s.syllabusBase64 || null,
-    }));
+        subjects = subjectsData.map((s) => ({
+          id: s.id,
+          code: s.code,
+          name: s.name,
+          credits: s.credits,
+          syllabus: s.syllabusBase64 || null,
+        }));
 
-    tasks = tasksData.map((t) => ({
-      id: t.id,
-      subjectCode: t.subjectCode,
-      subjectName: t.subjectName,
-      lesson: t.lesson,
-      topic: t.topic,
-      type: t.type,
-      priority: t.priority,
-      deadline: t.deadline,
-      status: t.status,
-      proof: t.proofBase64 || null,
-    }));
-    
-    physicalEntries = physicalData.map((p) => ({
-  id: p.id,
-  date: p.date,
-  name: p.name,
-  category: p.category,
-  description: p.description,
-  deadline: p.deadline,
-  proof: p.proofBase64 || null,
-  status: p.status,
-  reason: p.reason,
-}));
-    
-    readingEntries = readingData.map((r) => ({
-      id: r.id,
-      date: r.date,
-      title: r.title,
-      pages: r.pages,
-      notes: r.notes,
-      proof: r.proofBase64 || null,
-      status: r.status,
-      reason: r.reason,
-    }));
+        tasks = tasksData.map((t) => ({
+          id: t.id,
+          subjectCode: t.subjectCode,
+          subjectName: t.subjectName,
+          lesson: t.lesson,
+          topic: t.topic,
+          type: t.type,
+          priority: t.priority,
+          deadline: t.deadline,
+          status: t.status,
+          proof: t.proofBase64 || null,
+        }));
 
+        physicalEntries = physicalData.map((p) => ({
+          id: p.id,
+          date: p.date,
+          name: p.name,
+          category: p.category,
+          description: p.description,
+          deadline: p.deadline,
+          proof: p.proofBase64 || null,
+          status: p.status,
+          reason: p.reason,
+        }));
 
-    renderSubjects();
-    renderTasks();
-    updatePhysicalDashboard();
-    updateReadingDashboard();
-  } catch (e) {
-    console.error(e);
-    alert("Error loading data from server. Starting with empty lists.");
-    subjects = [];
-    tasks = [];
-    renderSubjects();
-    renderTasks();
-    updatePhysicalDashboard();
-    updateReadingDashboard();
-  }
-}
+        readingEntries = readingData.map((r) => ({
+          id: r.id,
+          date: r.date,
+          title: r.title,
+          pages: r.pages,
+          notes: r.notes,
+          proof: r.proofBase64 || null,
+          status: r.status,
+          reason: r.reason,
+        }));
 
-loadInitialData();
+        renderSubjects();
+        renderTasks();
+        updatePhysicalDashboard();
+        updateReadingDashboard();
+      } catch (e) {
+        console.error(e);
+        alert("Error loading data from server. Starting with empty lists.");
+        subjects = [];
+        tasks = [];
+        physicalEntries = [];
+        readingEntries = [];
+        renderSubjects();
+        renderTasks();
+        updatePhysicalDashboard();
+        updateReadingDashboard();
+      }
+    }
+
+    loadInitialData();
   </script>
 </body>
 </html>
-
