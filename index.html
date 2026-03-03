@@ -1320,7 +1320,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
         return;
       }
 
-            const wb = XLSX.utils.book_new();
+      const wb = XLSX.utils.book_new();
 
       // Subjects sheet
       if (subjects.length) {
@@ -1416,9 +1416,9 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
 
       const monthLabel = new Date().toISOString().slice(0, 7); // YYYY-MM
       XLSX.writeFile(wb, `Advanced-Study-Tracker-${monthLabel}.xlsx`);
+    });
 
-
-       // ------- CLEAR ALL -------
+    // ------- CLEAR ALL -------
     document.getElementById("clearAllBtn").addEventListener("click", () => {
       if (
         !confirm(
@@ -1437,7 +1437,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
       alert("All data cleared in this browser.");
     });
 
-       // ------- EMAIL POPUP (ONCE PER DEVICE) -------
+    // ------- EMAIL POPUP (ONCE PER DEVICE) -------
     const emailModal = document.getElementById("emailModal");
     const emailInput = document.getElementById("emailInput");
     const emailSaveBtn = document.getElementById("emailSaveBtn");
