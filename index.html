@@ -10,6 +10,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <style>
     :root {
       --bg: #04000f;
@@ -621,6 +622,28 @@
 </head>
 <body>
 
+<!-- ===== LOGIN MODAL ===== -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box sm">
+    <div class="modal-inner" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:12px">⚡</div>
+      <div class="section-tag" style="display:inline-block;margin-bottom:12px">// AUTHENTICATION</div>
+      <div class="modal-title" style="font-size:1.8rem;margin-bottom:8px">AST PORTAL</div>
+      <div style="color:var(--muted);font-size:0.9rem;margin-bottom:28px;line-height:1.6">
+        Advanced Study Tracker<br/>Sign in to access your personal dashboard
+      </div>
+      <button class="btn btn-primary" id="googleSignInBtn" style="width:100%;justify-content:center;font-size:1rem;padding:14px;gap:12px">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20"/>
+        Continue with Google
+      </button>
+      <div style="color:var(--muted);font-size:0.75rem;margin-top:16px;line-height:1.5">
+        Your data is private and linked to your Google account.<br/>
+        Each user sees only their own study data.
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== CHARACTER SELECTION MODAL ===== -->
 <div class="modal-overlay" id="charModal">
   <div class="modal-box">
@@ -690,6 +713,11 @@
       <div class="header-sub">Advanced Study Tracker — Life RPG Mode</div>
     </div>
     <div class="header-right">
+      <div id="userInfo" style="display:flex;align-items:center;gap:8px;background:rgba(0,245,255,0.08);border:1px solid var(--border-cyan);border-radius:20px;padding:6px 14px;">
+        <img id="userAvatar" src="" width="24" height="24" style="border-radius:50%;display:none"/>
+        <span id="userName" style="font-size:0.85rem;color:var(--cyan);font-weight:600">Not signed in</span>
+        <button onclick="signOut()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:0 0 0 6px;" title="Sign out">⏻</button>
+      </div>
       <div class="streak-badge" id="streakBadgeHeader" title="Your combo streak">
         🔥 <span id="streakCountHeader">0</span> DAY STREAK
       </div>
@@ -1057,6 +1085,14 @@ const firebaseConfig = {
 // Init Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
+let currentUser = null;
+
+// User-scoped collection helper
+// Each user gets their own subcollection: users/{uid}/subjects, tasks, etc.
+function userCol(name) {
+  return db.collection('users').doc(currentUser.uid).collection(name);
+}
 
 // ============================
 // STATE
@@ -1070,28 +1106,30 @@ const MILESTONES = [3, 7, 14, 30, 50, 100];
 // STORAGE HELPERS (localStorage backup)
 // ============================
 function saveLocal(key, data) {
-  try { localStorage.setItem('ast_' + key, JSON.stringify(data)); } catch(e){}
+  const uid = currentUser ? currentUser.uid : 'guest';
+  try { localStorage.setItem('ast_' + uid + '_' + key, JSON.stringify(data)); } catch(e){}
 }
 function loadLocal(key) {
-  try { const d = localStorage.getItem('ast_' + key); return d ? JSON.parse(d) : null; } catch(e) { return null; }
+  const uid = currentUser ? currentUser.uid : 'guest';
+  try { const d = localStorage.getItem('ast_' + uid + '_' + key); return d ? JSON.parse(d) : null; } catch(e) { return null; }
 }
 
 // ============================
 // FIREBASE HELPERS
 // ============================
-async function fbGetAll(collection) {
-  const snap = await db.collection(collection).get();
+async function fbGetAll(col) {
+  const snap = await userCol(col).get();
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
-async function fbAdd(collection, data) {
-  const ref = await db.collection(collection).add(data);
+async function fbAdd(col, data) {
+  const ref = await userCol(col).add(data);
   return { id: ref.id, ...data };
 }
-async function fbDelete(collection, id) {
-  await db.collection(collection).doc(id).delete();
+async function fbDelete(col, id) {
+  await userCol(col).doc(id).delete();
 }
-async function fbUpdate(collection, id, data) {
-  await db.collection(collection).doc(id).update(data);
+async function fbUpdate(col, id, data) {
+  await userCol(col).doc(id).update(data);
 }
 
 // ============================
@@ -1210,7 +1248,7 @@ function openCharModal() {
 document.getElementById('confirmCharBtn').addEventListener('click', () => {
   if (!selectedCharModal) { alert('Please select a guardian!'); return; }
   selectedChar = selectedCharModal;
-  localStorage.setItem('ast_character', selectedChar.id);
+  localStorage.setItem('ast_character_' + currentUser.uid, selectedChar.id);
   document.getElementById('charModal').classList.add('hidden');
   document.getElementById('app').style.display = 'block';
   updateCharHero();
@@ -1294,14 +1332,14 @@ document.getElementById('addSubjectBtn').addEventListener('click', async () => {
   const payload = { code, name, credits, syllabus: fileDataUrl || null };
 
   try {
-    const snap = await db.collection('subjects').where('code','==',code).get();
+    const snap = await userCol('subjects').where('code','==',code).get();
     let saved;
     if (!snap.empty) {
       const docId = snap.docs[0].id;
-      await db.collection('subjects').doc(docId).update(payload);
+      await userCol('subjects').doc(docId).update(payload);
       saved = { id: docId, ...payload };
     } else {
-      const ref = await db.collection('subjects').add(payload);
+      const ref = await userCol('subjects').add(payload);
       saved = { id: ref.id, ...payload };
     }
     const idx = subjects.findIndex(s => s.code === code);
@@ -1366,7 +1404,7 @@ async function deleteSubject(id) {
   try { await fbDelete('subjects', id); } catch(e) { console.warn(e); }
   // cascade delete tasks from Firebase
   if (s) {
-    const tSnap = await db.collection('tasks').where('subjectCode','==',s.code).get().catch(()=>({docs:[]}));
+    const tSnap = await userCol('tasks').where('subjectCode','==',s.code).get().catch(()=>({docs:[]}));
     tSnap.docs.forEach(d => d.ref.delete().catch(()=>{}));
   }
   subjects = subjects.filter(x => x.id !== id);
@@ -1401,7 +1439,7 @@ document.getElementById('addTaskBtn').addEventListener('click', async () => {
   const deadline = `${date} ${time}`;
   const payload = { subjectCode: subCode, subjectName: subj ? subj.name : '', lesson, topic, type, priority, deadline, status, proof: fileDataUrl || null };
   try {
-    const ref = await db.collection('tasks').add(payload);
+    const ref = await userCol('tasks').add(payload);
     tasks.push({ id: ref.id, ...payload });
   } catch(e) {
     tasks.push({ id: uid(), ...payload });
@@ -1485,7 +1523,7 @@ document.getElementById('addPhysicalBtn').addEventListener('click', async () => 
 
   const entry = { date: today, name, category: cat, description: desc, deadline, status, reason, proof: dataUrl || null };
   try {
-    const ref = await db.collection('physical').add(entry);
+    const ref = await userCol('physical').add(entry);
     physicalEntries.push({ id: ref.id, ...entry });
   } catch(e) {
     physicalEntries.push({ id: uid(), ...entry });
@@ -1587,7 +1625,7 @@ document.getElementById('addReadingBtn').addEventListener('click', async () => {
 
   const entry = { date: today, title, pages, notes, status, reason, proof: dataUrl || null };
   try {
-    const ref = await db.collection('reading').add(entry);
+    const ref = await userCol('reading').add(entry);
     readingEntries.push({ id: ref.id, ...entry });
   } catch(e) {
     readingEntries.push({ id: uid(), ...entry });
@@ -1823,10 +1861,10 @@ async function loadInitialData() {
 
   try {
     const [subSnap, taskSnap, physSnap, readSnap] = await Promise.all([
-      db.collection('subjects').get(),
-      db.collection('tasks').get(),
-      db.collection('physical').orderBy('date','desc').get(),
-      db.collection('reading').orderBy('date','desc').get()
+      userCol('subjects').get(),
+      userCol('tasks').get(),
+      userCol('physical').orderBy('date','desc').get(),
+      userCol('reading').orderBy('date','desc').get()
     ]);
     subjects       = subSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     tasks          = taskSnap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -1861,27 +1899,73 @@ async function loadInitialData() {
 }
 
 // ============================
-// INIT
+// AUTH FUNCTIONS
 // ============================
-(function init() {
-  const savedCharId = localStorage.getItem('ast_character');
-  if (savedCharId) {
-    selectedChar = CHARACTERS.find(c => c.id === savedCharId) || null;
+async function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    await auth.signInWithPopup(provider);
+  } catch(e) {
+    alert('Sign in failed. Please try again.');
+    console.error(e);
   }
+}
 
-  if (selectedChar) {
-    // Skip character selection
-    selectedCharModal = selectedChar;
-    document.getElementById('charModal').classList.add('hidden');
-    document.getElementById('app').style.display = 'block';
-    updateCharHero();
-    loadInitialData();
+async function signOut() {
+  if (!confirm('Sign out of AST Portal?')) return;
+  await auth.signOut();
+  currentUser = null;
+  subjects = []; tasks = []; physicalEntries = []; readingEntries = [];
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginModal').classList.remove('hidden');
+}
+
+// ============================
+// INIT — Auth State Listener
+// ============================
+document.getElementById('googleSignInBtn').addEventListener('click', signInWithGoogle);
+
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    // User is signed in
+    currentUser = user;
+
+    // Update header user info
+    document.getElementById('userName').textContent = user.displayName || user.email;
+    const avatar = document.getElementById('userAvatar');
+    if (user.photoURL) {
+      avatar.src = user.photoURL;
+      avatar.style.display = 'block';
+    }
+
+    // Hide login modal
+    document.getElementById('loginModal').classList.add('hidden');
+
+    // Check if character already selected
+    const savedCharId = localStorage.getItem('ast_character_' + user.uid);
+    if (savedCharId) {
+      selectedChar = CHARACTERS.find(c => c.id === savedCharId) || null;
+    }
+
+    if (selectedChar) {
+      selectedCharModal = selectedChar;
+      document.getElementById('charModal').classList.add('hidden');
+      document.getElementById('app').style.display = 'block';
+      updateCharHero();
+      loadInitialData();
+    } else {
+      selectedCharModal = CHARACTERS[0];
+      buildCharGrid();
+      document.getElementById('charModal').classList.remove('hidden');
+      document.getElementById('app').style.display = 'block';
+    }
   } else {
-    // Show character selection
-    selectedCharModal = CHARACTERS[0];
-    buildCharGrid();
+    // Not signed in — show login
+    document.getElementById('loginModal').classList.remove('hidden');
+    document.getElementById('charModal').classList.add('hidden');
+    document.getElementById('app').style.display = 'none';
   }
-})();
+});
 </script>
 </body>
 </html>
