@@ -434,7 +434,7 @@
         <div class="dash-card">
           <div class="dash-label">Credits</div>
           <div class="dash-value" id="dashCreditsTotal">0</div>
-          <div class="dash-sub">Earned</div>
+          <div class="dash-sub">Across <span id="dashSubjectsCount">0</span> subjects</div>
         </div>
       </div>
     </section>
@@ -1437,7 +1437,7 @@ async function triggerNuclearReset() {
         s2.onload = setup3DHero;
     };
 })();
-
+    
 function setup3DHero() {
     const heroCard = document.createElement('section');
     heroCard.className = "card";
