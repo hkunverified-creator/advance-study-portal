@@ -401,32 +401,22 @@
     </div>
   </div>
 
-  <div class="page">
-  <!-- HEADER -->
-    <header class="header">
-      <div class="title-block">
-        <div class="title">Advanced Study Tracker</div>
-        <div class="subtitle">
-          Plan subjects, execute tasks, move daily – and keep proof for every win.
-        </div>
-        <div class="quote">
-          “Small daily victories turn into semester‑long dominance.”
-        </div>
+<div class="page">
+    <header class="hero-dashboard">
+      <div class="streak-label">Current Grind Streak</div>
+      <div class="streak-widget">
+        <div class="streak-num" id="mainStreakDisplay">0</div>
+        <div class="streak-label">Days</div>
       </div>
-      <div class="actions-header">
-  <span class="pill">Semester Tracker · Tasks · Physical · Reading</span>
-  <button id="exportExcelBtn" class="btn" type="button">
-    📥 Monthly Excel
-  </button>
-  <button id="clearAllBtn" class="btn btn-danger" type="button">
-    🗑 Clear All Data
-  </button>
-  <button id="purgeBtn" class="btn btn-danger" type="button" onclick="triggerNuclearReset()">
-    ☢️ START FROM ZERO
-  </button>
-</div>
+      <h1 class="section-title" style="justify-content: center;">Student Portal</h1>
+      <p class="dash-sub">“No chakra, only discipline – that’s your real power.”</p>
+      
+      <div class="actions-header" style="margin-top: 20px;">
+        <button id="exportExcelBtn" class="btn" type="button">📥 Monthly Excel</button>
+        <button id="purgeBtn" class="btn" style="background: #ef4444;" type="button" onclick="triggerNuclearReset()">☢️ RESET SYSTEM</button>
+      </div>
     </header>
-
+  
       <!-- Dashboard -->
       <section class="card">
         <div class="card-header">
