@@ -412,27 +412,21 @@
   </div>
 
 <div class="page">
-  <header class="hero-dashboard">
-    <div class="streak-label">Current Grind Streak</div>
-    <div class="streak-widget">
-      <div class="streak-num" id="mainStreakDisplay">0</div>
-      <div class="streak-label">Days</div>
-    </div>
-    <h1 class="section-title" style="justify-content: center;">Student Portal</h1>
-    <p class="dash-sub">“No chakra, only discipline – that’s your real power.”</p>
-    
-    <div class="actions-header" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-      <button id="exportExcelBtn" class="btn" type="button">📥 Monthly Excel</button>
+    <header class="hero-dashboard">
+      <div class="streak-widget">
+        <div class="streak-num" id="mainStreakDisplay">0</div>
+        <div class="streak-label">Days</div>
+      </div>
       
-      <button id="clearAllBtn" class="btn" style="background: #64748b; color: white;" type="button">
-        🗑 Clear All Data
-      </button>
+      <h2 style="font-size: 1.5rem; margin-bottom: 5px;">Student Portal</h2>
+      <p class="small" style="font-style: italic; margin-bottom: 15px;">“No chakra, only discipline.”</p>
       
-      <button id="purgeBtn" class="btn" style="background: #ef4444; color: white;" type="button" onclick="triggerNuclearReset()">
-        ☢️ START FROM ZERO
-      </button>
-    </div>
-  </header>
+      <div class="actions-header" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+        <button id="exportExcelBtn" class="btn" style="padding: 8px 16px; font-size: 0.8rem;" type="button">📥 Excel</button>
+        <button id="clearAllBtn" class="btn" style="background: #475569; color: white; padding: 8px 16px; font-size: 0.8rem;" type="button">🗑 Clear</button>
+        <button id="purgeBtn" class="btn" style="background: #991b1b; color: white; padding: 8px 16px; font-size: 0.8rem;" type="button" onclick="triggerNuclearReset()">☢️ Reset</button>
+      </div>
+    </header>
   
       <!-- Dashboard -->
       <section class="card">
