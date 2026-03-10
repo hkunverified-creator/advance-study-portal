@@ -10,14 +10,14 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
-    :root {
+:root {
       --bg-main: #020617;
-      --bg-card: #0f172a;
+      --bg-card: rgba(15, 23, 42, 0.8);
       --accent: #38bdf8;
-      --accent-2: #a855f7;
+      --accent-2: #818cf8;
       --text: #f8fafc;
       --muted: #94a3b8;
-      --border: rgba(255, 255, 255, 0.1);
+      --border: rgba(56, 189, 248, 0.2);
       --font-main: 'Plus Jakarta Sans', sans-serif;
     }
 
@@ -25,51 +25,37 @@
 
     body {
       font-family: var(--font-main);
-      background: radial-gradient(circle at top, #1e293b 0%, #020617 100%);
+      background: #020617;
       color: var(--text);
       scroll-behavior: smooth;
-      overflow-x: hidden;
     }
 
- /* COMPACT INFOGRAPHIC DASHBOARD */
+    /* COMPACT HERO SECTION */
     .hero-dashboard {
-      padding: 40px 20px; /* Reduced from 100vh to a small padding */
+      padding: 30px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
+      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.05) 0%, transparent 70%);
       border-bottom: 1px solid var(--border);
-      background: rgba(15, 23, 42, 0.3);
     }
 
     .streak-widget {
-      position: relative;
-      width: 140px; /* Reduced from 280px */
-      height: 140px; /* Reduced from 280px */
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
-      border: 4px solid var(--accent); /* Thinner border */
+      border: 3px solid var(--accent);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
-      margin: 15px 0;
-      background: rgba(15, 23, 42, 0.6);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+      margin-bottom: 15px;
+      background: var(--bg-main);
     }
 
-    .streak-num { 
-      font-size: 3rem; /* Reduced from 6rem */
-      font-weight: 800; 
-      color: var(--accent); 
-      line-height: 1; 
-    }
-    
-    .streak-label { 
-      font-size: 0.7rem; /* Smaller text */
-      letter-spacing: 2px; 
-      color: var(--muted); 
-      text-transform: uppercase; 
-    }
+    .streak-num { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
+    .streak-label { font-size: 0.65rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
     
     /* CONTENT WRAPPER */
     .page {
@@ -412,7 +398,7 @@
   </div>
 
 <div class="page">
-    <header class="hero-dashboard">
+<header class="hero-dashboard">
       <div class="streak-widget">
         <div class="streak-num" id="mainStreakDisplay">0</div>
         <div class="streak-label">Days</div>
@@ -427,61 +413,31 @@
         <button id="purgeBtn" class="btn" style="background: #991b1b; color: white; padding: 8px 16px; font-size: 0.8rem;" type="button" onclick="triggerNuclearReset()">☢️ Reset</button>
       </div>
     </header>
-  
-      <!-- Dashboard -->
-      <section class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Dashboard</div>
-            <div class="card-subtitle">
-              Today’s snapshot of tasks, movement, and reading.
-            </div>
-          </div>
+
+    <section class="card" style="margin-top: 20px;">
+      <div class="dashboard-grid">
+        <div class="dash-card">
+          <div class="dash-label">Tasks</div>
+          <div class="dash-value" id="dashTasksTotal">0</div>
+          <div class="progress-bar"><div id="dashTasksProgress" class="progress-inner"></div></div>
         </div>
-
-        <div class="dashboard-grid">
-          <div class="dash-card">
-            <div class="dash-label">Tasks</div>
-            <div class="dash-value" id="dashTasksTotal">0</div>
-            <div class="dash-sub">
-              Completed: <span id="dashTasksCompleted">0</span> · Overdue:
-              <span id="dashTasksOverdue">0</span>
-            </div>
-            <div class="progress-bar">
-              <div id="dashTasksProgress" class="progress-inner"></div>
-            </div>
-          </div>
-
-          <div class="dash-card">
-            <div class="dash-label">Physical Activity</div>
-            <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
-            <div class="dash-sub">Deadline: 10:00 PM daily</div>
-            <div class="progress-bar">
-              <div id="dashPhysicalProgress" class="progress-inner"></div>
-            </div>
-          </div>
-
-          <div class="dash-card">
-            <div class="dash-label">Reading</div>
-            <div class="dash-value" id="dashReadingToday">0 / 1</div>
-            <div class="dash-sub">Make at least one serious reading block.</div>
-            <div class="progress-bar">
-              <div id="dashReadingProgress" class="progress-inner"></div>
-            </div>
-          </div>
-
-          <div class="dash-card">
-            <div class="dash-label">Credits</div>
-            <div class="dash-value" id="dashCreditsTotal">0</div>
-            <div class="dash-sub">Across <span id="dashSubjectsCount">0</span> subjects</div>
-          </div>
+        <div class="dash-card">
+          <div class="dash-label">Physical</div>
+          <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
+          <div class="progress-bar"><div id="dashPhysicalProgress" class="progress-inner"></div></div>
         </div>
-
-        <div class="anime-strip">
-          <span>“No chakra, only discipline – that’s your real power.”</span>
-          <span>Naruto‑style grind mode ON.</span>
+        <div class="dash-card">
+          <div class="dash-label">Reading</div>
+          <div class="dash-value" id="dashReadingToday">0 / 1</div>
+          <div class="progress-bar"><div id="dashReadingProgress" class="progress-inner"></div></div>
         </div>
-      </section>
+        <div class="dash-card">
+          <div class="dash-label">Credits</div>
+          <div class="dash-value" id="dashCreditsTotal">0</div>
+          <div class="dash-sub">Earned</div>
+        </div>
+      </div>
+    </section>
 
     <!-- LEFT: SUBJECTS + TASKS -->
     <main class="layout-main">
@@ -1467,14 +1423,15 @@ async function triggerNuclearReset() {
     }
 }
 
-// --- 2. THE 3D CHARACTER ENGINE ---
+// --- FIXED 3D CHARACTER ENGINE ---
 (function loadThreeJS() {
     const s1 = document.createElement('script');
-    s1.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js";
+    // Using 0.150.1 stops the "deprecated" warning in your console
+    s1.src = "https://unpkg.com/three@0.150.1/build/three.min.js";
     document.head.appendChild(s1);
     s1.onload = () => {
         const s2 = document.createElement('script');
-        s2.src = "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js";
+        s2.src = "https://unpkg.com/three@0.150.1/examples/js/loaders/GLTFLoader.js";
         document.head.appendChild(s2);
         s2.onload = setup3DHero;
     };
