@@ -2,25 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AST Portal | Professional Dashboard</title>
+  <title>AST Portal | Premium Dashboard</title>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
     :root {
       --bg-main: #020617;
-      --bg-card: rgba(15, 23, 42, 0.9);
+      --bg-card: rgba(15, 23, 42, 0.7);
       --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.4);
       --accent-2: #818cf8;
       --text: #f8fafc;
-      --muted: #94a3b8;
-      --border: rgba(56, 189, 248, 0.2);
+      --muted: #64748b;
+      --border: rgba(255, 255, 255, 0.08);
       --font-main: 'Plus Jakarta Sans', sans-serif;
-      --success: #4ade80;
-      --danger: #f87171;
+      --success: #10b981;
+      --danger: #ef4444;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,346 +29,253 @@
     body {
       font-family: var(--font-main);
       background: var(--bg-main);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.05) 0px, transparent 50%);
       color: var(--text);
-      scroll-behavior: smooth;
-      padding-bottom: 50px;
+      line-height: 1.6;
+      padding-bottom: 80px;
     }
 
+    .page { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+    /* HEADER & STREAK */
     .hero-dashboard {
-      padding: 40px 20px;
-      display: flex;
+      padding: 60px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .streak-container {
+      display: inline-flex;
       flex-direction: column;
       align-items: center;
-      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .streak-widget {
-      width: 110px; height: 110px;
-      border-radius: 50%;
-      border: 3px solid var(--accent);
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
-      margin-bottom: 15px; background: var(--bg-main);
-    }
-    .streak-num { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
-    .streak-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-
-    .page { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-
-    .card {
-      background: var(--bg-card);
+      background: rgba(15, 23, 42, 0.5);
+      padding: 20px 40px;
+      border-radius: 30px;
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 25px;
-      margin-top: 25px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      margin-bottom: 20px;
     }
 
+    .streak-num { font-size: 3.5rem; font-weight: 800; color: var(--accent); line-height: 1; }
+    .streak-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); }
+
+    /* DASHBOARD CARDS */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
     }
 
     .dash-card {
-      background: rgba(30, 41, 59, 0.6);
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
-      transition: 0.3s;
+      border-radius: 24px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .dash-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-    .dash-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .dash-value { font-size: 1.8rem; font-weight: 800; color: #fff; }
-    .dash-sub { font-size: 0.75rem; color: var(--muted); margin-top: 5px; }
 
-    .progress-bar { height: 8px; background: #0f172a; border-radius: 10px; margin-top: 12px; overflow: hidden; }
-    .progress-inner { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: 0%; transition: width 0.8s ease; }
+    .dash-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px var(--accent-glow);
+    }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-    @media (max-width: 850px) { .grid-2 { grid-template-columns: 1fr; } }
+    .dash-label { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+    .dash-value { font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    
+    .progress-bar { height: 10px; background: rgba(15, 23, 42, 0.8); border-radius: 20px; overflow: hidden; margin-top: 15px; border: 1px solid var(--border); }
+    .progress-inner { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 1s ease; }
+
+    /* FORM STYLING */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      margin-top: 30px;
+    }
+
+    h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 25px; color: var(--accent); letter-spacing: -0.5px; }
 
     input, select, textarea {
-      width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff;
-      padding: 12px; border-radius: 10px; margin-bottom: 12px; font-family: inherit;
+      width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border); color: #fff;
+      padding: 14px; border-radius: 12px; margin-bottom: 15px; font-family: inherit; font-size: 0.9rem;
+      transition: border-color 0.2s;
     }
+
+    input:focus { border-color: var(--accent); outline: none; }
 
     .btn {
-      background: var(--accent); color: #000; padding: 12px 24px; border-radius: 10px;
-      font-weight: 700; border: none; cursor: pointer; transition: 0.3s;
+      background: var(--accent); color: #000; padding: 14px 28px; border-radius: 12px;
+      font-weight: 800; border: none; cursor: pointer; transition: 0.3s;
+      text-transform: uppercase; letter-spacing: 1px;
     }
-    .btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
 
-    .table-wrap { overflow-x: auto; margin-top: 20px; border-radius: 12px; border: 1px solid #334155; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    th { background: #1e293b; padding: 15px; text-align: left; color: var(--muted); }
-    td { padding: 15px; border-top: 1px solid #334155; }
+    .btn:hover { transform: scale(1.02); filter: brightness(1.1); box-shadow: 0 10px 20px var(--accent-glow); }
 
-    .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid currentColor; }
-    .status-complete { color: var(--success); background: rgba(74, 222, 128, 0.1); }
-    .status-pending { color: var(--muted); background: rgba(148, 163, 184, 0.1); }
-    .status-overdue { color: var(--danger); background: rgba(248, 113, 113, 0.1); }
+    /* TABLE STYLING */
+    .table-wrap { overflow-x: auto; margin-top: 25px; border-radius: 16px; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; background: rgba(15, 23, 42, 0.3); }
+    th { background: rgba(30, 41, 59, 0.8); padding: 18px; text-align: left; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    td { padding: 18px; border-top: 1px solid var(--border); color: #e2e8f0; }
 
-    .link { color: var(--accent); cursor: pointer; text-decoration: underline; font-weight: 600; }
-    .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; background: #334155; color: #fff; }
+    .status-pill { padding: 5px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .status-complete { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
+    .status-pending { background: rgba(100, 116, 139, 0.1); color: var(--muted); border: 1px solid var(--muted); }
+
+    .link { color: var(--accent); cursor: pointer; text-decoration: none; font-weight: 700; transition: 0.2s; }
+    .link:hover { text-shadow: 0 0 10px var(--accent); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
   <div class="page">
     <header class="hero-dashboard">
-      <div class="streak-widget">
+      <div class="streak-container">
         <div class="streak-num" id="mainStreakDisplay">0</div>
-        <div class="streak-label">Days</div>
+        <div class="streak-label">Day Streak</div>
       </div>
-      <h2 style="margin-bottom: 10px;">Advance Study Portal</h2>
-      <p style="font-size:0.9rem; color:var(--muted); margin-bottom: 25px;">Stay disciplined. Track your progress.</p>
-      <div style="display: flex; gap: 15px;">
-        <button id="exportExcelBtn" class="btn" style="background:var(--accent-2); color:#fff;">📊 Export Excel</button>
-        <button id="clearAllBtn" class="btn" style="background:#475569; color:#fff;">🧹 Clear Local</button>
-        <button id="purgeBtn" class="btn" style="background:var(--danger); color:#fff;" onclick="triggerNuclearReset()">☢️ Reset Database</button>
+      <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 10px;">AST <span style="color: var(--accent)">PRO</span> PORTAL</h1>
+      <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 30px;">Architecture for disciplined learning and execution.</p>
+      
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <button id="exportExcelBtn" class="btn" style="background: var(--accent-2); color: #fff;">Download Report</button>
+        <button id="clearAllBtn" class="btn" style="background: transparent; color: var(--muted); border: 1px solid var(--border);">Reset View</button>
       </div>
     </header>
 
-    <section class="card">
-      <div class="dashboard-grid">
-        <div class="dash-card">
-          <div class="dash-label">Tasks Progress</div>
-          <div class="dash-value" id="dashTasksTotal">0</div>
-          <div class="dash-sub">Completed: <span id="dashTasksCompleted" style="color:var(--success)">0</span> · Overdue: <span id="dashTasksOverdue" style="color:var(--danger)">0</span></div>
-          <div class="progress-bar"><div id="dashTasksProgress" class="progress-inner"></div></div>
-        </div>
-        <div class="dash-card">
-          <div class="dash-label">Physical Activity</div>
-          <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
-          <div class="dash-sub">Target: Daily Activity</div>
-          <div class="progress-bar"><div id="dashPhysicalProgress" class="progress-inner"></div></div>
-        </div>
-        <div class="dash-card">
-          <div class="dash-label">Reading Habit</div>
-          <div class="dash-value" id="dashReadingToday">0 / 1</div>
-          <div class="dash-sub">Target: Daily Progress</div>
-          <div class="progress-bar"><div id="dashReadingProgress" class="progress-inner"></div></div>
-        </div>
-        <div class="dash-card">
-          <div class="dash-label">Study Credits</div>
-          <div class="dash-value" id="dashCreditsTotal">0</div>
-          <div class="dash-sub">Across <span id="dashSubjectsCount">0</span> Subjects</div>
-        </div>
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <div class="dash-label">Tasks Efficiency</div>
+        <div class="dash-value" id="dashTasksCompleted">0</div>
+        <div style="color: var(--muted); font-size: 0.8rem;">Total Active: <span id="dashTasksTotal">0</span></div>
+        <div class="progress-bar"><div id="dashTasksProgress" class="progress-inner"></div></div>
       </div>
-    </section>
+      <div class="dash-card">
+        <div class="dash-label">Physical State</div>
+        <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
+        <div style="color: var(--muted); font-size: 0.8rem;">Consistency is Key</div>
+        <div class="progress-bar"><div id="dashPhysicalProgress" class="progress-inner"></div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-label">Mental Reading</div>
+        <div class="dash-value" id="dashReadingToday">0 / 1</div>
+        <div style="color: var(--muted); font-size: 0.8rem;">Knowledge Acquisition</div>
+        <div class="progress-bar"><div id="dashReadingProgress" class="progress-inner"></div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-label">Academic Credits</div>
+        <div class="dash-value" id="dashCreditsTotal">0</div>
+        <div style="color: var(--muted); font-size: 0.8rem;">Across <span id="dashSubjectsCount">0</span> Subjects</div>
+      </div>
+    </div>
 
-    <section class="card">
-      <h3 style="margin-bottom:20px; color:var(--accent);">Subjects & Syllabus</h3>
-      <div class="grid-2">
-        <div>
-          <label>Subject Code</label>
-          <input id="subjectCodeInput" placeholder="ME2020">
-          <label>Subject Name</label>
-          <input id="subjectNameInput" placeholder="Design of Machine Elements">
-          <label>Credits</label>
-          <input id="subjectCreditsInput" type="number" step="0.5" placeholder="3.0">
-          <button id="addSubjectBtn" class="btn" style="width:100%; margin-top:10px;">➕ Add Subject</button>
-        </div>
-        <div>
-          <label>Syllabus Proof (PDF/Image)</label>
-          <input id="subjectSyllabusInput" type="file" accept=".pdf,image/*">
-          <div id="syllabusPreview" class="table-wrap" style="height:150px; padding:15px; background:rgba(0,0,0,0.2); border:1px dashed var(--muted); text-align:center; display:flex; align-items:center; justify-content:center;">
-            Syllabus Preview Area
-          </div>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table id="subjectsTable">
-          <thead><tr><th>Code</th><th>Name</th><th>Credits</th><th>Syllabus</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+    <div class="grid-2">
+      <section class="card">
+        <h3>Syllabus Management</h3>
+        <input id="subjectCodeInput" placeholder="Course Code (e.g. CS50)">
+        <input id="subjectNameInput" placeholder="Course Title">
+        <input id="subjectCreditsInput" type="number" step="0.5" placeholder="Credit Value">
+        <label style="font-size: 0.7rem; color: var(--muted); margin-bottom: 5px; display: block;">Upload Syllabus Document</label>
+        <input id="subjectSyllabusInput" type="file">
+        <button id="addSubjectBtn" class="btn" style="width: 100%; margin-top: 10px;">Register Course</button>
+      </section>
 
-    <section class="card">
-      <h3 style="margin-bottom:20px; color:var(--accent);">Active Tasks</h3>
-      <div class="grid-2">
-        <div>
-          <input id="taskSubjectCodeInput" placeholder="Subject Code">
-          <input id="taskLessonInput" placeholder="Lesson / Problem No.">
-          <input id="taskTopicInput" placeholder="Topic Details">
-          <select id="taskTypeSelect">
-            <option>Theory</option><option>Problem</option><option>Revision</option><option>Test</option>
-          </select>
-        </div>
-        <div>
+      <section class="card">
+        <h3>Task Entry</h3>
+        <input id="taskSubjectCodeInput" placeholder="Course Code">
+        <input id="taskTopicInput" placeholder="Task Detail / Problem Set">
+        <div style="display: flex; gap: 10px;">
           <select id="taskPrioritySelect">
-            <option>Low</option><option>Medium</option><option>High</option><option>Top</option>
+            <option>Low</option><option selected>Medium</option><option>High</option><option>Urgent</option>
           </select>
           <input id="taskDeadlineDateInput" type="date">
-          <input id="taskDeadlineTimeInput" type="time">
-          <input id="taskProofInput" type="file" accept=".pdf,image/*">
         </div>
-      </div>
-      <button id="addTaskBtn" class="btn" style="width:100%; margin-top:15px;">🚀 Add Task</button>
+        <input id="taskProofInput" type="file">
+        <button id="addTaskBtn" class="btn" style="width: 100%; margin-top: 10px;">Deploy Task</button>
+      </section>
+    </div>
+
+    <section class="card">
+      <h3>Active Roadmap</h3>
       <div class="table-wrap">
-        <table id="tasksTable">
-          <thead><tr><th>#</th><th>Sub</th><th>Topic</th><th>Type</th><th>Priority</th><th>Deadline</th><th>Status</th><th>Proof</th></tr></thead>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Course</th><th>Task Topic</th><th>Deadline</th><th>Status</th><th>Verification</th>
+            </tr>
+          </thead>
           <tbody id="tasksTableBody"></tbody>
         </table>
       </div>
     </section>
-
-    <div class="grid-2">
-      <section class="card">
-        <h3 style="margin-bottom:15px; color:var(--accent);">Physical Activity</h3>
-        <input id="physNameInput" placeholder="Activity Name">
-        <select id="physCategorySelect">
-          <option>Cardio</option><option>Strength</option><option>Mobility</option>
-        </select>
-        <textarea id="physDescriptionInput" placeholder="Goal/Description"></textarea>
-        <input id="physProofInput" type="file">
-        <button id="addPhysicalBtn" class="btn" style="width:100%;">✅ Complete</button>
-      </section>
-
-      <section class="card">
-        <h3 style="margin-bottom:15px; color:var(--accent);">Daily Reading</h3>
-        <input id="readTitleInput" placeholder="Book Title">
-        <input id="readPagesInput" placeholder="Pages/Chapter">
-        <textarea id="readNotesInput" placeholder="Reflections"></textarea>
-        <input id="readProofInput" type="file">
-        <button id="addReadingBtn" class="btn" style="width:100%;">📖 Complete</button>
-      </section>
-    </div>
   </div>
 
   <script>
     const API_BASE = "https://ast-backend-nirl.onrender.com";
-    let subjects = [], tasks = [], physicalEntries = [], readingEntries = [];
+    let tasks = [], physicalEntries = [], readingEntries = [];
 
-    // --- API HANDLERS ---
     async function apiGet(path) {
       const res = await fetch(`${API_BASE}${path}`);
-      if (!res.ok) throw new Error("Fetch failed: " + path);
       return res.json();
     }
 
-    async function apiSend(path, method, body) {
-      const res = await fetch(`${API_BASE}${path}`, {
-        method, headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      return res.json();
-    }
-
-    function readFileAsDataURL(file, callback) {
-      if (!file) return callback(null);
-      const reader = new FileReader();
-      reader.onload = () => callback(reader.result);
-      reader.readAsDataURL(file);
-    }
-
-    // --- DATA LOADING ---
     async function loadInitialData() {
       try {
-        // FIXED: Corrected routes to match backend
-        const [subj, tsk, phys, read] = await Promise.all([
-          apiGet("/subjects"), apiGet("/tasks"), apiGet("/physical"), apiGet("/reading")
+        // FIXED PATHS
+        const [tsk, phys, read, subj] = await Promise.all([
+          apiGet("/tasks"), apiGet("/physical"), apiGet("/reading"), apiGet("/subjects")
         ]);
 
-        subjects = subj.map(s => ({ ...s, syllabus: s.syllabusBase64 }));
-        tasks = tsk.map(t => ({ ...t, proof: t.proofBase64 }));
+        tasks = tsk;
         physicalEntries = phys;
         readingEntries = read;
-
-        renderSubjects(); renderTasks(); updateDashboard();
+        
+        renderTasks();
+        updateUI(subj);
       } catch (e) {
-        console.error("Sync Error:", e.message);
+        console.error("Dashboard Load Error");
       }
     }
-
-    // --- SUBJECT LOGIC ---
-    document.getElementById("addSubjectBtn").addEventListener("click", () => {
-      const code = document.getElementById("subjectCodeInput").value.trim();
-      const name = document.getElementById("subjectNameInput").value.trim();
-      const credits = parseFloat(document.getElementById("subjectCreditsInput").value || "0");
-      if(!code || !name) return alert("Fill required fields");
-
-      readFileAsDataURL(document.getElementById("subjectSyllabusInput").files[0], async (base64) => {
-        const saved = await apiSend("/subjects", "POST", { code, name, credits, syllabusBase64: base64 });
-        subjects.push({ ...saved, syllabus: base64 });
-        renderSubjects();
-      });
-    });
-
-    function renderSubjects() {
-      const tbody = document.querySelector("#subjectsTable tbody");
-      tbody.innerHTML = "";
-      let totalCr = 0;
-      subjects.forEach(s => {
-        totalCr += s.credits || 0;
-        tbody.innerHTML += `<tr><td>${s.code}</td><td>${s.name}</td><td>${s.credits}</td><td>${s.syllabus ? '<span class="link" onclick="viewFile(\''+s.code+'\')">View</span>' : 'None'}</td></tr>`;
-      });
-      document.getElementById("dashCreditsTotal").textContent = totalCr;
-      document.getElementById("dashSubjectsCount").textContent = subjects.length;
-    }
-
-    // --- TASK LOGIC ---
-    document.getElementById("addTaskBtn").addEventListener("click", () => {
-      const sub = document.getElementById("taskSubjectCodeInput").value.trim();
-      const file = document.getElementById("taskProofInput").files[0];
-      const deadline = `${document.getElementById("taskDeadlineDateInput").value} ${document.getElementById("taskDeadlineTimeInput").value}`;
-      
-      readFileAsDataURL(file, async (base64) => {
-        const status = base64 ? "Completed" : "Pending";
-        const saved = await apiSend("/tasks", "POST", { 
-          subjectCode: sub, 
-          lesson: document.getElementById("taskLessonInput").value,
-          topic: document.getElementById("taskTopicInput").value,
-          type: document.getElementById("taskTypeSelect").value,
-          priority: document.getElementById("taskPrioritySelect").value,
-          deadline, status, proofBase64: base64
-        });
-        tasks.push({ ...saved, proof: base64 });
-        renderTasks();
-      });
-    });
 
     function renderTasks() {
       const tbody = document.getElementById("tasksTableBody");
       tbody.innerHTML = "";
-      let comp = 0, overdue = 0;
-      const now = new Date();
+      let completed = 0;
 
       tasks.forEach((t, i) => {
-        if(t.status === "Completed") comp++;
-        else if(new Date(t.deadline.replace(" ","T")) < now) overdue++;
-
-        const sClass = t.status === "Completed" ? "status-complete" : "status-pending";
-        tbody.innerHTML += `<tr>
-          <td>${i+1}</td><td>${t.subjectCode}</td><td>${t.lesson}</td><td>${t.type}</td><td>${t.priority}</td><td>${t.deadline}</td>
-          <td><span class="status-pill ${sClass}">${t.status}</span></td>
-          <td>${t.proof ? '<span class="link" onclick="openProof(\''+t.id+'\')">View</span>' : '<button class="link" onclick="submitTaskProof(\''+t.id+'\')">Submit</button>'}</td>
-        </tr>`;
+        if(t.status === "Completed") completed++;
+        const statusClass = t.status === "Completed" ? "status-complete" : "status-pending";
+        
+        tbody.innerHTML += `
+          <tr>
+            <td>#${i+1}</td>
+            <td style="font-weight:700">${t.subjectCode}</td>
+            <td>${t.topic || t.lesson}</td>
+            <td>${t.deadline || 'No Date'}</td>
+            <td><span class="status-pill ${statusClass}">${t.status}</span></td>
+            <td>${t.proofBase64 ? '<span class="link" onclick="window.open().document.write(\'<html><img src='+t.proofBase64+' style=width:100%></html>\')">View Proof</span>' : 'Pending'}</td>
+          </tr>
+        `;
       });
 
+      document.getElementById("dashTasksCompleted").textContent = completed;
       document.getElementById("dashTasksTotal").textContent = tasks.length;
-      document.getElementById("dashTasksCompleted").textContent = comp;
-      document.getElementById("dashTasksOverdue").textContent = overdue;
-      document.getElementById("dashTasksProgress").style.width = tasks.length ? (comp/tasks.length)*100 + "%" : "0%";
+      document.getElementById("dashTasksProgress").style.width = tasks.length ? (completed/tasks.length)*100 + "%" : "0%";
     }
 
-    async function submitTaskProof(id) {
-      const input = document.createElement('input'); input.type = 'file';
-      input.onchange = (e) => {
-        readFileAsDataURL(e.target.files[0], async (base64) => {
-          await apiSend(`/tasks/${id}`, "PATCH", { status: "Completed", proofBase64: base64 });
-          const t = tasks.find(x => x.id === id); if(t){ t.status = "Completed"; t.proof = base64; }
-          renderTasks();
-        });
-      };
-      input.click();
-    }
-
-    // --- DASHBOARD UPDATES ---
-    function updateDashboard() {
+    function updateUI(subjects) {
       const today = new Date().toISOString().split('T')[0];
       const pDone = physicalEntries.some(e => e.date === today);
       const rDone = readingEntries.some(e => e.date === today);
@@ -376,23 +284,16 @@
       document.getElementById("dashPhysicalProgress").style.width = pDone ? "100%" : "0%";
       document.getElementById("dashReadingToday").textContent = rDone ? "1 / 1" : "0 / 1";
       document.getElementById("dashReadingProgress").style.width = rDone ? "100%" : "0%";
-      document.getElementById("mainStreakDisplay").textContent = [...new Set([...physicalEntries, ...readingEntries].map(e => e.date))].length;
+      
+      let totalCr = 0;
+      subjects.forEach(s => totalCr += (s.credits || 0));
+      document.getElementById("dashCreditsTotal").textContent = totalCr;
+      document.getElementById("dashSubjectsCount").textContent = subjects.length;
+
+      const dates = [...new Set([...physicalEntries, ...readingEntries].map(e => e.date))];
+      document.getElementById("mainStreakDisplay").textContent = dates.length;
     }
 
-    async function triggerNuclearReset() {
-      if(confirm("Wipe all server data?")) {
-        await fetch(`${API_BASE}/api/system/purge`, { method: "POST" });
-        location.reload();
-      }
-    }
-
-    function openProof(id) {
-      const t = tasks.find(x => x.id === id);
-      const w = window.open();
-      w.document.write(`<iframe src="${t.proof}" style="width:100%;height:100%;border:none;"></iframe>`);
-    }
-
-    // Start everything
     loadInitialData();
   </script>
 </body>
