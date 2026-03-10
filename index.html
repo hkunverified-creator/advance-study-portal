@@ -7,6 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
     :root {
       --bg: #04000f;
@@ -1037,22 +1040,58 @@ const CHARACTERS = [
 ];
 
 // ============================
+// ============================
+// FIREBASE CONFIG
+// ============================
+// 🔥 REPLACE THESE VALUES WITH YOUR FIREBASE PROJECT CONFIG
+// Get them from: Firebase Console → Project Settings → Your Apps → Web App
+const firebaseConfig = {
+  apiKey:            "firebaseConfig",
+  authDomain:        "PASTE_YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "PASTE_YOUR_PROJECT_ID_HERE",
+  storageBucket:     "PASTE_YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "PASTE_YOUR_SENDER_ID_HERE",
+  appId:             "PASTE_YOUR_APP_ID_HERE"
+};
+
+// Init Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ============================
 // STATE
 // ============================
-const API_BASE = "https://ast-backend-nirl.onrender.com";
 let subjects = [], tasks = [], physicalEntries = [], readingEntries = [];
 let selectedChar = null;
 let selectedCharModal = null;
 const MILESTONES = [3, 7, 14, 30, 50, 100];
 
 // ============================
-// STORAGE HELPERS
+// STORAGE HELPERS (localStorage backup)
 // ============================
 function saveLocal(key, data) {
   try { localStorage.setItem('ast_' + key, JSON.stringify(data)); } catch(e){}
 }
 function loadLocal(key) {
   try { const d = localStorage.getItem('ast_' + key); return d ? JSON.parse(d) : null; } catch(e) { return null; }
+}
+
+// ============================
+// FIREBASE HELPERS
+// ============================
+async function fbGetAll(collection) {
+  const snap = await db.collection(collection).get();
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+async function fbAdd(collection, data) {
+  const ref = await db.collection(collection).add(data);
+  return { id: ref.id, ...data };
+}
+async function fbDelete(collection, id) {
+  await db.collection(collection).doc(id).delete();
+}
+async function fbUpdate(collection, id, data) {
+  await db.collection(collection).doc(id).update(data);
 }
 
 // ============================
@@ -1072,8 +1111,7 @@ function cleanup90Days() {
 // STREAK LOGIC
 // ============================
 function getStreak() {
-  const streakData = loadLocal('streak') || { count: 0, lastDate: null, achieved: [] };
-  return streakData;
+  return loadLocal('streak') || { count: 0, lastDate: null, achieved: [] };
 }
 function saveStreak(data) { saveLocal('streak', data); }
 
@@ -1081,33 +1119,22 @@ function recalcStreak() {
   const today = new Date().toISOString().slice(0,10);
   const physDone = physicalEntries.some(p => p.date === today && p.status === 'Completed');
   const readDone = readingEntries.some(r => r.date === today && r.status === 'Completed');
-
   const streak = getStreak();
   const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
   const yStr = yesterday.toISOString().slice(0,10);
-
   if (physDone && readDone) {
     if (streak.lastDate === today) {
       // already counted today
     } else if (streak.lastDate === yStr) {
-      streak.count += 1;
-      streak.lastDate = today;
+      streak.count += 1; streak.lastDate = today;
     } else if (!streak.lastDate) {
-      streak.count = 1;
-      streak.lastDate = today;
+      streak.count = 1; streak.lastDate = today;
     } else {
-      // streak broken but today done — reset to 1
-      streak.count = 1;
-      streak.lastDate = today;
+      streak.count = 1; streak.lastDate = today;
     }
   } else if (streak.lastDate !== today && streak.lastDate !== yStr) {
-    // broke streak
-    if (streak.count > 0 && streak.lastDate && streak.lastDate < yStr) {
-      streak.count = 0;
-    }
+    if (streak.count > 0 && streak.lastDate && streak.lastDate < yStr) streak.count = 0;
   }
-
-  // check milestones
   const prevAchieved = streak.achieved || [];
   MILESTONES.forEach(m => {
     if (streak.count >= m && !prevAchieved.includes(m)) {
@@ -1119,31 +1146,6 @@ function recalcStreak() {
   streak.achieved = prevAchieved;
   saveStreak(streak);
   return streak;
-}
-
-// ============================
-// API HELPERS
-// ============================
-async function apiGet(path) {
-  const res = await fetch(API_BASE + path);
-  if (!res.ok) throw new Error('GET ' + path + ' failed');
-  return res.json();
-}
-async function apiPost(path, body) {
-  const res = await fetch(API_BASE + path, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error('POST ' + path + ' failed');
-  return res.json();
-}
-async function apiDelete(path) {
-  try {
-    const res = await fetch(API_BASE + path, { method: 'DELETE' });
-    if (!res.ok) throw new Error('DELETE ' + path + ' failed');
-    return res.json();
-  } catch(e) { console.warn('Backend delete failed, local only:', e); }
 }
 
 // ============================
@@ -1289,17 +1291,25 @@ document.getElementById('addSubjectBtn').addEventListener('click', async () => {
   let fileDataUrl = null;
   try { fileDataUrl = await readFile(file, 1); } catch(e) { if (e !== null) return; }
 
-  const payload = { code, name, credits, syllabusBase64: fileDataUrl || null };
+  const payload = { code, name, credits, syllabus: fileDataUrl || null };
 
   try {
-    const saved = await apiPost('/subjects', payload);
-    const mapped = { id: saved.id, code: saved.code, name: saved.name, credits: saved.credits, syllabus: saved.syllabusBase64 };
-    const idx = subjects.findIndex(s => s.id === mapped.id || s.code === mapped.code);
-    if (idx >= 0) subjects[idx] = mapped; else subjects.push(mapped);
-  } catch(e) {
-    // Fallback: save locally
+    const snap = await db.collection('subjects').where('code','==',code).get();
+    let saved;
+    if (!snap.empty) {
+      const docId = snap.docs[0].id;
+      await db.collection('subjects').doc(docId).update(payload);
+      saved = { id: docId, ...payload };
+    } else {
+      const ref = await db.collection('subjects').add(payload);
+      saved = { id: ref.id, ...payload };
+    }
     const idx = subjects.findIndex(s => s.code === code);
-    const obj = { id: uid(), code, name, credits, syllabus: fileDataUrl };
+    if (idx >= 0) subjects[idx] = saved; else subjects.push(saved);
+  } catch(e) {
+    console.warn('Firebase error, saving locally:', e);
+    const idx = subjects.findIndex(s => s.code === code);
+    const obj = { id: uid(), ...payload };
     if (idx >= 0) subjects[idx] = obj; else subjects.push(obj);
   }
   saveLocal('subjects', subjects);
@@ -1353,7 +1363,12 @@ function previewSyllabus(code) {
 async function deleteSubject(id) {
   if (!confirm('Delete subject and all its tasks?')) return;
   const s = subjects.find(x => x.id === id);
-  await apiDelete('/subjects/' + id);
+  try { await fbDelete('subjects', id); } catch(e) { console.warn(e); }
+  // cascade delete tasks from Firebase
+  if (s) {
+    const tSnap = await db.collection('tasks').where('subjectCode','==',s.code).get().catch(()=>({docs:[]}));
+    tSnap.docs.forEach(d => d.ref.delete().catch(()=>{}));
+  }
   subjects = subjects.filter(x => x.id !== id);
   if (s) tasks = tasks.filter(t => t.subjectCode !== s.code);
   saveLocal('subjects', subjects);
@@ -1384,13 +1399,12 @@ document.getElementById('addTaskBtn').addEventListener('click', async () => {
   const status = fileDataUrl ? 'Completed' : 'Pending';
   const subj = subjects.find(s => s.code === subCode);
   const deadline = `${date} ${time}`;
-  const payload = { subjectCode: subCode, subjectName: subj ? subj.name : '', lesson, topic, type, priority, deadline, status, proofBase64: fileDataUrl || null };
-
+  const payload = { subjectCode: subCode, subjectName: subj ? subj.name : '', lesson, topic, type, priority, deadline, status, proof: fileDataUrl || null };
   try {
-    const saved = await apiPost('/tasks', payload);
-    tasks.push({ id: saved.id, subjectCode: saved.subjectCode, subjectName: saved.subjectName, lesson: saved.lesson, topic: saved.topic, type: saved.type, priority: saved.priority, deadline: saved.deadline, status: saved.status, proof: saved.proofBase64 || null });
+    const ref = await db.collection('tasks').add(payload);
+    tasks.push({ id: ref.id, ...payload });
   } catch(e) {
-    tasks.push({ id: uid(), ...payload, proof: fileDataUrl });
+    tasks.push({ id: uid(), ...payload });
   }
   saveLocal('tasks', tasks);
   renderTasks();
@@ -1440,7 +1454,7 @@ function renderTasks() {
 
 async function deleteTask(id) {
   if (!confirm('Delete this task?')) return;
-  await apiDelete('/tasks/' + id);
+  try { await fbDelete('tasks', id); } catch(e) { console.warn(e); }
   tasks = tasks.filter(t => t.id !== id);
   saveLocal('tasks', tasks);
   renderTasks();
@@ -1469,13 +1483,12 @@ document.getElementById('addPhysicalBtn').addEventListener('click', async () => 
     if (!reason) return;
   }
 
-  const entry = { date: today, name, category: cat, description: desc, deadline, status, reason, proofBase64: dataUrl || null };
-
+  const entry = { date: today, name, category: cat, description: desc, deadline, status, reason, proof: dataUrl || null };
   try {
-    const saved = await apiPost('/physical', entry);
-    physicalEntries.push({ id: saved.id, date: saved.date, name: saved.name, category: saved.category, description: saved.description, deadline: saved.deadline, status: saved.status, reason: saved.reason, proof: saved.proofBase64 || null });
+    const ref = await db.collection('physical').add(entry);
+    physicalEntries.push({ id: ref.id, ...entry });
   } catch(e) {
-    physicalEntries.push({ id: uid(), ...entry, proof: dataUrl });
+    physicalEntries.push({ id: uid(), ...entry });
   }
   saveLocal('physical', physicalEntries);
   renderPhysical();
@@ -1529,7 +1542,7 @@ function renderPhysical() {
 
 async function deletePhys(id) {
   if (!confirm('Delete this physical entry?')) return;
-  await apiDelete('/physical/' + id);
+  try { await fbDelete('physical', id); } catch(e) { console.warn(e); }
   physicalEntries = physicalEntries.filter(p => p.id !== id);
   saveLocal('physical', physicalEntries);
   renderPhysical();
@@ -1572,13 +1585,12 @@ document.getElementById('addReadingBtn').addEventListener('click', async () => {
     if (!reason) return;
   }
 
-  const entry = { date: today, title, pages, notes, status, reason, proofBase64: dataUrl || null };
-
+  const entry = { date: today, title, pages, notes, status, reason, proof: dataUrl || null };
   try {
-    const saved = await apiPost('/reading', entry);
-    readingEntries.push({ id: saved.id, date: saved.date, title: saved.title, pages: saved.pages, notes: saved.notes, status: saved.status, reason: saved.reason, proof: saved.proofBase64 || null });
+    const ref = await db.collection('reading').add(entry);
+    readingEntries.push({ id: ref.id, ...entry });
   } catch(e) {
-    readingEntries.push({ id: uid(), ...entry, proof: dataUrl });
+    readingEntries.push({ id: uid(), ...entry });
   }
   saveLocal('reading', readingEntries);
   renderReading();
@@ -1632,7 +1644,7 @@ function renderReading() {
 
 async function deleteRead(id) {
   if (!confirm('Delete this reading entry?')) return;
-  await apiDelete('/reading/' + id);
+  try { await fbDelete('reading', id); } catch(e) { console.warn(e); }
   readingEntries = readingEntries.filter(r => r.id !== id);
   saveLocal('reading', readingEntries);
   renderReading();
@@ -1806,23 +1818,31 @@ function scheduleNotifications() {
 // INITIAL LOAD
 // ============================
 async function loadInitialData() {
-  // Try API first, fallback to localStorage
+  // Show loading state
+  document.getElementById('activityFeed').innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px">⏳ Loading data from Firebase...</div>';
+
   try {
-    const [subData, taskData, physData, readData] = await Promise.all([
-      apiGet('/subjects'), apiGet('/tasks'), apiGet('/physical'), apiGet('/reading')
+    const [subSnap, taskSnap, physSnap, readSnap] = await Promise.all([
+      db.collection('subjects').get(),
+      db.collection('tasks').get(),
+      db.collection('physical').orderBy('date','desc').get(),
+      db.collection('reading').orderBy('date','desc').get()
     ]);
-    subjects = subData.map(s => ({ id: s.id, code: s.code, name: s.name, credits: s.credits, syllabus: s.syllabusBase64 || null }));
-    tasks = taskData.map(t => ({ id: t.id, subjectCode: t.subjectCode, subjectName: t.subjectName, lesson: t.lesson, topic: t.topic, type: t.type, priority: t.priority, deadline: t.deadline, status: t.status, proof: t.proofBase64 || null }));
-    physicalEntries = physData.map(p => ({ id: p.id, date: p.date, name: p.name, category: p.category, description: p.description, deadline: p.deadline, status: p.status, reason: p.reason || '', proof: p.proofBase64 || null }));
-    readingEntries = readData.map(r => ({ id: r.id, date: r.date, title: r.title, pages: r.pages, notes: r.notes, status: r.status, reason: r.reason || '', proof: r.proofBase64 || null }));
-    // merge with local (in case backend reset)
-    mergeWithLocal();
+    subjects       = subSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    tasks          = taskSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    physicalEntries = physSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    readingEntries  = readSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // also save to localStorage as backup
+    saveLocal('subjects', subjects);
+    saveLocal('tasks', tasks);
+    saveLocal('physical', physicalEntries);
+    saveLocal('reading', readingEntries);
   } catch(e) {
-    // Load from localStorage
-    subjects = loadLocal('subjects') || [];
-    tasks = loadLocal('tasks') || [];
+    console.warn('Firebase load failed, using localStorage:', e);
+    subjects        = loadLocal('subjects') || [];
+    tasks           = loadLocal('tasks') || [];
     physicalEntries = loadLocal('physical') || [];
-    readingEntries = loadLocal('reading') || [];
+    readingEntries  = loadLocal('reading') || [];
   }
 
   cleanup90Days();
@@ -1838,18 +1858,6 @@ async function loadInitialData() {
   if (!localStorage.getItem('ast_email') && !localStorage.getItem('ast_email_skipped')) {
     setTimeout(() => document.getElementById('emailModal').classList.remove('hidden'), 1500);
   }
-}
-
-function mergeWithLocal() {
-  const localPhys = loadLocal('physical') || [];
-  const localRead = loadLocal('reading') || [];
-  // Add local entries not in API (since API resets, local might have more)
-  localPhys.forEach(lp => {
-    if (!physicalEntries.find(p => p.id === lp.id)) physicalEntries.push(lp);
-  });
-  localRead.forEach(lr => {
-    if (!readingEntries.find(r => r.id === lr.id)) readingEntries.push(lr);
-  });
 }
 
 // ============================
