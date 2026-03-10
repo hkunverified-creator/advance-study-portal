@@ -425,15 +425,15 @@
   <div class="progress-bar"><div id="dashTasksProgress" class="progress-inner"></div></div>
 </div>
         <div class="dash-card">
-          <div class="dash-label">Physical</div>
-          <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
-          <div class="progress-bar"><div id="dashPhysicalProgress" class="progress-inner"></div></div>
-        </div>
-        <div class="dash-card">
-          <div class="dash-label">Reading</div>
-          <div class="dash-value" id="dashReadingToday">0 / 1</div>
-          <div class="progress-bar"><div id="dashReadingProgress" class="progress-inner"></div></div>
-        </div>
+  <div class="dash-label">Physical</div>
+  <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
+  <div class="progress-bar"><div id="dashPhysicalProgress" class="progress-inner" style="width: 0%;"></div></div>
+</div>
+<div class="dash-card">
+  <div class="dash-label">Reading</div>
+  <div class="dash-value" id="dashReadingToday">0 / 1</div>
+  <div class="progress-bar"><div id="dashReadingProgress" class="progress-inner" style="width: 0%;"></div></div>
+</div>
         <div class="dash-card">
           <div class="dash-label">Credits</div>
           <div class="dash-value" id="dashCreditsTotal">0</div>
@@ -1144,7 +1144,10 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
         proof: saved.proofBase64 || null,
       });
 
+     // --- INSIDE THE READING FORM SUBMIT HANDLER ---
       updateReadingDashboard();
+      updateStreakDisplay(); // Added: Updates the circle immediately
+      
       document.getElementById("readTitleInput").value = "";
       document.getElementById("readPagesInput").value = "";
       document.getElementById("readNotesInput").value = "";
@@ -1157,122 +1160,75 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
   });
 });
 
-    function updateReadingDashboard() {
-      const today = new Date().toISOString().slice(0, 10);
-      const todayEntries = readingEntries.filter((r) => r.date === today);
-      const completed = todayEntries.filter((r) => r.status === "Completed")
-        .length;
-      document.getElementById("dashReadingToday").textContent = `${completed} / 1`;
-      document.getElementById(
-        "dashReadingProgress"
-      ).style.width = `${completed >= 1 ? 100 : 0}%`;
-    }
+// --- UPDATES THE READING CARD ON DASHBOARD ---
+function updateReadingDashboard() {
+  const today = new Date().toISOString().slice(0, 10);
+  const todayEntries = readingEntries.filter((r) => r.date === today);
+  const completed = todayEntries.filter((r) => r.status === "Completed").length;
+  
+  const valDisplay = document.getElementById("dashReadingToday");
+  const progBar = document.getElementById("dashReadingProgress");
 
-    // ------- EXPORT TO EXCEL -------
-    document.getElementById("exportExcelBtn").addEventListener("click", () => {
-      if (!subjects.length && !tasks.length && !physicalEntries.length && !readingEntries.length) {
-        alert("No data to export yet.");
-        return;
-      }
+  if (valDisplay) valDisplay.textContent = `${completed} / 1`;
+  if (progBar) progBar.style.width = `${completed >= 1 ? 100 : 0}%`;
+}
 
-      const wb = XLSX.utils.book_new();
+// --- NEW: STREAK CALCULATION ---
+function updateStreakDisplay() {
+  const display = document.getElementById("mainStreakDisplay");
+  if (!display) return;
 
-      // Subjects sheet
-      if (subjects.length) {
-        const subjData = subjects.map((s, idx) => ({
-          "S.No": idx + 1,
-          "Subject Code": s.code,
-          "Subject Name": s.name,
-          Credits: s.credits || "",
-          "Has Syllabus?": s.syllabus ? "Yes" : "No",
-        }));
-        const ws = XLSX.utils.json_to_sheet(subjData);
-        XLSX.utils.book_append_sheet(wb, ws, "Subjects");
-      }
+  const pDates = physicalEntries.filter(e => e.status === "Completed").map(e => e.date);
+  const rDates = readingEntries.filter(e => e.status === "Completed").map(e => e.date);
+  
+  // Combine unique dates from Physical and Reading
+  const allActiveDates = [...new Set([...pDates, ...rDates])].sort().reverse();
+  
+  // Update the count in the dashboard header circle
+  display.textContent = allActiveDates.length;
+}
 
-      // Tasks sheet
-      if (tasks.length) {
-        const taskData = tasks.map((t, idx) => {
-          let proofInfo = "";
-          if (t.proof) {
-            const [meta, base64] = t.proof.split(",");
-            proofInfo = meta + " | " + (base64 ? base64.slice(0, 40) + "..." : "");
-          }
+// --- EXPORT ALL DATA TO EXCEL ---
+document.getElementById("exportExcelBtn").addEventListener("click", () => {
+  if (!subjects.length && !tasks.length && !physicalEntries.length && !readingEntries.length) {
+    alert("No data to export yet.");
+    return;
+  }
 
-          return {
-            "S.No": idx + 1,
-            "Subject Code": t.subjectCode,
-            "Subject Name": t.subjectName,
-            "Lesson/Unit": t.lesson,
-            Topic: t.topic,
-            Type: t.type,
-            Priority: t.priority,
-            Deadline: t.deadline,
-            Status: t.status,
-            "Has Proof?": t.proof ? "Yes" : "No",
-            "Proof Info": proofInfo,
-          };
-        });
+  const wb = XLSX.utils.book_new();
 
-        const ws = XLSX.utils.json_to_sheet(taskData);
-        XLSX.utils.book_append_sheet(wb, ws, "Tasks");
-      }
+  // 1. Subjects Sheet
+  if (subjects.length) {
+    const subjData = subjects.map((s, idx) => ({
+      "S.No": idx + 1,
+      "Subject Code": s.code,
+      "Subject Name": s.name,
+      Credits: s.credits || ""
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(subjData), "Subjects");
+  }
 
-      // Physical sheet
-      if (physicalEntries.length) {
-        const physData = physicalEntries.map((p, idx) => {
-          let proofInfo = "";
-          if (p.proof) {
-            const [meta, base64] = p.proof.split(",");
-            proofInfo = meta + " | " + (base64 ? base64.slice(0, 40) + "..." : "");
-          }
+  // 2. Tasks Sheet
+  if (tasks.length) {
+    const taskData = tasks.map((t, idx) => ({
+      "S.No": idx + 1,
+      "Subject": t.subjectName,
+      Topic: t.topic,
+      Status: t.status
+    }));
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(taskData), "Tasks");
+  }
 
-          return {
-            "S.No": idx + 1,
-            Date: p.date,
-            Activity: p.name,
-            Category: p.category,
-            Description: p.description,
-            Deadline: p.deadline,
-            Status: p.status,
-            "Has Proof?": p.proof ? "Yes" : "No",
-            "Proof Info": proofInfo,
-            Reason: p.reason,
-          };
-        });
-        const ws = XLSX.utils.json_to_sheet(physData);
-        XLSX.utils.book_append_sheet(wb, ws, "Physical");
-      }
+  // 3. Physical & 4. Reading Sheets (Simplified)
+  const physData = physicalEntries.map(p => ({ Date: p.date, Activity: p.name, Status: p.status }));
+  const readData = readingEntries.map(r => ({ Date: r.date, Title: r.title, Status: r.status }));
+  
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(physData), "Physical");
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(readData), "Reading");
 
-      // Reading sheet
-      if (readingEntries.length) {
-        const readData = readingEntries.map((r, idx) => {
-          let proofInfo = "";
-          if (r.proof) {
-            const [meta, base64] = r.proof.split(",");
-            proofInfo = meta + " | " + (base64 ? base64.slice(0, 40) + "..." : "");
-          }
-
-          return {
-            "S.No": idx + 1,
-            Date: r.date,
-            Title: r.title,
-            Progress: r.pages,
-            Notes: r.notes,
-            Status: r.status,
-            "Has Proof?": r.proof ? "Yes" : "No",
-            "Proof Info": proofInfo,
-            Reason: r.reason,
-          };
-        });
-        const ws = XLSX.utils.json_to_sheet(readData);
-        XLSX.utils.book_append_sheet(wb, ws, "Reading");
-      }
-
-      const monthLabel = new Date().toISOString().slice(0, 7); // YYYY-MM
-      XLSX.writeFile(wb, `Advanced-Study-Tracker-${monthLabel}.xlsx`);
-    });
-
+  const monthLabel = new Date().toISOString().slice(0, 7);
+  XLSX.writeFile(wb, `Advanced-Study-Tracker-${monthLabel}.xlsx`);
+});
     // ------- CLEAR ALL -------
     document.getElementById("clearAllBtn").addEventListener("click", () => {
       if (
@@ -1334,16 +1290,18 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
       hideEmailModal();
     });
 
-    // ------- INITIAL LOAD -------
+  // ------- INITIAL LOAD -------
     async function loadInitialData() {
       try {
+        // We use Promise.all to fetch everything at once for speed
         const [subjectsData, tasksData, physicalData, readingData] = await Promise.all([
           apiGet("/subjects"),
           apiGet("/tasks"),
-          fetchPhysicalEntries(),
-          fetchReadingEntries(),
+          apiGet("/physical-entries"), // Ensure this matches your server route
+          apiGet("/reading-entries"),  // Ensure this matches your server route
         ]);
 
+        // Map Subjects
         subjects = subjectsData.map((s) => ({
           id: s.id,
           code: s.code,
@@ -1352,6 +1310,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
           syllabus: s.syllabusBase64 || null,
         }));
 
+        // Map Tasks
         tasks = tasksData.map((t) => ({
           id: t.id,
           subjectCode: t.subjectCode,
@@ -1365,6 +1324,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
           proof: t.proofBase64 || null,
         }));
 
+        // Map Physical
         physicalEntries = physicalData.map((p) => ({
           id: p.id,
           date: p.date,
@@ -1377,6 +1337,7 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
           reason: p.reason,
         }));
 
+        // Map Reading
         readingEntries = readingData.map((r) => ({
           id: r.id,
           date: r.date,
@@ -1388,24 +1349,35 @@ document.getElementById("addReadingBtn").addEventListener("click", () => {
           reason: r.reason,
         }));
 
+        // Update the UI
         renderSubjects();
         renderTasks();
         updatePhysicalDashboard();
         updateReadingDashboard();
+        
+        // --- THIS UPDATES THE "0 DAYS" CIRCLE ---
+        updateStreakDisplay(); 
+
       } catch (e) {
-        console.error(e);
+        console.error("Load Error:", e);
         alert("Error loading data from server. Starting with empty lists.");
+        
+        // Fail-safe: empty the arrays if server fails
         subjects = [];
         tasks = [];
         physicalEntries = [];
         readingEntries = [];
+        
         renderSubjects();
         renderTasks();
         updatePhysicalDashboard();
         updateReadingDashboard();
+        
+        // --- ENSURES CIRCLE SHOWS 0 IF SERVER IS DOWN ---
+        updateStreakDisplay(); 
       }
     }
-
+    
     loadInitialData();
     // --- 1. THE NUCLEAR RESET LOGIC ---
 async function triggerNuclearReset() {
