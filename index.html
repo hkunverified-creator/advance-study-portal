@@ -417,10 +417,13 @@
     <section class="card" style="margin-top: 20px;">
       <div class="dashboard-grid">
         <div class="dash-card">
-          <div class="dash-label">Tasks</div>
-          <div class="dash-value" id="dashTasksTotal">0</div>
-          <div class="progress-bar"><div id="dashTasksProgress" class="progress-inner"></div></div>
-        </div>
+  <div class="dash-label">Tasks</div>
+  <div class="dash-value" id="dashTasksTotal">0</div>
+  <div class="dash-sub">
+    Completed: <span id="dashTasksCompleted">0</span> · Overdue: <span id="dashTasksOverdue">0</span>
+  </div>
+  <div class="progress-bar"><div id="dashTasksProgress" class="progress-inner"></div></div>
+</div>
         <div class="dash-card">
           <div class="dash-label">Physical</div>
           <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
