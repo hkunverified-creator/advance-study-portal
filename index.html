@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AST Portal | Infographic Dashboard</title>
+  <title>AST Portal | Professional Dashboard</title>
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -10,1411 +10,391 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
 
-:root {
+    :root {
       --bg-main: #020617;
-      --bg-card: rgba(15, 23, 42, 0.8);
+      --bg-card: rgba(15, 23, 42, 0.9);
       --accent: #38bdf8;
       --accent-2: #818cf8;
       --text: #f8fafc;
       --muted: #94a3b8;
       --border: rgba(56, 189, 248, 0.2);
       --font-main: 'Plus Jakarta Sans', sans-serif;
+      --success: #4ade80;
+      --danger: #f87171;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: var(--font-main);
-      background: #020617;
+      background: var(--bg-main);
       color: var(--text);
       scroll-behavior: smooth;
+      padding-bottom: 50px;
     }
 
-    /* COMPACT HERO SECTION */
     .hero-dashboard {
-      padding: 30px 20px;
+      padding: 40px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.05) 0%, transparent 70%);
+      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
       border-bottom: 1px solid var(--border);
     }
 
     .streak-widget {
-      width: 120px;
-      height: 120px;
+      width: 110px; height: 110px;
       border-radius: 50%;
       border: 3px solid var(--accent);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
-      margin-bottom: 15px;
-      background: var(--bg-main);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+      margin-bottom: 15px; background: var(--bg-main);
     }
+    .streak-num { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+    .streak-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
-    .streak-num { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
-    .streak-label { font-size: 0.65rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
-    
-    /* CONTENT WRAPPER */
-    .page {
-      max-width: 1000px;
-      margin: 0 auto;
-      display: block; /* Changed from Grid to Block */
-    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-    /* VERTICAL SECTIONING */
-    .section-block {
-      padding: 100px 20px;
-      min-height: 80vh;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-title {
-      font-size: 2.8rem;
-      font-weight: 800;
-      margin-bottom: 40px;
-      background: linear-gradient(to right, #fff, var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .section-title::before {
-      content: '';
-      width: 40px;
-      height: 4px;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-
-    /* INFOGRAPHIC CARDS */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 40px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
-
-    /* REUSABLE UTILITIES */
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    
-    @media (max-width: 768px) {
-      .grid-2 { grid-template-columns: 1fr; }
-      .section-title { font-size: 2rem; }
-    }
-
-    .btn {
-      padding: 12px 28px;
-      border-radius: 50px;
-      border: none;
-      font-weight: 700;
-      cursor: pointer;
-      background: var(--accent);
-      color: #000;
-      transition: all 0.3s ease;
-    }
-
-    .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
-    input,
-    select,
-    textarea {
-      width: 100%;
-      font-size: 0.8rem;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid rgba(51, 65, 85, 0.9);
-      background: rgba(15, 23, 42, 0.96);
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: rgba(56, 189, 248, 0.85);
-      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .small {
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-
-    .table-wrap {
-      border-radius: 10px;
-      border: 1px solid rgba(30, 64, 175, 0.8);
-      background: rgba(15, 23, 42, 0.96);
-      overflow: hidden;
-      max-height: 220px;
-      overflow-y: auto;
-      margin-top: 4px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-    }
-
-    th,
-    td {
-      padding: 6px 7px;
-      border-bottom: 1px solid rgba(30, 64, 175, 0.6);
-    }
-
-    th {
-      position: sticky;
-      top: 0;
-      background: rgba(15, 23, 42, 0.98);
-      font-weight: 600;
-      text-align: left;
-      z-index: 1;
-    }
-
-    tr:nth-child(even) td {
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .status-pill {
-      font-size: 0.68rem;
-      padding: 2px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      display: inline-block;
-    }
-
-    .status-complete {
-      border-color: rgba(74, 222, 128, 0.8);
-      color: var(--success);
-    }
-
-    .status-pending {
-      border-color: rgba(248, 250, 252, 0.4);
-      color: var(--muted);
-    }
-
-    .status-overdue {
-      border-color: rgba(248, 113, 113, 0.8);
-      color: var(--danger);
-    }
-
-    .badge {
-      font-size: 0.7rem;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-    }
-
-    .priority-low {
-      color: var(--muted);
-    }
-
-    .priority-medium {
-      color: var(--accent);
-    }
-
-    .priority-high {
-      color: var(--warning);
-    }
-
-    .priority-top {
-      color: var(--danger);
+      border-radius: 20px;
+      padding: 25px;
+      margin-top: 25px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     }
 
     .dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-@media (max-width: 900px) {
-  .dashboard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 600px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.dash-card {
-  position: relative;
-  background:
-    radial-gradient(circle at top, rgba(56, 189, 248, 0.3), transparent 60%),
-    radial-gradient(circle at bottom, rgba(168, 85, 247, 0.25), transparent 60%),
-    rgba(15, 23, 42, 0.96);
-  border-radius: 14px;
-  border: 1px solid rgba(148, 163, 184, 0.9);
-  padding: 10px 12px;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.95);
-  overflow: hidden;
-}
-
-.dash-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(135deg, rgba(148, 163, 184, 0.1), transparent 60%);
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-    .dash-label {
-  font-size: 0.7rem;
-  color: rgba(148, 163, 184, 0.9);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin-bottom: 4px;
-}
-
-.dash-value {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #f9fafb;
-}
-
-.dash-sub {
-  font-size: 0.7rem;
-  color: rgba(148, 163, 184, 0.9);
-}
-
-    .progress-bar {
-      margin-top: 4px;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 1);
-      overflow: hidden;
-      border: 1px solid rgba(30, 64, 175, 0.9);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
     }
 
-    .progress-inner {
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    .dash-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      transition: 0.3s;
+    }
+    .dash-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+    .dash-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .dash-value { font-size: 1.8rem; font-weight: 800; color: #fff; }
+    .dash-sub { font-size: 0.75rem; color: var(--muted); margin-top: 5px; }
+
+    .progress-bar { height: 8px; background: #0f172a; border-radius: 10px; margin-top: 12px; overflow: hidden; }
+    .progress-inner { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: 0%; transition: width 0.8s ease; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+    @media (max-width: 850px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    input, select, textarea {
+      width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff;
+      padding: 12px; border-radius: 10px; margin-bottom: 12px; font-family: inherit;
     }
 
-   .anime-strip {
-  margin-top: 10px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at left, rgba(34, 197, 94, 0.3), transparent 55%),
-    radial-gradient(circle at right, rgba(59, 130, 246, 0.3), transparent 55%),
-    rgba(15, 23, 42, 0.98);
-  border: 1px solid rgba(34, 197, 94, 0.6);
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.76rem;
-  color: #e5e7eb;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-@media (max-width: 600px) {
-  .anime-strip {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-}
-
-    .anime-strip span:last-child {
-      color: var(--accent);
-      font-weight: 500;
+    .btn {
+      background: var(--accent); color: #000; padding: 12px 24px; border-radius: 10px;
+      font-weight: 700; border: none; cursor: pointer; transition: 0.3s;
     }
+    .btn:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56, 189, 248, 0.3); }
 
-    .hint {
-      font-size: 0.7rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
+    .table-wrap { overflow-x: auto; margin-top: 20px; border-radius: 12px; border: 1px solid #334155; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { background: #1e293b; padding: 15px; text-align: left; color: var(--muted); }
+    td { padding: 15px; border-top: 1px solid #334155; }
 
-    .flex-between {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
+    .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid currentColor; }
+    .status-complete { color: var(--success); background: rgba(74, 222, 128, 0.1); }
+    .status-pending { color: var(--muted); background: rgba(148, 163, 184, 0.1); }
+    .status-overdue { color: var(--danger); background: rgba(248, 113, 113, 0.1); }
 
-    .mt-4 {
-      margin-top: 4px;
-    }
-
-    .mt-6 {
-      margin-top: 6px;
-    }
-
-    .mt-8 {
-      margin-top: 8px;
-    }
-
-    .link {
-      color: var(--accent);
-      text-decoration: underline;
-      cursor: pointer;
-    }
- </style>
+    .link { color: var(--accent); cursor: pointer; text-decoration: underline; font-weight: 600; }
+    .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; background: #334155; color: #fff; }
+  </style>
 </head>
 <body>
 
-  <!-- Email capture modal -->
-  <div id="emailModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.92);display:flex;align-items:center;justify-content:center;z-index:50;visibility:hidden;opacity:0;transition:opacity .2s ease;">
-    <div style="width:90%;max-width:360px;background:#020617;border-radius:14px;border:1px solid rgba(148,163,184,0.6);padding:16px 16px 12px;box-shadow:0 18px 40px rgba(0,0,0,0.9);">
-      <div style="font-size:.9rem;font-weight:600;margin-bottom:4px;">Where should we send your monthly report?</div>
-      <div style="font-size:.75rem;color:#9ca3af;margin-bottom:10px;">
-        Enter your email once on this device. At month end, your Excel tracker can be sent to this address.
-      </div>
-      <label for="emailInput" style="font-size:.75rem;color:#9ca3af;margin-bottom:3px;display:block;">Email</label>
-      <input id="emailInput" type="email" placeholder="you@example.com"
-             style="width:100%;font-size:.8rem;padding:6px 8px;border-radius:8px;border:1px solid rgba(51,65,85,0.9);background:#020617;color:#e5e7eb;margin-bottom:8px;">
-      <div style="display:flex;justify-content:flex-end;gap:8px;">
-        <button id="emailSkipBtn" type="button"
-                style="border-radius:999px;border:1px solid rgba(148,163,184,0.7);background:transparent;color:#9ca3af;font-size:.75rem;padding:5px 10px;cursor:pointer;">
-          Not now
-        </button>
-        <button id="emailSaveBtn" type="button"
-                style="border-radius:999px;border:1px solid rgba(56,189,248,0.9);background:radial-gradient(circle at top,rgba(56,189,248,0.35),transparent 70%);color:#38bdf8;font-size:.78rem;padding:5px 12px;cursor:pointer;">
-          Save email
-        </button>
-      </div>
-    </div>
-  </div>
-
-<div class="page">
-<header class="hero-dashboard">
+  <div class="page">
+    <header class="hero-dashboard">
       <div class="streak-widget">
         <div class="streak-num" id="mainStreakDisplay">0</div>
         <div class="streak-label">Days</div>
       </div>
-      
-      <h2 style="font-size: 1.5rem; margin-bottom: 5px;">Student Portal</h2>
-      <p class="small" style="font-style: italic; margin-bottom: 15px;">“No chakra, only discipline.”</p>
-      
-      <div class="actions-header" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-        <button id="exportExcelBtn" class="btn" style="padding: 8px 16px; font-size: 0.8rem;" type="button">📥 Excel</button>
-        <button id="clearAllBtn" class="btn" style="background: #475569; color: white; padding: 8px 16px; font-size: 0.8rem;" type="button">🗑 Clear</button>
-        <button id="purgeBtn" class="btn" style="background: #991b1b; color: white; padding: 8px 16px; font-size: 0.8rem;" type="button" onclick="triggerNuclearReset()">☢️ Reset</button>
+      <h2 style="margin-bottom: 10px;">Advance Study Portal</h2>
+      <p style="font-size:0.9rem; color:var(--muted); margin-bottom: 25px;">Stay disciplined. Track your progress.</p>
+      <div style="display: flex; gap: 15px;">
+        <button id="exportExcelBtn" class="btn" style="background:var(--accent-2); color:#fff;">📊 Export Excel</button>
+        <button id="clearAllBtn" class="btn" style="background:#475569; color:#fff;">🧹 Clear Local</button>
+        <button id="purgeBtn" class="btn" style="background:var(--danger); color:#fff;" onclick="triggerNuclearReset()">☢️ Reset Database</button>
       </div>
     </header>
 
-    <section class="card" style="margin-top: 20px;">
+    <section class="card">
       <div class="dashboard-grid">
         <div class="dash-card">
-  <div class="dash-label">Tasks</div>
-  <div class="dash-value" id="dashTasksTotal">0</div>
-  <div class="dash-sub">
-    Completed: <span id="dashTasksCompleted">0</span> · Overdue: <span id="dashTasksOverdue">0</span>
-  </div>
-  <div class="progress-bar"><div id="dashTasksProgress" class="progress-inner"></div></div>
-</div>
+          <div class="dash-label">Tasks Progress</div>
+          <div class="dash-value" id="dashTasksTotal">0</div>
+          <div class="dash-sub">Completed: <span id="dashTasksCompleted" style="color:var(--success)">0</span> · Overdue: <span id="dashTasksOverdue" style="color:var(--danger)">0</span></div>
+          <div class="progress-bar"><div id="dashTasksProgress" class="progress-inner"></div></div>
+        </div>
         <div class="dash-card">
-  <div class="dash-label">Physical</div>
-  <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
-  <div class="progress-bar"><div id="dashPhysicalProgress" class="progress-inner" style="width: 0%;"></div></div>
-</div>
-<div class="dash-card">
-  <div class="dash-label">Reading</div>
-  <div class="dash-value" id="dashReadingToday">0 / 1</div>
-  <div class="progress-bar"><div id="dashReadingProgress" class="progress-inner" style="width: 0%;"></div></div>
-</div>
+          <div class="dash-label">Physical Activity</div>
+          <div class="dash-value" id="dashPhysicalToday">0 / 1</div>
+          <div class="dash-sub">Target: Daily Activity</div>
+          <div class="progress-bar"><div id="dashPhysicalProgress" class="progress-inner"></div></div>
+        </div>
         <div class="dash-card">
-          <div class="dash-label">Credits</div>
+          <div class="dash-label">Reading Habit</div>
+          <div class="dash-value" id="dashReadingToday">0 / 1</div>
+          <div class="dash-sub">Target: Daily Progress</div>
+          <div class="progress-bar"><div id="dashReadingProgress" class="progress-inner"></div></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-label">Study Credits</div>
           <div class="dash-value" id="dashCreditsTotal">0</div>
-          <div class="dash-sub">Across <span id="dashSubjectsCount">0</span> subjects</div>
+          <div class="dash-sub">Across <span id="dashSubjectsCount">0</span> Subjects</div>
         </div>
       </div>
     </section>
 
-    <!-- LEFT: SUBJECTS + TASKS -->
-    <main class="layout-main">
-      <!-- Subjects & Syllabus -->
-      <section class="card" id="subjectsSection">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Subjects & Syllabus</div>
-            <div class="card-subtitle">
-              Define subjects with credits and upload syllabus. Everything else links to this.
-            </div>
-          </div>
-          <span class="chip" id="subjectsCountLabel">0 subjects · 0 credits</span>
+    <section class="card">
+      <h3 style="margin-bottom:20px; color:var(--accent);">Subjects & Syllabus</h3>
+      <div class="grid-2">
+        <div>
+          <label>Subject Code</label>
+          <input id="subjectCodeInput" placeholder="ME2020">
+          <label>Subject Name</label>
+          <input id="subjectNameInput" placeholder="Design of Machine Elements">
+          <label>Credits</label>
+          <input id="subjectCreditsInput" type="number" step="0.5" placeholder="3.0">
+          <button id="addSubjectBtn" class="btn" style="width:100%; margin-top:10px;">➕ Add Subject</button>
         </div>
-
-        <div class="grid-2">
-          <div>
-            <label for="subjectCodeInput">Subject Code</label>
-            <input id="subjectCodeInput" placeholder="ME6701" />
-
-            <label for="subjectNameInput">Subject Name</label>
-            <input id="subjectNameInput" placeholder="Design of Machine Elements" />
-
-            <label for="subjectCreditsInput">Credits</label>
-            <input id="subjectCreditsInput" type="number" min="0" step="0.5" placeholder="3" />
-
-            <div class="mt-4">
-              <button id="addSubjectBtn" class="btn" type="button">➕ Save / Update Subject</button>
-            </div>
-            <div class="hint">
-              Editing: type existing subject code and change name/credits to update.
-            </div>
-          </div>
-
-          <div>
-            <label for="subjectSyllabusInput">Upload / Update Syllabus (PDF / Image, &lt; 2 MB)</label>
-            <input id="subjectSyllabusInput" type="file" accept=".pdf,image/*" />
-
-            <div class="mt-4">
-              <label>Quick Preview</label>
-              <div id="syllabusPreview" class="table-wrap" style="max-height:130px;padding:6px;">
-                <div class="small">
-                  Type a subject code or select from the table to preview its syllabus.
-                </div>
-              </div>
-            </div>
+        <div>
+          <label>Syllabus Proof (PDF/Image)</label>
+          <input id="subjectSyllabusInput" type="file" accept=".pdf,image/*">
+          <div id="syllabusPreview" class="table-wrap" style="height:150px; padding:15px; background:rgba(0,0,0,0.2); border:1px dashed var(--muted); text-align:center; display:flex; align-items:center; justify-content:center;">
+            Syllabus Preview Area
           </div>
         </div>
+      </div>
+      <div class="table-wrap">
+        <table id="subjectsTable">
+          <thead><tr><th>Code</th><th>Name</th><th>Credits</th><th>Syllabus</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
 
-        <div class="mt-6 small">Subjects list</div>
-        <div class="table-wrap">
-          <table id="subjectsTable">
-            <thead>
-              <tr>
-                <th>Code</th>
-                <th>Name</th>
-                <th>Credits</th>
-                <th>Syllabus</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+    <section class="card">
+      <h3 style="margin-bottom:20px; color:var(--accent);">Active Tasks</h3>
+      <div class="grid-2">
+        <div>
+          <input id="taskSubjectCodeInput" placeholder="Subject Code">
+          <input id="taskLessonInput" placeholder="Lesson / Problem No.">
+          <input id="taskTopicInput" placeholder="Topic Details">
+          <select id="taskTypeSelect">
+            <option>Theory</option><option>Problem</option><option>Revision</option><option>Test</option>
+          </select>
         </div>
-      </section>
-
-      <!-- Tasks -->
-      <section class="card" id="tasksSection">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Subject Tasks</div>
-            <div class="card-subtitle">
-              Link every task to a subject & lesson. Completion requires proof – no shortcuts.
-            </div>
-          </div>
-          <span class="chip" id="tasksCountLabel">0 tasks · 0 completed</span>
+        <div>
+          <select id="taskPrioritySelect">
+            <option>Low</option><option>Medium</option><option>High</option><option>Top</option>
+          </select>
+          <input id="taskDeadlineDateInput" type="date">
+          <input id="taskDeadlineTimeInput" type="time">
+          <input id="taskProofInput" type="file" accept=".pdf,image/*">
         </div>
+      </div>
+      <button id="addTaskBtn" class="btn" style="width:100%; margin-top:15px;">🚀 Add Task</button>
+      <div class="table-wrap">
+        <table id="tasksTable">
+          <thead><tr><th>#</th><th>Sub</th><th>Topic</th><th>Type</th><th>Priority</th><th>Deadline</th><th>Status</th><th>Proof</th></tr></thead>
+          <tbody id="tasksTableBody"></tbody>
+        </table>
+      </div>
+    </section>
 
-        <div class="grid-2">
-          <div>
-            <label for="taskSubjectCodeInput">Subject Code</label>
-            <input id="taskSubjectCodeInput" placeholder="Type subject code (e.g., ME6701)" />
-
-            <label for="taskLessonInput">Lesson / Unit / Problem No.</label>
-            <input id="taskLessonInput" placeholder="Unit 3 · Problem 12" />
-
-            <label for="taskTopicInput">Topic / Details</label>
-            <input id="taskTopicInput" placeholder="Fatigue design problem – alternating stress" />
-
-            <label for="taskTypeSelect">Type</label>
-            <select id="taskTypeSelect">
-              <option value="Theory">Theory</option>
-              <option value="Problem">Problem</option>
-              <option value="Revision">Revision</option>
-              <option value="Test">Test</option>
-            </select>
-          </div>
-
-          <div>
-            <label for="taskPrioritySelect">Priority</label>
-            <select id="taskPrioritySelect">
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-              <option value="Top">Top priority</option>
-            </select>
-
-            <label for="taskDeadlineDateInput">Deadline Date</label>
-            <input id="taskDeadlineDateInput" type="date" />
-
-            <label for="taskDeadlineTimeInput">Deadline Time</label>
-            <input id="taskDeadlineTimeInput" type="time" />
-
-            <label for="taskProofInput">Completion Proof (PDF / Image, &lt; 2 MB)</label>
-            <input id="taskProofInput" type="file" accept=".pdf,image/*" />
-            <div class="small">Completion can be set to “Yes” only if proof is attached.</div>
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <button id="addTaskBtn" class="btn" type="button">➕ Add Task</button>
-        </div>
-
-        <div class="mt-6 small">Task list</div>
-        <div class="table-wrap">
-          <table id="tasksTable">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Sub</th>
-                <th>Lesson / Topic</th>
-                <th>Type</th>
-                <th>Priority</th>
-                <th>Deadline</th>
-                <th>Status</th>
-                <th>Proof</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-
-    <!-- RIGHT: PHYSICAL + READING -->
-    <aside class="layout-right">
-
-      <!-- Physical Activity -->
+    <div class="grid-2">
       <section class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Daily Physical Activity</div>
-            <div class="card-subtitle">
-              One move every day – proof required. Auto‑deadline: today, 10:00 PM.
-            </div>
-          </div>
-        </div>
-
-        <label for="physNameInput">Activity Name</label>
-        <input id="physNameInput" placeholder="Evening run, push‑ups, skipping, etc." />
-
-        <label for="physCategorySelect">Category</label>
+        <h3 style="margin-bottom:15px; color:var(--accent);">Physical Activity</h3>
+        <input id="physNameInput" placeholder="Activity Name">
         <select id="physCategorySelect">
-          <option>Cardio</option>
-          <option>Strength</option>
-          <option>Sports</option>
-          <option>Mobility / Stretch</option>
+          <option>Cardio</option><option>Strength</option><option>Mobility</option>
         </select>
-
-        <label for="physDescriptionInput">Description</label>
-        <textarea id="physDescriptionInput" placeholder="What did you plan to do? (e.g., 3 km run)"></textarea>
-
-        <label for="physProofInput">Proof (Image / PDF, &lt; 2 MB)</label>
-        <input id="physProofInput" type="file" accept=".pdf,image/*" />
-
-        <div class="mt-4">
-          <button id="addPhysicalBtn" class="btn" type="button">
-            ✅ Mark Physical Completed
-          </button>
-        </div>
-        <div class="hint">
-          If no proof is added, it will be stored as “not completed” and asks a reason.
-        </div>
+        <textarea id="physDescriptionInput" placeholder="Goal/Description"></textarea>
+        <input id="physProofInput" type="file">
+        <button id="addPhysicalBtn" class="btn" style="width:100%;">✅ Complete</button>
       </section>
 
-      <!-- Reading -->
       <section class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">Daily Reading</div>
-            <div class="card-subtitle">
-              Log one focused reading block – same fool‑proof idea.
-            </div>
-          </div>
-        </div>
-
-        <label for="readTitleInput">Book / Article</label>
-        <input id="readTitleInput" placeholder="Book or article title" />
-
-        <label for="readPagesInput">Pages / Chapters Completed</label>
-        <input id="readPagesInput" placeholder="e.g., 15 pages or Ch 3" />
-
-        <label for="readNotesInput">Notes / Reflection</label>
-        <textarea id="readNotesInput" placeholder="Key ideas, what you understood, questions."></textarea>
-
-        <label for="readProofInput">Proof (Image / PDF, &lt; 2 MB)</label>
-        <input id="readProofInput" type="file" accept=".pdf,image/*" />
-
-        <div class="mt-4">
-          <button id="addReadingBtn" class="btn" type="button">
-            📖 Mark Reading Completed
-          </button>
-        </div>
-        <div class="hint">
-          If you skip proof, it will be saved as “not completed” with reason.
-        </div>
+        <h3 style="margin-bottom:15px; color:var(--accent);">Daily Reading</h3>
+        <input id="readTitleInput" placeholder="Book Title">
+        <input id="readPagesInput" placeholder="Pages/Chapter">
+        <textarea id="readNotesInput" placeholder="Reflections"></textarea>
+        <input id="readProofInput" type="file">
+        <button id="addReadingBtn" class="btn" style="width:100%;">📖 Complete</button>
       </section>
-    </aside>
+    </div>
   </div>
 
   <script>
     const API_BASE = "https://ast-backend-nirl.onrender.com";
-    
-async function apiGet(path) {
-  const res = await fetch(`${API_BASE}${path}`);
-  if (!res.ok) throw new Error("GET " + path + " failed");
-  return res.json();
-}
+    let subjects = [], tasks = [], physicalEntries = [], readingEntries = [];
 
-async function apiSend(path, method, body) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(method + " " + path + " failed");
-  return res.json();
-}
-    
-    async function fetchPhysicalEntries() {
-  return apiGet("/physical");
-}
+    // --- API HANDLERS ---
+    async function apiGet(path) {
+      const res = await fetch(`${API_BASE}${path}`);
+      if (!res.ok) throw new Error("Fetch failed: " + path);
+      return res.json();
+    }
 
-async function savePhysicalEntry(entry) {
-  return apiSend("/physical", "POST", entry);
-}
-    
-    async function fetchReadingEntries() {
-  return apiGet("/reading");
-}
-
-async function saveReadingEntry(entry) {
-  return apiSend("/reading", "POST", entry);
-}
-
-
-    
-    // --- Simple local in-memory storage (can later be replaced with backend) ---
-    let subjects = [];
-    let tasks = [];
-    let physicalEntries = [];
-    let readingEntries = [];
-
-    function uid() {
-      return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    async function apiSend(path, method, body) {
+      const res = await fetch(`${API_BASE}${path}`, {
+        method, headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      return res.json();
     }
 
     function readFileAsDataURL(file, callback) {
-      if (!file) {
-        callback(null);
-        return;
-      }
-      if (file.size > 2 * 1024 * 1024) {
-        alert("File must be less than 2 MB.");
-        callback(null);
-        return;
-      }
+      if (!file) return callback(null);
       const reader = new FileReader();
       reader.onload = () => callback(reader.result);
-      reader.onerror = () => {
-        alert("Error reading file.");
-        callback(null);
-      };
       reader.readAsDataURL(file);
     }
 
-    // ------- SUBJECTS -------
-    const subjectCodeInput = document.getElementById("subjectCodeInput");
-    const subjectNameInput = document.getElementById("subjectNameInput");
-    const subjectCreditsInput = document.getElementById("subjectCreditsInput");
-    const subjectSyllabusInput = document.getElementById("subjectSyllabusInput");
-    const subjectsTableBody = document.querySelector("#subjectsTable tbody");
-    const subjectsCountLabel = document.getElementById("subjectsCountLabel");
-    const syllabusPreview = document.getElementById("syllabusPreview");
-
-   document.getElementById("addSubjectBtn").addEventListener("click", () => {
-  const code = subjectCodeInput.value.trim();
-  const name = subjectNameInput.value.trim();
-  const credits = parseFloat(subjectCreditsInput.value || "0");
-
-  if (!code || !name) {
-    alert("Subject code and name are required.");
-    return;
-  }
-
-  const file = subjectSyllabusInput.files[0];
-
-  const finishSave = async (fileDataUrl) => {
-    try {
-      const payload = {
-        code,
-        name,
-        credits,
-        syllabusBase64: fileDataUrl || null,
-      };
-
-      const saved = await apiSend("/subjects", "POST", payload);
-      // saved: { id, code, name, credits, syllabusBase64 }
-
-      const mapped = {
-        id: saved.id,
-        code: saved.code,
-        name: saved.name,
-        credits: saved.credits,
-        syllabus: saved.syllabusBase64,
-      };
-
-      const idx = subjects.findIndex(
-        (s) => s.id === mapped.id || s.code === mapped.code
-      );
-      if (idx >= 0) {
-        subjects[idx] = mapped;
-      } else {
-        subjects.push(mapped);
-      }
-
-      renderSubjects();
-      subjectSyllabusInput.value = "";
-      alert("Subject saved to server.");
-    } catch (err) {
-      console.error(err);
-      alert("Could not save subject to server.");
-    }
-  };
-
-  if (file) {
-    readFileAsDataURL(file, finishSave);
-  } else {
-    finishSave(null);
-  }
-});
-
-
-    function renderSubjects() {
-      subjectsTableBody.innerHTML = "";
-      let totalCredits = 0;
-      subjects.forEach((s) => {
-        totalCredits += s.credits || 0;
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><span class="link subj-link" data-code="${s.code}">${s.code}</span></td>
-          <td>${s.name}</td>
-          <td>${s.credits || ""}</td>
-          <td>${s.syllabus ? '<span class="link" data-code="' + s.code + '">View</span>' : "<span class='small'>No file</span>"}</td>
-        `;
-        subjectsTableBody.appendChild(tr);
-      });
-
-      subjectsCountLabel.textContent = `${subjects.length} subjects · ${totalCredits} credits`;
-      document.getElementById("dashCreditsTotal").textContent = totalCredits;
-      document.getElementById("dashSubjectsCount").textContent = subjects.length;
-
-      // click handlers
-      subjectsTableBody.querySelectorAll(".subj-link").forEach((el) => {
-        el.addEventListener("click", () => {
-          const code = el.getAttribute("data-code");
-          const subj = subjects.find((s) => s.code === code);
-          if (!subj) return;
-          subjectCodeInput.value = subj.code;
-          subjectNameInput.value = subj.name;
-          subjectCreditsInput.value = subj.credits || "";
-          previewSyllabus(subj);
-        });
-      });
-      subjectsTableBody
-        .querySelectorAll("td:nth-child(4) .link")
-        .forEach((el) => {
-          el.addEventListener("click", () => {
-            const code = el.getAttribute("data-code");
-            const subj = subjects.find((s) => s.code === code);
-            previewSyllabus(subj);
-          });
-        });
-    }
-
-    function previewSyllabus(subj) {
-      if (!subj) {
-        syllabusPreview.innerHTML =
-          '<div class="small">No subject selected.</div>';
-        return;
-      }
-      if (!subj.syllabus) {
-        syllabusPreview.innerHTML =
-          '<div class="small">No syllabus file uploaded for ' +
-          subj.code +
-          ".</div>";
-        return;
-      }
-      const isPdf = subj.syllabus.startsWith("data:application/pdf");
-      if (isPdf) {
-        syllabusPreview.innerHTML =
-          '<object data="' +
-          subj.syllabus +
-          '" type="application/pdf" width="100%" height="120px">PDF preview not supported.</object>';
-      } else {
-        syllabusPreview.innerHTML =
-          '<img src="' +
-          subj.syllabus +
-          '" alt="Syllabus" style="max-width:100%;max-height:120px;border-radius:8px;" />';
-      }
-    }
-
-    // ------- TASKS -------
-    const taskSubjectCodeInput = document.getElementById("taskSubjectCodeInput");
-    const taskLessonInput = document.getElementById("taskLessonInput");
-    const taskTopicInput = document.getElementById("taskTopicInput");
-    const taskTypeSelect = document.getElementById("taskTypeSelect");
-    const taskPrioritySelect = document.getElementById("taskPrioritySelect");
-    const taskDeadlineDateInput = document.getElementById("taskDeadlineDateInput");
-    const taskDeadlineTimeInput = document.getElementById("taskDeadlineTimeInput");
-    const taskProofInput = document.getElementById("taskProofInput");
-    const tasksTableBody = document.querySelector("#tasksTable tbody");
-    const tasksCountLabel = document.getElementById("tasksCountLabel");
-
-// --- 1. UPDATED ADD TASK BUTTON ---
-document.getElementById("addTaskBtn").addEventListener("click", () => {
-  const subCode = taskSubjectCodeInput.value.trim();
-  const lesson = taskLessonInput.value.trim();
-  const topic = taskTopicInput.value.trim();
-  const type = taskTypeSelect.value;
-  const priority = taskPrioritySelect.value;
-  const date = taskDeadlineDateInput.value;
-  const time = taskDeadlineTimeInput.value;
-
-  if (!subCode || !lesson || !topic || !date || !time) {
-    alert("Subject code, lesson, topic, and deadline date/time are required.");
-    return;
-  }
-
-  const subj = subjects.find((s) => s.code === subCode);
-  if (!subj) {
-    if (!confirm("Subject code not found. Add task anyway?")) return;
-  }
-
-  const file = taskProofInput.files[0];
-
-  const finishSave = async (fileDataUrl) => {
-    const deadline = `${date} ${time}`;
-    // Gatekeeper: Only Complete if file is attached
-    const status = fileDataUrl ? "Completed" : "Pending";
-
-    try {
-      const payload = {
-        subjectCode: subCode,
-        subjectName: subj ? subj.name : "",
-        lesson, topic, type, priority, deadline, status,
-        proofBase64: fileDataUrl || null,
-      };
-
-      const saved = await apiSend("/tasks", "POST", payload);
-      tasks.push({
-        ...saved,
-        proof: saved.proofBase64 // map for frontend
-      });
-
-      renderTasks();
-      taskLessonInput.value = "";
-      taskTopicInput.value = "";
-      taskProofInput.value = "";
-      
-      if (status === "Completed") {
-        alert("Task saved as Completed!");
-      } else {
-        alert("Task saved as Pending. Upload proof later to complete.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Could not save task.");
-    }
-  };
-
-  if (file) {
-    readFileAsDataURL(file, finishSave);
-  } else {
-    finishSave(null);
-  }
-});
-
-// --- 2. UPDATED RENDER TASKS (With Submit Button) ---
-function renderTasks() {
-  tasksTableBody.innerHTML = "";
-  let completed = 0;
-  let overdue = 0;
-  const now = new Date();
-
-  tasks.forEach((t, idx) => {
-    const deadlineDate = new Date(t.deadline.replace(" ", "T"));
-    let statusClass = "status-pending";
-    let statusLabel = "Pending";
-
-    if (t.status === "Completed") {
-      statusClass = "status-complete";
-      statusLabel = "Completed";
-      completed += 1;
-    } else if (deadlineDate < now) {
-      statusClass = "status-overdue";
-      statusLabel = "Overdue";
-      overdue += 1;
-    }
-
-    const priorityClass = t.priority === "Low" ? "priority-low" : t.priority === "Medium" ? "priority-medium" : t.priority === "High" ? "priority-high" : "priority-top";
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${idx + 1}</td>
-      <td>${t.subjectCode}</td>
-      <td>${t.lesson}<br/><span class="small">${t.topic}</span></td>
-      <td>${t.type}</td>
-      <td><span class="badge ${priorityClass}">${t.priority}</span></td>
-      <td><span class="small">${t.deadline}</span></td>
-      <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
-      <td>
-        ${t.proof 
-          ? `<span class="link view-proof" data-id="${t.id}">View</span>` 
-          : `<button class="btn-submit" onclick="submitProof('${t.id}')" style="background:#007bff; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Submit Proof</button>`
-        }
-      </td>
-    `;
-    tasksTableBody.appendChild(tr);
-  });
-
-  // Update Stats
-  tasksCountLabel.textContent = `${tasks.length} tasks · ${completed} completed`;
-  document.getElementById("dashTasksTotal").textContent = tasks.length;
-  document.getElementById("dashTasksCompleted").textContent = completed;
-  document.getElementById("dashTasksOverdue").textContent = overdue;
-  
-  const progress = tasks.length ? (completed / tasks.length) * 100 : 0;
-  document.getElementById("dashTasksProgress").style.width = `${progress}%`;
-
-  // Proof View Event Listeners
-  tasksTableBody.querySelectorAll(".view-proof").forEach((el) => {
-    el.addEventListener("click", () => {
-      const id = el.getAttribute("data-id");
-      const task = tasks.find((t) => t.id === id);
-      if (!task || !task.proof) return;
-      const win = window.open();
-      win.document.write(`<iframe src="${task.proof}" style="border:none;width:100%;height:100%;"></iframe>`);
-    });
-  });
-}
-
-// --- 3. NEW: SUBMIT PROOF FOR EXISTING TASK ---
-async function submitProof(taskId) {
-  const fileInput = document.createElement('input');
-  fileInput.type = 'file';
-  fileInput.accept = '.pdf,image/*';
-
-  fileInput.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Use existing helper to read file
-    readFileAsDataURL(file, async (dataUrl) => {
-      try {
-        // Send PATCH/PUT to server to update status to Completed
-        await apiSend(`/tasks/${taskId}`, "PATCH", {
-          status: "Completed",
-          proofBase64: dataUrl
-        });
-
-        // Update local array
-        const task = tasks.find(t => t.id === taskId);
-        if (task) {
-          task.status = "Completed";
-          task.proof = dataUrl;
-        }
-
-        renderTasks();
-        alert("Proof submitted! Task marked as Completed.");
-      } catch (err) {
-        alert("Error: Could not update task. Check server.");
-      }
-    });
-  };
-  fileInput.click();
-}
-       // ------- PHYSICAL -------
-    document.getElementById("addPhysicalBtn").addEventListener("click", () => {
-      const name = document.getElementById("physNameInput").value.trim();
-      const cat = document.getElementById("physCategorySelect").value;
-      const desc = document.getElementById("physDescriptionInput").value.trim();
-      const file = document.getElementById("physProofInput").files[0];
-
-      if (!name) {
-        alert("Activity name is required.");
-        return;
-      }
-
-      const date = new Date();
-      const dateStr = date.toISOString().slice(0, 10);
-      const deadline = `${dateStr} 22:00`;
-
-      readFileAsDataURL(file, async (dataUrl) => {
-        let status = "Not completed";
-        let reason = "";
-        if (dataUrl) {
-          status = "Completed";
-        } else {
-          reason = prompt("No proof uploaded. Reason for not completing?") || "";
-        }
-
-        const entry = {
-          date: dateStr,
-          name,
-          category: cat,
-          description: desc,
-          deadline,
-          status,
-          reason,
-          proofBase64: dataUrl || null,
-        };
-
-        try {
-          const saved = await savePhysicalEntry(entry);
-
-          physicalEntries.push({
-            id: saved.id,
-            date: saved.date,
-            name: saved.name,
-            category: saved.category,
-            description: saved.description,
-            deadline: saved.deadline,
-            status: saved.status,
-            reason: saved.reason,
-            proof: saved.proofBase64 || null,
-          });
-
-          updatePhysicalDashboard();
-          document.getElementById("physNameInput").value = "";
-          document.getElementById("physDescriptionInput").value = "";
-          document.getElementById("physProofInput").value = "";
-          alert("Physical entry saved to server.");
-        } catch (err) {
-          console.error(err);
-          alert("Could not save physical entry to server.");
-        }
-      });
-    });
-
-    function updatePhysicalDashboard() {
-      const today = new Date().toISOString().slice(0, 10);
-      const todayEntries = physicalEntries.filter((p) => p.date === today);
-      const completed = todayEntries.filter((p) => p.status === "Completed").length;
-      document.getElementById(
-        "dashPhysicalToday"
-      ).textContent = `${completed} / 1`;
-      document.getElementById(
-        "dashPhysicalProgress"
-      ).style.width = `${completed >= 1 ? 100 : 0}%`;
-    }
-
-// ------- READING -------
-document.getElementById("addReadingBtn").addEventListener("click", () => {
-  const title = document.getElementById("readTitleInput").value.trim();
-  const pages = document.getElementById("readPagesInput").value.trim();
-  const notes = document.getElementById("readNotesInput").value.trim();
-  const file = document.getElementById("readProofInput").files[0];
-
-  if (!title || !pages) {
-    alert("Title and pages/chapters are required.");
-    return;
-  }
-
-  const date = new Date();
-  const dateStr = date.toISOString().slice(0, 10);
-
-  readFileAsDataURL(file, async (dataUrl) => {
-    let status = "Not completed";
-    let reason = "";
-    if (dataUrl) {
-      status = "Completed";
-    } else {
-      reason =
-        prompt("No proof uploaded for reading. Reason?") || "";
-    }
-
-    const entry = {
-      date: dateStr,
-      title,
-      pages,
-      notes,
-      status,
-      reason,
-      proofBase64: dataUrl || null,
-    };
-
-    try {
-      const saved = await saveReadingEntry(entry);
-
-      readingEntries.push({
-        id: saved.id,
-        date: saved.date,
-        title: saved.title,
-        pages: saved.pages,
-        notes: saved.notes,
-        status: saved.status,
-        reason: saved.reason,
-        proof: saved.proofBase64 || null,
-      });
-
-     // --- INSIDE THE READING FORM SUBMIT HANDLER ---
-      updateReadingDashboard();
-      updateStreakDisplay(); // Added: Updates the circle immediately
-      
-      document.getElementById("readTitleInput").value = "";
-      document.getElementById("readPagesInput").value = "";
-      document.getElementById("readNotesInput").value = "";
-      document.getElementById("readProofInput").value = "";
-      alert("Reading entry saved to server.");
-    } catch (err) {
-      console.error(err);
-      alert("Could not save reading entry to server.");
-    }
-  });
-});
-
-// --- UPDATES THE READING CARD ON DASHBOARD ---
-function updateReadingDashboard() {
-  const today = new Date().toISOString().slice(0, 10);
-  const todayEntries = readingEntries.filter((r) => r.date === today);
-  const completed = todayEntries.filter((r) => r.status === "Completed").length;
-  
-  const valDisplay = document.getElementById("dashReadingToday");
-  const progBar = document.getElementById("dashReadingProgress");
-
-  if (valDisplay) valDisplay.textContent = `${completed} / 1`;
-  if (progBar) progBar.style.width = `${completed >= 1 ? 100 : 0}%`;
-}
-
-// --- NEW: STREAK CALCULATION ---
-function updateStreakDisplay() {
-  const display = document.getElementById("mainStreakDisplay");
-  if (!display) return;
-
-  const pDates = physicalEntries.filter(e => e.status === "Completed").map(e => e.date);
-  const rDates = readingEntries.filter(e => e.status === "Completed").map(e => e.date);
-  
-  // Combine unique dates from Physical and Reading
-  const allActiveDates = [...new Set([...pDates, ...rDates])].sort().reverse();
-  
-  // Update the count in the dashboard header circle
-  display.textContent = allActiveDates.length;
-}
-
-// --- EXPORT ALL DATA TO EXCEL ---
-document.getElementById("exportExcelBtn").addEventListener("click", () => {
-  if (!subjects.length && !tasks.length && !physicalEntries.length && !readingEntries.length) {
-    alert("No data to export yet.");
-    return;
-  }
-
-  const wb = XLSX.utils.book_new();
-
-  // 1. Subjects Sheet
-  if (subjects.length) {
-    const subjData = subjects.map((s, idx) => ({
-      "S.No": idx + 1,
-      "Subject Code": s.code,
-      "Subject Name": s.name,
-      Credits: s.credits || ""
-    }));
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(subjData), "Subjects");
-  }
-
-  // 2. Tasks Sheet
-  if (tasks.length) {
-    const taskData = tasks.map((t, idx) => ({
-      "S.No": idx + 1,
-      "Subject": t.subjectName,
-      Topic: t.topic,
-      Status: t.status
-    }));
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(taskData), "Tasks");
-  }
-
-  // 3. Physical & 4. Reading Sheets (Simplified)
-  const physData = physicalEntries.map(p => ({ Date: p.date, Activity: p.name, Status: p.status }));
-  const readData = readingEntries.map(r => ({ Date: r.date, Title: r.title, Status: r.status }));
-  
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(physData), "Physical");
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(readData), "Reading");
-
-  const monthLabel = new Date().toISOString().slice(0, 7);
-  XLSX.writeFile(wb, `Advanced-Study-Tracker-${monthLabel}.xlsx`);
-});
-    // ------- CLEAR ALL -------
-    document.getElementById("clearAllBtn").addEventListener("click", () => {
-      if (
-        !confirm(
-          "This will clear all subjects, tasks, physical and reading entries from this browser. Continue?"
-        )
-      )
-        return;
-      subjects = [];
-      tasks = [];
-      physicalEntries = [];
-      readingEntries = [];
-      renderSubjects();
-      renderTasks();
-      updatePhysicalDashboard();
-      updateReadingDashboard();
-      alert("All data cleared in this browser.");
-    });
-
-    // ------- EMAIL POPUP (ONCE PER DEVICE) -------
-    const emailModal = document.getElementById("emailModal");
-    const emailInput = document.getElementById("emailInput");
-    const emailSaveBtn = document.getElementById("emailSaveBtn");
-    const emailSkipBtn = document.getElementById("emailSkipBtn");
-
-    function showEmailModal() {
-      emailModal.style.visibility = "visible";
-      emailModal.style.opacity = "1";
-      setTimeout(() => emailInput && emailInput.focus(), 50);
-    }
-
-    function hideEmailModal() {
-      emailModal.style.opacity = "0";
-      setTimeout(() => {
-        emailModal.style.visibility = "hidden";
-      }, 200);
-    }
-
-    const savedEmail = localStorage.getItem("ast_email");
-    const skipped = localStorage.getItem("ast_email_skipped");
-
-    if (!savedEmail && !skipped) {
-      showEmailModal();
-    }
-
-    emailSaveBtn.addEventListener("click", () => {
-      const value = (emailInput.value || "").trim();
-      if (!value || !value.includes("@")) {
-        alert("Please enter a valid email address.");
-        return;
-      }
-      localStorage.setItem("ast_email", value);
-      hideEmailModal();
-      alert("Email saved for month‑end report: " + value);
-    });
-
-    emailSkipBtn.addEventListener("click", () => {
-      localStorage.setItem("ast_email_skipped", "1");
-      hideEmailModal();
-    });
-
-  // ------- INITIAL LOAD -------
+    // --- DATA LOADING ---
     async function loadInitialData() {
       try {
-        // We use Promise.all to fetch everything at once for speed
-        const [subjectsData, tasksData, physicalData, readingData] = await Promise.all([
-  apiGet("/subjects"),
-  apiGet("/tasks"),
-  apiGet("/physical"), // ✅ CORRECTED
-  apiGet("/reading"),  // ✅ CORRECTED
-]);
+        // FIXED: Corrected routes to match backend
+        const [subj, tsk, phys, read] = await Promise.all([
+          apiGet("/subjects"), apiGet("/tasks"), apiGet("/physical"), apiGet("/reading")
+        ]);
 
-        // Map Subjects
-        subjects = subjectsData.map((s) => ({
-          id: s.id,
-          code: s.code,
-          name: s.name,
-          credits: s.credits,
-          syllabus: s.syllabusBase64 || null,
-        }));
+        subjects = subj.map(s => ({ ...s, syllabus: s.syllabusBase64 }));
+        tasks = tsk.map(t => ({ ...t, proof: t.proofBase64 }));
+        physicalEntries = phys;
+        readingEntries = read;
 
-        // Map Tasks
-        tasks = tasksData.map((t) => ({
-          id: t.id,
-          subjectCode: t.subjectCode,
-          subjectName: t.subjectName,
-          lesson: t.lesson,
-          topic: t.topic,
-          type: t.type,
-          priority: t.priority,
-          deadline: t.deadline,
-          status: t.status,
-          proof: t.proofBase64 || null,
-        }));
-
-        // Map Physical
-        physicalEntries = physicalData.map((p) => ({
-          id: p.id,
-          date: p.date,
-          name: p.name,
-          category: p.category,
-          description: p.description,
-          deadline: p.deadline,
-          proof: p.proofBase64 || null,
-          status: p.status,
-          reason: p.reason,
-        }));
-
-        // Map Reading
-        readingEntries = readingData.map((r) => ({
-          id: r.id,
-          date: r.date,
-          title: r.title,
-          pages: r.pages,
-          notes: r.notes,
-          proof: r.proofBase64 || null,
-          status: r.status,
-          reason: r.reason,
-        }));
-
-        // Update the UI
-        renderSubjects();
-        renderTasks();
-        updatePhysicalDashboard();
-        updateReadingDashboard();
-        
-        // --- THIS UPDATES THE "0 DAYS" CIRCLE ---
-        updateStreakDisplay(); 
-
+        renderSubjects(); renderTasks(); updateDashboard();
       } catch (e) {
-        console.error("Load Error:", e);
-        alert("Error loading data from server. Starting with empty lists.");
-        
-        // Fail-safe: empty the arrays if server fails
-        subjects = [];
-        tasks = [];
-        physicalEntries = [];
-        readingEntries = [];
-        
-        renderSubjects();
-        renderTasks();
-        updatePhysicalDashboard();
-        updateReadingDashboard();
-        
-        // --- ENSURES CIRCLE SHOWS 0 IF SERVER IS DOWN ---
-        updateStreakDisplay(); 
+        console.error("Sync Error:", e.message);
       }
     }
-    
-    loadInitialData();
-    // --- 1. THE NUCLEAR RESET LOGIC ---
-async function triggerNuclearReset() {
-    const confirmation = prompt("WARNING: This deletes ALL data in your local database. Type 'DELETE' to confirm:");
-    if (confirmation === 'DELETE') {
-        try {
-            // Updated route to match local backend system purge
-            const response = await fetch(`${API_BASE}/api/system/purge`, { method: 'POST' });
-            const data = await response.json();
-            if (data.status === "success") {
-                alert("Database Wiped. Restarting Portal...");
-                localStorage.clear(); 
-                window.location.reload();
-            }
-        } catch (error) {
-            alert("Error: Make sure your local Python app.py is running!");
-        }
-    }
-}
 
+    // --- SUBJECT LOGIC ---
+    document.getElementById("addSubjectBtn").addEventListener("click", () => {
+      const code = document.getElementById("subjectCodeInput").value.trim();
+      const name = document.getElementById("subjectNameInput").value.trim();
+      const credits = parseFloat(document.getElementById("subjectCreditsInput").value || "0");
+      if(!code || !name) return alert("Fill required fields");
+
+      readFileAsDataURL(document.getElementById("subjectSyllabusInput").files[0], async (base64) => {
+        const saved = await apiSend("/subjects", "POST", { code, name, credits, syllabusBase64: base64 });
+        subjects.push({ ...saved, syllabus: base64 });
+        renderSubjects();
+      });
+    });
+
+    function renderSubjects() {
+      const tbody = document.querySelector("#subjectsTable tbody");
+      tbody.innerHTML = "";
+      let totalCr = 0;
+      subjects.forEach(s => {
+        totalCr += s.credits || 0;
+        tbody.innerHTML += `<tr><td>${s.code}</td><td>${s.name}</td><td>${s.credits}</td><td>${s.syllabus ? '<span class="link" onclick="viewFile(\''+s.code+'\')">View</span>' : 'None'}</td></tr>`;
+      });
+      document.getElementById("dashCreditsTotal").textContent = totalCr;
+      document.getElementById("dashSubjectsCount").textContent = subjects.length;
+    }
+
+    // --- TASK LOGIC ---
+    document.getElementById("addTaskBtn").addEventListener("click", () => {
+      const sub = document.getElementById("taskSubjectCodeInput").value.trim();
+      const file = document.getElementById("taskProofInput").files[0];
+      const deadline = `${document.getElementById("taskDeadlineDateInput").value} ${document.getElementById("taskDeadlineTimeInput").value}`;
+      
+      readFileAsDataURL(file, async (base64) => {
+        const status = base64 ? "Completed" : "Pending";
+        const saved = await apiSend("/tasks", "POST", { 
+          subjectCode: sub, 
+          lesson: document.getElementById("taskLessonInput").value,
+          topic: document.getElementById("taskTopicInput").value,
+          type: document.getElementById("taskTypeSelect").value,
+          priority: document.getElementById("taskPrioritySelect").value,
+          deadline, status, proofBase64: base64
+        });
+        tasks.push({ ...saved, proof: base64 });
+        renderTasks();
+      });
+    });
+
+    function renderTasks() {
+      const tbody = document.getElementById("tasksTableBody");
+      tbody.innerHTML = "";
+      let comp = 0, overdue = 0;
+      const now = new Date();
+
+      tasks.forEach((t, i) => {
+        if(t.status === "Completed") comp++;
+        else if(new Date(t.deadline.replace(" ","T")) < now) overdue++;
+
+        const sClass = t.status === "Completed" ? "status-complete" : "status-pending";
+        tbody.innerHTML += `<tr>
+          <td>${i+1}</td><td>${t.subjectCode}</td><td>${t.lesson}</td><td>${t.type}</td><td>${t.priority}</td><td>${t.deadline}</td>
+          <td><span class="status-pill ${sClass}">${t.status}</span></td>
+          <td>${t.proof ? '<span class="link" onclick="openProof(\''+t.id+'\')">View</span>' : '<button class="link" onclick="submitTaskProof(\''+t.id+'\')">Submit</button>'}</td>
+        </tr>`;
+      });
+
+      document.getElementById("dashTasksTotal").textContent = tasks.length;
+      document.getElementById("dashTasksCompleted").textContent = comp;
+      document.getElementById("dashTasksOverdue").textContent = overdue;
+      document.getElementById("dashTasksProgress").style.width = tasks.length ? (comp/tasks.length)*100 + "%" : "0%";
+    }
+
+    async function submitTaskProof(id) {
+      const input = document.createElement('input'); input.type = 'file';
+      input.onchange = (e) => {
+        readFileAsDataURL(e.target.files[0], async (base64) => {
+          await apiSend(`/tasks/${id}`, "PATCH", { status: "Completed", proofBase64: base64 });
+          const t = tasks.find(x => x.id === id); if(t){ t.status = "Completed"; t.proof = base64; }
+          renderTasks();
+        });
+      };
+      input.click();
+    }
+
+    // --- DASHBOARD UPDATES ---
+    function updateDashboard() {
+      const today = new Date().toISOString().split('T')[0];
+      const pDone = physicalEntries.some(e => e.date === today);
+      const rDone = readingEntries.some(e => e.date === today);
+      
+      document.getElementById("dashPhysicalToday").textContent = pDone ? "1 / 1" : "0 / 1";
+      document.getElementById("dashPhysicalProgress").style.width = pDone ? "100%" : "0%";
+      document.getElementById("dashReadingToday").textContent = rDone ? "1 / 1" : "0 / 1";
+      document.getElementById("dashReadingProgress").style.width = rDone ? "100%" : "0%";
+      document.getElementById("mainStreakDisplay").textContent = [...new Set([...physicalEntries, ...readingEntries].map(e => e.date))].length;
+    }
+
+    async function triggerNuclearReset() {
+      if(confirm("Wipe all server data?")) {
+        await fetch(`${API_BASE}/api/system/purge`, { method: "POST" });
+        location.reload();
+      }
+    }
+
+    function openProof(id) {
+      const t = tasks.find(x => x.id === id);
+      const w = window.open();
+      w.document.write(`<iframe src="${t.proof}" style="width:100%;height:100%;border:none;"></iframe>`);
+    }
+
+    // Start everything
+    loadInitialData();
   </script>
 </body>
 </html>
+
