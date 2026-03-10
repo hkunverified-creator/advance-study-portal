@@ -874,6 +874,7 @@ async function saveReadingEntry(entry) {
     const tasksTableBody = document.querySelector("#tasksTable tbody");
     const tasksCountLabel = document.getElementById("tasksCountLabel");
 
+// --- 1. UPDATED ADD TASK BUTTON ---
 document.getElementById("addTaskBtn").addEventListener("click", () => {
   const subCode = taskSubjectCodeInput.value.trim();
   const lesson = taskLessonInput.value.trim();
@@ -890,136 +891,152 @@ document.getElementById("addTaskBtn").addEventListener("click", () => {
 
   const subj = subjects.find((s) => s.code === subCode);
   if (!subj) {
-    if (!confirm("Subject code not found in list. Add task anyway (subjectless)?")) {
-      return;
-    }
+    if (!confirm("Subject code not found. Add task anyway?")) return;
   }
 
   const file = taskProofInput.files[0];
 
   const finishSave = async (fileDataUrl) => {
     const deadline = `${date} ${time}`;
+    // Gatekeeper: Only Complete if file is attached
     const status = fileDataUrl ? "Completed" : "Pending";
 
     try {
       const payload = {
         subjectCode: subCode,
         subjectName: subj ? subj.name : "",
-        lesson,
-        topic,
-        type,
-        priority,
-        deadline,
-        status,
+        lesson, topic, type, priority, deadline, status,
         proofBase64: fileDataUrl || null,
       };
 
       const saved = await apiSend("/tasks", "POST", payload);
-      // saved: { id, subjectCode, subjectName, lesson, topic, type, priority, deadline, status, proofBase64 }
+      tasks.push({
+        ...saved,
+        proof: saved.proofBase64 // map for frontend
+      });
 
-      const mapped = {
-        id: saved.id,
-        subjectCode: saved.subjectCode,
-        subjectName: saved.subjectName,
-        lesson: saved.lesson,
-        topic: saved.topic,
-        type: saved.type,
-        priority: saved.priority,
-        deadline: saved.deadline,
-        status: saved.status,
-        proof: saved.proofBase64,
-      };
-
-      tasks.push(mapped);
       renderTasks();
       taskLessonInput.value = "";
       taskTopicInput.value = "";
       taskProofInput.value = "";
-      alert("Task saved to server.");
+      
+      if (status === "Completed") {
+        alert("Task saved as Completed!");
+      } else {
+        alert("Task saved as Pending. Upload proof later to complete.");
+      }
     } catch (err) {
       console.error(err);
-      alert("Could not save task to server.");
+      alert("Could not save task.");
     }
   };
 
-  readFileAsDataURL(file, finishSave);
+  if (file) {
+    readFileAsDataURL(file, finishSave);
+  } else {
+    finishSave(null);
+  }
 });
 
+// --- 2. UPDATED RENDER TASKS (With Submit Button) ---
+function renderTasks() {
+  tasksTableBody.innerHTML = "";
+  let completed = 0;
+  let overdue = 0;
+  const now = new Date();
 
-    function renderTasks() {
-      tasksTableBody.innerHTML = "";
-      let completed = 0;
-      let overdue = 0;
-      const now = new Date();
+  tasks.forEach((t, idx) => {
+    const deadlineDate = new Date(t.deadline.replace(" ", "T"));
+    let statusClass = "status-pending";
+    let statusLabel = "Pending";
 
-      tasks.forEach((t, idx) => {
-        const deadlineDate = new Date(t.deadline.replace(" ", "T"));
-        let statusClass = "status-pending";
-        let statusLabel = "Pending";
-
-        if (t.status === "Completed") {
-          statusClass = "status-complete";
-          statusLabel = "Completed";
-          completed += 1;
-        } else if (deadlineDate < now) {
-          statusClass = "status-overdue";
-          statusLabel = "Overdue";
-          overdue += 1;
-        }
-
-        const priorityClass =
-          t.priority === "Low"
-            ? "priority-low"
-            : t.priority === "Medium"
-            ? "priority-medium"
-            : t.priority === "High"
-            ? "priority-high"
-            : "priority-top";
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${idx + 1}</td>
-          <td>${t.subjectCode}</td>
-          <td>${t.lesson}<br/><span class="small">${t.topic}</span></td>
-          <td>${t.type}</td>
-          <td><span class="badge ${priorityClass}">${t.priority}</span></td>
-          <td><span class="small">${t.deadline}</span></td>
-          <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
-          <td>${
-            t.proof
-              ? '<span class="link" data-id="' + t.id + '">View</span>'
-              : "<span class='small'>No proof</span>"
-          }</td>
-        `;
-        tasksTableBody.appendChild(tr);
-      });
-
-      tasksCountLabel.textContent = `${tasks.length} tasks · ${completed} completed`;
-      document.getElementById("dashTasksTotal").textContent = tasks.length;
-      document.getElementById("dashTasksCompleted").textContent = completed;
-      document.getElementById("dashTasksOverdue").textContent = overdue;
-
-      const progress = tasks.length ? (completed / tasks.length) * 100 : 0;
-      document.getElementById(
-        "dashTasksProgress"
-      ).style.width = `${progress}%`;
-
-      // proof view handlers
-      tasksTableBody.querySelectorAll("td:last-child .link").forEach((el) => {
-        el.addEventListener("click", () => {
-          const id = el.getAttribute("data-id");
-          const task = tasks.find((t) => t.id === id);
-          if (!task || !task.proof) return;
-          const win = window.open();
-          win.document.write(
-            '<iframe src="' +
-              task.proof +
-              '" style="border:none;width:100%;height:100%;"></iframe>'
-          );
-        });
-      });
+    if (t.status === "Completed") {
+      statusClass = "status-complete";
+      statusLabel = "Completed";
+      completed += 1;
+    } else if (deadlineDate < now) {
+      statusClass = "status-overdue";
+      statusLabel = "Overdue";
+      overdue += 1;
     }
 
+    const priorityClass = t.priority === "Low" ? "priority-low" : t.priority === "Medium" ? "priority-medium" : t.priority === "High" ? "priority-high" : "priority-top";
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${idx + 1}</td>
+      <td>${t.subjectCode}</td>
+      <td>${t.lesson}<br/><span class="small">${t.topic}</span></td>
+      <td>${t.type}</td>
+      <td><span class="badge ${priorityClass}">${t.priority}</span></td>
+      <td><span class="small">${t.deadline}</span></td>
+      <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+      <td>
+        ${t.proof 
+          ? `<span class="link view-proof" data-id="${t.id}">View</span>` 
+          : `<button class="btn-submit" onclick="submitProof('${t.id}')" style="background:#007bff; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">Submit Proof</button>`
+        }
+      </td>
+    `;
+    tasksTableBody.appendChild(tr);
+  });
+
+  // Update Stats
+  tasksCountLabel.textContent = `${tasks.length} tasks · ${completed} completed`;
+  document.getElementById("dashTasksTotal").textContent = tasks.length;
+  document.getElementById("dashTasksCompleted").textContent = completed;
+  document.getElementById("dashTasksOverdue").textContent = overdue;
+  
+  const progress = tasks.length ? (completed / tasks.length) * 100 : 0;
+  document.getElementById("dashTasksProgress").style.width = `${progress}%`;
+
+  // Proof View Event Listeners
+  tasksTableBody.querySelectorAll(".view-proof").forEach((el) => {
+    el.addEventListener("click", () => {
+      const id = el.getAttribute("data-id");
+      const task = tasks.find((t) => t.id === id);
+      if (!task || !task.proof) return;
+      const win = window.open();
+      win.document.write(`<iframe src="${task.proof}" style="border:none;width:100%;height:100%;"></iframe>`);
+    });
+  });
+}
+
+// --- 3. NEW: SUBMIT PROOF FOR EXISTING TASK ---
+async function submitProof(taskId) {
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = '.pdf,image/*';
+
+  fileInput.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Use existing helper to read file
+    readFileAsDataURL(file, async (dataUrl) => {
+      try {
+        // Send PATCH/PUT to server to update status to Completed
+        await apiSend(`/tasks/${taskId}`, "PATCH", {
+          status: "Completed",
+          proofBase64: dataUrl
+        });
+
+        // Update local array
+        const task = tasks.find(t => t.id === taskId);
+        if (task) {
+          task.status = "Completed";
+          task.proof = dataUrl;
+        }
+
+        renderTasks();
+        alert("Proof submitted! Task marked as Completed.");
+      } catch (err) {
+        alert("Error: Could not update task. Check server.");
+      }
+    });
+  };
+  fileInput.click();
+}
        // ------- PHYSICAL -------
     document.getElementById("addPhysicalBtn").addEventListener("click", () => {
       const name = document.getElementById("physNameInput").value.trim();
