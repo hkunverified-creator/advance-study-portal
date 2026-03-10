@@ -1312,11 +1312,11 @@ document.getElementById("exportExcelBtn").addEventListener("click", () => {
       try {
         // We use Promise.all to fetch everything at once for speed
         const [subjectsData, tasksData, physicalData, readingData] = await Promise.all([
-          apiGet("/subjects"),
-          apiGet("/tasks"),
-          apiGet("/physical-entries"), // Ensure this matches your server route
-          apiGet("/reading-entries"),  // Ensure this matches your server route
-        ]);
+  apiGet("/subjects"),
+  apiGet("/tasks"),
+  apiGet("/physical"), // ✅ CORRECTED
+  apiGet("/reading"),  // ✅ CORRECTED
+]);
 
         // Map Subjects
         subjects = subjectsData.map((s) => ({
@@ -1415,62 +1415,6 @@ async function triggerNuclearReset() {
     }
 }
 
-// --- FIXED 3D CHARACTER ENGINE (NO DEPRECATION ERRORS) ---
-(function loadThreeJS() {
-    const s1 = document.createElement('script');
-    // Using unpkg and version 0.150.1 fixes the "deprecated" warning
-    s1.src = "https://unpkg.com/three@0.150.1/build/three.min.js";
-    document.head.appendChild(s1);
-    s1.onload = () => {
-        const s2 = document.createElement('script');
-        // Loading the matching loader from the same stable source
-        s2.src = "https://unpkg.com/three@0.150.1/examples/js/loaders/GLTFLoader.js";
-        document.head.appendChild(s2);
-        s2.onload = setup3DHero;
-    };
-})();
-    
-function setup3DHero() {
-    const heroCard = document.createElement('section');
-    heroCard.className = "card";
-    heroCard.style.marginTop = "20px"; // Adds space between sections
-    heroCard.innerHTML = `
-        <div class="card-header"><div class="card-title">Portal Guardian</div></div>
-        <div id="hero-canvas-container" style="width:100%; height:250px; background:rgba(0,0,0,0.1); border-radius:10px;"></div>
-    `;
-
-    // FIXED: Now appends to the main page since sidebar is gone
-    const pageContainer = document.querySelector('.page');
-    if(pageContainer) pageContainer.appendChild(heroCard);
-
-    const container = document.getElementById('hero-canvas-container');
-    if(!container) return; // Safety check
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, container.clientWidth / 250, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(container.clientWidth, 250);
-    container.appendChild(renderer.domElement);
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 2);
-    scene.add(ambientLight);
-    camera.position.set(0, 1, 3);
-
-    const loader = new THREE.GLTFLoader();
-    loader.load('https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb', function(gltf) {
-        const model = gltf.scene;
-        model.scale.set(0.6, 0.6, 0.6); // Made him slightly bigger
-        model.position.y = -0.8;
-        scene.add(model);
-        
-        function animate() {
-            requestAnimationFrame(animate);
-            model.rotation.y += 0.01;
-            renderer.render(scene, camera);
-        }
-        animate();
-    });
-}
   </script>
 </body>
 </html>
