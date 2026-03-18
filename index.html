@@ -36,7 +36,7 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
- 
+
     body {
       font-family: 'Rajdhani', sans-serif;
       background: var(--bg);
@@ -44,7 +44,7 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
- 
+
     /* === ANIMATED BACKGROUND === */
     body::before {
       content: '';
@@ -73,12 +73,12 @@
       0%,100% { opacity:0.5; }
       50% { opacity:1; }
     }
- 
+
     /* === SCROLLBAR === */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 3px; }
- 
+
     /* === MODALS === */
     .modal-overlay {
       position: fixed; inset: 0;
@@ -109,7 +109,7 @@
       margin-bottom: 6px;
     }
     .modal-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 24px; }
- 
+
     /* === CHARACTER GRID === */
     .char-grid {
       display: grid;
@@ -137,7 +137,7 @@
     .char-emoji { font-size: 2.8rem; margin-bottom: 8px; filter: drop-shadow(0 0 8px currentColor); }
     .char-name { font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700; color: var(--white); letter-spacing: 0.05em; }
     .char-title { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
- 
+
     /* === APP LAYOUT === */
     #app {
       position: relative; z-index: 1;
@@ -145,7 +145,7 @@
       margin: 0 auto;
       padding: 16px;
     }
- 
+
     /* === HEADER === */
     .header {
       background: var(--glass);
@@ -179,7 +179,7 @@
       cursor: pointer; transition: all 0.2s;
     }
     .streak-badge:hover { box-shadow: 0 0 20px rgba(255,110,0,0.5); }
- 
+
     /* === NAV TABS === */
     .nav-tabs {
       display: flex; gap: 6px;
@@ -213,11 +213,11 @@
       box-shadow: var(--glow-cyan);
     }
     .tab-icon { font-size: 1.1rem; }
- 
+
     /* === SECTIONS === */
     .section { display: none; }
     .section.active { display: block; }
- 
+
     /* === CARDS === */
     .card {
       background: var(--glass);
@@ -230,7 +230,7 @@
     }
     .card.cyan-glow { border-color: var(--border-cyan); box-shadow: var(--glow-cyan), var(--shadow); }
     .card.purple-glow { box-shadow: var(--glow-purple), var(--shadow); }
- 
+
     .card-header {
       display: flex; justify-content: space-between; align-items: flex-start;
       margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
@@ -243,7 +243,7 @@
       letter-spacing: 0.04em;
     }
     .card-sub { font-size: 0.85rem; color: var(--muted); margin-top: 3px; }
- 
+
     /* === DASHBOARD === */
     .dash-hero {
       display: flex; gap: 20px;
@@ -294,7 +294,7 @@
       line-height: 1.5;
     }
     .change-char-hint { font-size: 0.68rem; color: var(--muted); margin-top: 8px; }
- 
+
     .dash-stats { flex: 1; min-width: 250px; }
     .stats-grid {
       display: grid;
@@ -332,7 +332,7 @@
       transition: width 0.6s ease;
       box-shadow: 0 0 8px var(--cyan);
     }
- 
+
     /* === STREAK PANEL === */
     .streak-panel {
       background: linear-gradient(135deg, rgba(255,100,0,0.1), rgba(255,0,100,0.05));
@@ -363,7 +363,7 @@
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--muted);
     }
     .milestone.achieved { background: rgba(0,255,140,0.1); border-color: var(--green); color: var(--green); }
- 
+
     /* === FORMS === */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
@@ -402,7 +402,7 @@
     }
     textarea { resize: vertical; min-height: 80px; }
     select option { background: #150025; color: var(--white); }
- 
+
     /* === BUTTONS === */
     .btn {
       display: inline-flex; align-items: center; gap: 8px;
@@ -431,7 +431,7 @@
     .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
     .btn-sm { padding: 6px 14px; font-size: 0.85rem; }
     .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
- 
+
     /* === CHIP === */
     .chip {
       background: rgba(0,245,255,0.1);
@@ -442,7 +442,7 @@
       color: var(--cyan);
       white-space: nowrap;
     }
- 
+
     /* === TABLE === */
     .table-wrap { overflow-x: auto; margin-top: 16px; border-radius: 10px; border: 1px solid var(--border); }
     table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
@@ -465,7 +465,7 @@
     }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: rgba(0,245,255,0.03); }
- 
+
     /* === STATUS PILLS === */
     .pill {
       display: inline-block;
@@ -477,7 +477,7 @@
     .pill-pending { background: rgba(255,230,0,0.12); border: 1px solid rgba(255,230,0,0.5); color: var(--yellow); }
     .pill-overdue { background: rgba(255,40,40,0.15); border: 1px solid var(--red); color: var(--red); }
     .pill-skipped { background: rgba(191,0,255,0.15); border: 1px solid rgba(191,0,255,0.5); color: #d070ff; }
- 
+
     /* === PRIORITY BADGES === */
     .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; }
     .badge-low { background: rgba(0,255,140,0.1); color: var(--green); }
@@ -485,7 +485,7 @@
     .badge-high { background: rgba(255,110,0,0.15); color: var(--orange); }
     .badge-top { background: rgba(255,40,40,0.15); color: var(--red); animation: topPulse 1.5s ease-in-out infinite; }
     @keyframes topPulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
- 
+
     /* === PROOF REQUIRED BANNER === */
     .proof-required {
       background: rgba(255,40,40,0.1);
@@ -494,7 +494,7 @@
       font-size: 0.85rem; color: var(--red);
       display: flex; align-items: center; gap: 8px;
     }
- 
+
     /* === NOTIFICATION BANNER === */
     #notif-banner {
       background: linear-gradient(135deg, rgba(255,110,0,0.15), rgba(255,0,100,0.1));
@@ -505,7 +505,7 @@
       font-size: 0.9rem; color: var(--yellow);
     }
     #notif-banner.show { display: flex; }
- 
+
     /* === CELEBRATION OVERLAY === */
     #celebration {
       position: fixed; inset: 0;
@@ -535,7 +535,7 @@
       margin: 16px 0 8px;
     }
     .celebration-sub { color: var(--muted); font-size: 0.95rem; }
- 
+
     /* === SYLLABUS PREVIEW === */
     #syllabusPreview {
       background: rgba(255,255,255,0.03);
@@ -544,7 +544,7 @@
       min-height: 80px;
       font-size: 0.85rem; color: var(--muted);
     }
- 
+
     /* === HINT TEXT === */
     .hint { font-size: 0.78rem; color: var(--muted); margin-top: 6px; font-style: italic; }
     .section-tag {
@@ -555,7 +555,7 @@
       border-radius: 4px; padding: 2px 8px;
       margin-bottom: 8px; letter-spacing: 0.06em;
     }
- 
+
     /* === PROOF MODAL === */
     #proofModal {
       position: fixed; inset: 0;
@@ -573,11 +573,11 @@
     }
     #proofContent { max-width: 90vw; max-height: 85vh; }
     #proofContent img { max-width: 100%; max-height: 85vh; border-radius: 8px; }
- 
+
     /* === EMAIL FORM === */
     .email-form { display: flex; gap: 10px; flex-wrap: wrap; }
     .email-form input { flex: 1; min-width: 220px; }
- 
+
     /* === MISC === */
     .link-btn {
       background: none; border: none; color: var(--cyan);
@@ -607,7 +607,7 @@
     .today-pill.done { background: rgba(0,255,140,0.12); border: 1px solid var(--green); color: var(--green); }
     .today-pill.pending { background: rgba(255,230,0,0.1); border: 1px solid rgba(255,230,0,0.4); color: var(--yellow); }
     .today-pill.missed { background: rgba(255,40,40,0.1); border: 1px solid rgba(255,40,40,0.4); color: var(--red); }
- 
+
     /* Daily deadline info */
     .deadline-info {
       background: rgba(0,245,255,0.05); border: 1px solid var(--border-cyan);
@@ -616,10 +616,10 @@
       display: flex; align-items: center; gap: 8px;
       margin-bottom: 16px;
     }
- 
+
     /* Scrollable history */
     .history-wrap { max-height: 300px; overflow-y: auto; }
- 
+
     /* === RING CHARTS === */
     .rings-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; }
     .ring-card { flex:1; min-width:90px; text-align:center; background:var(--glass2); border:1px solid var(--border); border-radius:12px; padding:12px 8px; transition:all 0.2s; }
@@ -627,7 +627,7 @@
     .ring-svg { width:80px; height:80px; }
     .ring-label { font-size:0.8rem; color:var(--white); font-weight:600; margin-top:6px; }
     .ring-sub { font-size:0.7rem; color:var(--muted); margin-top:2px; }
- 
+
     /* === WEEK BAR CHART === */
     .week-chart { background:var(--glass2); border:1px solid var(--border); border-radius:10px; padding:12px; }
     .week-bars { display:flex; gap:6px; align-items:flex-end; height:50px; }
@@ -637,7 +637,7 @@
     .week-bar.phys { background:var(--green); }
     .week-bar.read { background:var(--purple); }
     .week-day-label { font-size:0.62rem; color:var(--muted); font-family:'Share Tech Mono',monospace; }
- 
+
     /* === AI CHAT === */
     .ai-fab { position:fixed; bottom:24px; right:24px; width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--purple)); border:none; cursor:pointer; font-size:1.4rem; box-shadow:var(--glow-cyan),var(--shadow); z-index:500; transition:all 0.2s; display:flex;align-items:center;justify-content:center; }
     .ai-fab:hover { transform:scale(1.1); }
@@ -653,16 +653,33 @@
     .ai-input-row { padding:10px; border-top:1px solid var(--border); display:flex; gap:8px; }
     .ai-input-row input { flex:1; font-size:0.85rem; padding:8px 12px; }
     .ai-input-row button { padding:8px 14px; font-size:0.85rem; }
- 
+
     /* hide old progress bars since using rings now */
     #dashTasksProgress, #dashPhysicalProgress, #dashReadingProgress { display:none; }
- 
+
     
 </head>
 <body>
- 
+
+<!-- GLOBAL LOADER -->
+<div id="globalLoader" style="position:fixed;inset:0;background:#04000f;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+  <div style="font-size:3rem;animation:heroFloat 1.5s ease-in-out infinite">⚡</div>
+  <div style="font-family:'Orbitron',sans-serif;font-size:1.2rem;color:#00f5ff;text-shadow:0 0 20px rgba(0,245,255,0.5)">AST PORTAL</div>
+  <div style="color:#7b6fa0;font-size:0.85rem">Initializing...</div>
+  <div style="width:120px;height:3px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:8px">
+    <div style="height:100%;background:linear-gradient(90deg,#00f5ff,#bf00ff);border-radius:3px;animation:loadBar 1.5s ease-in-out infinite"></div>
+  </div>
+</div>
+<style>
+@keyframes loadBar {
+  0% { width:0%;margin-left:0 }
+  50% { width:100%;margin-left:0 }
+  100% { width:0%;margin-left:100% }
+}
+</style>
+
 <!-- ===== LOGIN MODAL ===== -->
-<div class="modal-overlay" id="loginModal">
+<div class="modal-overlay" id="loginModal" style="opacity:1">
   <div class="modal-box sm">
     <div class="modal-inner" style="text-align:center">
       <div style="font-size:3rem;margin-bottom:12px">⚡</div>
@@ -682,7 +699,7 @@
     </div>
   </div>
 </div>
- 
+
 <!-- ===== CHARACTER SELECTION MODAL ===== -->
 <div class="modal-overlay" id="charModal">
   <div class="modal-box">
@@ -697,7 +714,7 @@
     </div>
   </div>
 </div>
- 
+
 <!-- ===== EMAIL MODAL ===== -->
 <div class="modal-overlay hidden" id="emailModal">
   <div class="modal-box sm">
@@ -718,13 +735,13 @@
     </div>
   </div>
 </div>
- 
+
 <!-- ===== PROOF VIEW MODAL ===== -->
 <div id="proofModal">
   <button class="close-btn" onclick="document.getElementById('proofModal').classList.remove('open')">✕ Close</button>
   <div id="proofContent"></div>
 </div>
- 
+
 <!-- ===== CELEBRATION OVERLAY ===== -->
 <div id="celebration">
   <div class="celebration-box">
@@ -734,17 +751,17 @@
     <button class="btn btn-primary mt" onclick="hideCelebration()">KEEP GRINDING →</button>
   </div>
 </div>
- 
+
 <!-- ===== MAIN APP ===== -->
 <div id="app" style="display:none">
- 
+
   <!-- NOTIFICATION BANNER -->
   <div id="notif-banner">
     <span>⚠️</span>
     <span id="notif-msg">Don't forget to complete today's tasks!</span>
     <button class="btn btn-ghost btn-sm" onclick="document.getElementById('notif-banner').classList.remove('show')" style="margin-left:auto">Dismiss</button>
   </div>
- 
+
   <!-- HEADER -->
   <header class="header">
     <div>
@@ -764,7 +781,7 @@
       <button class="btn btn-ghost btn-sm" id="clearBtn">🗑️ Clear All</button>
     </div>
   </header>
- 
+
   <!-- NAV TABS -->
   <nav class="nav-tabs">
     <button class="tab-btn active" data-tab="dashboard"><span class="tab-icon">🏠</span> Dashboard</button>
@@ -773,10 +790,10 @@
     <button class="tab-btn" data-tab="physical"><span class="tab-icon">💪</span> Physical</button>
     <button class="tab-btn" data-tab="reading"><span class="tab-icon">📖</span> Reading</button>
   </nav>
- 
+
   <!-- ===== DASHBOARD ===== -->
   <div class="section active" id="sec-dashboard">
- 
+
     <!-- ===== DASHBOARD ===== -->
     <!-- INFOGRAPHIC DASHBOARD -->
     <div class="card cyan-glow">
@@ -789,7 +806,7 @@
           <div class="char-hero-quote" id="heroQuote">"Strike with the fury of a thousand suns"</div>
           <div class="change-char-hint">Click to change guardian</div>
         </div>
- 
+
         <!-- Infographic Stats -->
         <div class="dash-stats">
           <!-- Streak -->
@@ -803,7 +820,7 @@
             </div>
             <div class="milestone-badges" id="milestoneBadges"></div>
           </div>
- 
+
           <!-- Ring Charts Row -->
           <div class="rings-row mt">
             <!-- Tasks Ring -->
@@ -883,7 +900,7 @@
               <div class="ring-sub">Registered</div>
             </div>
           </div>
- 
+
           <!-- Week Bar Chart -->
           <div class="week-chart mt">
             <div style="font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">THIS WEEK ACTIVITY</div>
@@ -891,7 +908,7 @@
           </div>
         </div>
       </div>
- 
+
       <!-- Today Status -->
       <div class="mt" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
         <div style="font-size:0.78rem;color:var(--muted);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">TODAY:</div>
@@ -907,7 +924,7 @@
         </div>
       </div>
     </div>
- 
+
     <!-- Activity Feed -->
     <div class="card">
       <div class="card-header">
@@ -918,7 +935,7 @@
       </div>
     </div>
   </div>
- 
+
   <!-- ===== SUBJECTS ===== -->
   <div class="section" id="sec-subjects">
     <div class="card">
@@ -930,7 +947,7 @@
         </div>
         <span class="chip" id="subjectsCountLabel">0 subjects · 0 credits</span>
       </div>
- 
+
       <div class="form-grid">
         <div class="form-group">
           <label>Subject Code</label>
@@ -949,12 +966,12 @@
           <input id="subjectSyllabusInput" type="file" accept=".pdf,image/*"/>
         </div>
       </div>
- 
+
       <div class="btn-row">
         <button class="btn btn-primary" id="addSubjectBtn">➕ Save / Update Subject</button>
       </div>
       <div class="hint">To update: type existing code and change name/credits.</div>
- 
+
       <div class="table-wrap">
         <table id="subjectsTable">
           <thead><tr><th>Code</th><th>Name</th><th>Credits</th><th>Syllabus</th><th>Delete</th></tr></thead>
@@ -963,7 +980,7 @@
       </div>
     </div>
   </div>
- 
+
   <!-- ===== TASKS ===== -->
   <div class="section" id="sec-tasks">
     <div class="card">
@@ -975,9 +992,9 @@
         </div>
         <span class="chip" id="tasksCountLabel">0 tasks</span>
       </div>
- 
+
       <div class="proof-required">⚠️ Proof upload is required to mark a task as Completed. Submitting without proof saves as Pending.</div>
- 
+
       <div class="form-grid mt">
         <div class="form-group">
           <label>Subject Code</label>
@@ -1019,11 +1036,11 @@
           <input id="taskProofInput" type="file" accept=".pdf,image/*"/>
         </div>
       </div>
- 
+
       <div class="btn-row">
         <button class="btn btn-primary" id="addTaskBtn">➕ Add Task</button>
       </div>
- 
+
       <div class="table-wrap">
         <table id="tasksTable">
           <thead><tr><th>#</th><th>Sub</th><th>Lesson/Topic</th><th>Type</th><th>Priority</th><th>Deadline</th><th>Status</th><th>Proof</th><th>Del</th></tr></thead>
@@ -1032,7 +1049,7 @@
       </div>
     </div>
   </div>
- 
+
   <!-- ===== PHYSICAL ===== -->
   <div class="section" id="sec-physical">
     <div class="card">
@@ -1044,10 +1061,10 @@
         </div>
         <span class="chip" id="physStreakChip">🔥 0 day streak</span>
       </div>
- 
+
       <div class="deadline-info">⏰ Auto-deadline: Tonight 10:00 PM · Resets at midnight</div>
       <div class="proof-required" style="margin-bottom:16px;">⚠️ Proof required. No proof = saved as "Not Completed" with a reason.</div>
- 
+
       <div class="form-grid">
         <div class="form-group">
           <label>Activity Name</label>
@@ -1068,16 +1085,16 @@
           <input id="physProofInput" type="file" accept=".pdf,image/*"/>
         </div>
       </div>
- 
+
       <div class="btn-row">
         <button class="btn btn-green" id="addPhysicalBtn">💪 Submit Activity</button>
       </div>
- 
+
       <div class="mt2">
         <div style="font-size:0.8rem;color:var(--muted);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">TODAY'S ENTRY</div>
         <div id="physTodayStatus" class="today-pill pending">💪 Not yet logged today</div>
       </div>
- 
+
       <div class="table-wrap history-wrap">
         <table id="physTable">
           <thead><tr><th>Date</th><th>Activity</th><th>Category</th><th>Deadline</th><th>Status</th><th>Proof</th><th>Del</th></tr></thead>
@@ -1086,7 +1103,7 @@
       </div>
     </div>
   </div>
- 
+
   <!-- ===== READING ===== -->
   <div class="section" id="sec-reading">
     <div class="card">
@@ -1098,10 +1115,10 @@
         </div>
         <span class="chip" id="readStreakChip">🔥 0 day streak</span>
       </div>
- 
+
       <div class="deadline-info">⏰ Auto-deadline: Tonight 11:59 PM · Resets at midnight</div>
       <div class="proof-required" style="margin-bottom:16px;">⚠️ Proof required for completion status.</div>
- 
+
       <div class="form-grid">
         <div class="form-group">
           <label>Book / Article Title</label>
@@ -1120,16 +1137,16 @@
           <input id="readProofInput" type="file" accept=".pdf,image/*"/>
         </div>
       </div>
- 
+
       <div class="btn-row">
         <button class="btn btn-primary" id="addReadingBtn">📖 Submit Reading</button>
       </div>
- 
+
       <div class="mt2">
         <div style="font-size:0.8rem;color:var(--muted);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">TODAY'S ENTRY</div>
         <div id="readTodayStatus" class="today-pill pending">📖 Not yet logged today</div>
       </div>
- 
+
       <div class="table-wrap history-wrap">
         <table id="readTable">
           <thead><tr><th>Date</th><th>Title</th><th>Progress</th><th>Status</th><th>Proof</th><th>Del</th></tr></thead>
@@ -1138,7 +1155,7 @@
       </div>
     </div>
   </div>
- 
+
 <!-- AI STUDY ASSISTANT -->
 <button class="ai-fab" id="aiFab" title="AI Study Assistant">🤖</button>
 <div class="ai-panel" id="aiPanel">
@@ -1164,8 +1181,8 @@
     <button class="btn btn-primary btn-sm" onclick="sendAiMsg()">→</button>
   </div>
 </div>
- 
- 
+
+
 // ============================
 // CHARACTERS
 // ============================
@@ -1187,7 +1204,7 @@ const CHARACTERS = [
   { id:'crystal', emoji:'💎',  name:'CRYSTAL',    title:'The Diamond Mind',    color:'rgba(150,230,255,0.6)', quote:'"Pure clarity, unbreakable resolve"' },
   { id:'void',    emoji:'🌀',  name:'VOID',       title:'The Cosmic Wanderer', color:'rgba(80,0,255,0.6)',    quote:'"The universe rewards persistence"' },
 ];
- 
+
 // ============================
 // ============================
 // FIREBASE CONFIG
@@ -1202,19 +1219,19 @@ const firebaseConfig = {
   messagingSenderId: "93921841114",
   appId:             "1:93921841114:web:0d595a77a2883148a0bae3"
 };
- 
+
 // Init Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 let currentUser = null;
- 
+
 // User-scoped collection helper
 // Each user gets their own subcollection: users/{uid}/subjects, tasks, etc.
 function userCol(name) {
   return db.collection('users').doc(currentUser.uid).collection(name);
 }
- 
+
 // ============================
 // STATE
 // ============================
@@ -1222,7 +1239,7 @@ let subjects = [], tasks = [], physicalEntries = [], readingEntries = [];
 let selectedChar = null;
 let selectedCharModal = null;
 const MILESTONES = [3, 7, 14, 30, 50, 100];
- 
+
 // ============================
 // STORAGE HELPERS (localStorage backup)
 // ============================
@@ -1234,7 +1251,7 @@ function loadLocal(key) {
   const uid = currentUser ? currentUser.uid : 'guest';
   try { const d = localStorage.getItem('ast_' + uid + '_' + key); return d ? JSON.parse(d) : null; } catch(e) { return null; }
 }
- 
+
 // ============================
 // FIREBASE HELPERS
 // ============================
@@ -1252,7 +1269,7 @@ async function fbDelete(col, id) {
 async function fbUpdate(col, id, data) {
   await userCol(col).doc(id).update(data);
 }
- 
+
 // ============================
 // 90-DAY CLEANUP
 // ============================
@@ -1265,7 +1282,7 @@ function cleanup90Days() {
   saveLocal('physical', physicalEntries);
   saveLocal('reading', readingEntries);
 }
- 
+
 // ============================
 // STREAK LOGIC
 // ============================
@@ -1273,18 +1290,18 @@ function getStreak() {
   return loadLocal('streak') || { count: 0, lastDate: null, achieved: [] };
 }
 function saveStreak(data) { saveLocal('streak', data); }
- 
+
 function recalcStreak() {
   const today = new Date().toISOString().slice(0,10);
   // BOTH must be completed on SAME day to count streak
   const physDone = physicalEntries.some(p => p.date === today && p.status === 'Completed');
   const readDone = readingEntries.some(r => r.date === today && r.status === 'Completed');
   const bothDone = physDone && readDone; // ← KEY FIX: both required
- 
+
   const streak = getStreak();
   const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
   const yStr = yesterday.toISOString().slice(0,10);
- 
+
   if (bothDone) {
     if (streak.lastDate === today) {
       // already counted today — no change
@@ -1304,7 +1321,7 @@ function recalcStreak() {
       streak.count = 0; // missed yesterday — streak broken
     }
   }
- 
+
   const prevAchieved = streak.achieved || [];
   MILESTONES.forEach(m => {
     if (streak.count >= m && !prevAchieved.includes(m)) {
@@ -1317,7 +1334,7 @@ function recalcStreak() {
   saveStreak(streak);
   return streak;
 }
- 
+
 // ============================
 // FILE READER
 // ============================
@@ -1335,9 +1352,9 @@ function readFile(file, maxMB = 1) {
     reader.readAsDataURL(file);
   });
 }
- 
+
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
- 
+
 // ============================
 // NAVIGATION
 // ============================
@@ -1350,7 +1367,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('sec-' + tab).classList.add('active');
   });
 });
- 
+
 // ============================
 // CHARACTER MODAL
 // ============================
@@ -1370,13 +1387,13 @@ function buildCharGrid() {
     grid.appendChild(card);
   });
 }
- 
+
 function openCharModal() {
   selectedCharModal = selectedChar;
   buildCharGrid();
   document.getElementById('charModal').classList.remove('hidden');
 }
- 
+
 document.getElementById('confirmCharBtn').addEventListener('click', () => {
   if (!selectedCharModal) { alert('Please select a guardian!'); return; }
   selectedChar = selectedCharModal;
@@ -1386,7 +1403,7 @@ document.getElementById('confirmCharBtn').addEventListener('click', () => {
   updateCharHero();
   loadInitialData();
 });
- 
+
 function updateCharHero() {
   if (!selectedChar) return;
   document.getElementById('heroEmoji').textContent = selectedChar.emoji;
@@ -1398,7 +1415,7 @@ function updateCharHero() {
   // Apply character color as glow
   heroCard.style.boxShadow = `0 0 30px ${selectedChar.color}, 0 0 60px ${selectedChar.color.replace('0.6','0.2')}`;
 }
- 
+
 // ============================
 // CELEBRATION
 // ============================
@@ -1422,7 +1439,7 @@ function showCelebration(milestone) {
 function hideCelebration() {
   document.getElementById('celebration').classList.remove('show');
 }
- 
+
 // ============================
 // RENDER HELPERS
 // ============================
@@ -1430,7 +1447,7 @@ function proofLink(proof, id, type) {
   if (!proof) return '<span style="color:var(--muted);font-size:0.8rem;">No proof</span>';
   return `<button class="link-btn" onclick="viewProof('${id}','${type}')">👁 View</button>`;
 }
- 
+
 function viewProof(id, type) {
   let entry;
   if (type === 'task') entry = tasks.find(t => t.id === id);
@@ -1446,7 +1463,7 @@ function viewProof(id, type) {
   }
   modal.classList.add('open');
 }
- 
+
 // ============================
 // SUBJECTS
 // ============================
@@ -1457,12 +1474,12 @@ document.getElementById('addSubjectBtn').addEventListener('click', async () => {
   const fileEl = document.getElementById('subjectSyllabusInput');
   const file = fileEl.files[0];
   if (!code || !name) { alert('Subject code and name are required.'); return; }
- 
+
   let fileDataUrl = null;
   try { fileDataUrl = await readFile(file, 1); } catch(e) { if (e !== null) return; }
- 
+
   const payload = { code, name, credits, syllabus: fileDataUrl || null };
- 
+
   try {
     const snap = await userCol('subjects').where('code','==',code).get();
     let saved;
@@ -1489,7 +1506,7 @@ document.getElementById('addSubjectBtn').addEventListener('click', async () => {
   document.getElementById('subjectNameInput').value = '';
   document.getElementById('subjectCreditsInput').value = '';
 });
- 
+
 function renderSubjects() {
   const body = document.getElementById('subjectsBody');
   body.innerHTML = '';
@@ -1511,7 +1528,7 @@ function renderSubjects() {
   document.getElementById('dashSubCount').textContent = subjects.length;
   updateDashboard();
 }
- 
+
 function fillSubjectForm(code) {
   const s = subjects.find(x => x.code === code);
   if (!s) return;
@@ -1548,7 +1565,7 @@ async function deleteSubject(id) {
   renderSubjects();
   renderTasks();
 }
- 
+
 // ============================
 // TASKS
 // ============================
@@ -1562,12 +1579,12 @@ document.getElementById('addTaskBtn').addEventListener('click', async () => {
   const time = document.getElementById('taskDeadlineTimeInput').value;
   const fileEl = document.getElementById('taskProofInput');
   const file = fileEl.files[0];
- 
+
   if (!subCode || !lesson || !topic || !date || !time) { alert('All fields required.'); return; }
- 
+
   let fileDataUrl = null;
   try { fileDataUrl = await readFile(file, 1); } catch(e) { if (e !== null) return; }
- 
+
   const status = fileDataUrl ? 'Completed' : 'Pending';
   const subj = subjects.find(s => s.code === subCode);
   const deadline = `${date} ${time}`;
@@ -1584,19 +1601,19 @@ document.getElementById('addTaskBtn').addEventListener('click', async () => {
   document.getElementById('taskTopicInput').value = '';
   document.getElementById('taskProofInput').value = '';
 });
- 
+
 function renderTasks() {
   const body = document.getElementById('tasksBody');
   body.innerHTML = '';
   const now = new Date();
   let completed = 0, overdue = 0;
- 
+
   tasks.forEach((t, i) => {
     const dl = new Date(t.deadline.replace(' ','T'));
     let status = t.status;
     if (status !== 'Completed' && dl < now) { status = 'Overdue'; overdue++; }
     else if (status === 'Completed') completed++;
- 
+
     const pillClass = status === 'Completed' ? 'pill-complete' : status === 'Overdue' ? 'pill-overdue' : 'pill-pending';
     const badgeClass = t.priority === 'Low' ? 'badge-low' : t.priority === 'Medium' ? 'badge-medium' : t.priority === 'High' ? 'badge-high' : 'badge-top';
     const hasProof = t.proof || t.proofName;
@@ -1614,12 +1631,12 @@ function renderTasks() {
     `;
     body.appendChild(tr);
   });
- 
+
   document.getElementById('tasksCountLabel').textContent = `${tasks.length} tasks · ${completed} done`;
   updateDashboard();
   updateActivityFeed();
 }
- 
+
 // Upload proof for existing pending task
 async function uploadProofForTask(taskId) {
   const input = document.createElement('input');
@@ -1642,7 +1659,7 @@ async function uploadProofForTask(taskId) {
   };
   input.click();
 }
- 
+
 async function deleteTask(id) {
   if (!confirm('Delete this task?')) return;
   try { await fbDelete('tasks', id); } catch(e) { console.warn(e); }
@@ -1650,7 +1667,7 @@ async function deleteTask(id) {
   saveLocal('tasks', tasks);
   renderTasks();
 }
- 
+
 // ============================
 // PHYSICAL
 // ============================
@@ -1661,10 +1678,10 @@ document.getElementById('addPhysicalBtn').addEventListener('click', async () => 
   const fileEl = document.getElementById('physProofInput');
   const file = fileEl.files[0];
   if (!name) { alert('Activity name is required.'); return; }
- 
+
   let dataUrl = null;
   try { dataUrl = await readFile(file, 1); } catch(e) { if (e !== null) return; }
- 
+
   const today = new Date().toISOString().slice(0,10);
   const deadline = `${today} 22:00`;
   let status = 'Not Completed', reason = '';
@@ -1673,7 +1690,7 @@ document.getElementById('addPhysicalBtn').addEventListener('click', async () => 
     reason = prompt('No proof uploaded. Reason for not completing today?') || 'No reason provided';
     if (!reason) return;
   }
- 
+
   const entry = { date: today, name, category: cat, description: desc, deadline, status, reason, proof: dataUrl || null };
   try {
     const ref = await userCol('physical').add(entry);
@@ -1689,13 +1706,13 @@ document.getElementById('addPhysicalBtn').addEventListener('click', async () => 
   document.getElementById('physDescriptionInput').value = '';
   document.getElementById('physProofInput').value = '';
 });
- 
+
 function renderPhysical() {
   const body = document.getElementById('physBody');
   body.innerHTML = '';
   const today = new Date().toISOString().slice(0,10);
   let todayDone = false;
- 
+
   [...physicalEntries].reverse().forEach(p => {
     const pillClass = p.status === 'Completed' ? 'pill-complete' : 'pill-skipped';
     const tr = document.createElement('tr');
@@ -1711,7 +1728,7 @@ function renderPhysical() {
     body.appendChild(tr);
     if (p.date === today && p.status === 'Completed') todayDone = true;
   });
- 
+
   const statusEl = document.getElementById('physTodayStatus');
   if (todayDone) {
     statusEl.className = 'today-pill done';
@@ -1720,7 +1737,7 @@ function renderPhysical() {
     statusEl.className = 'today-pill pending';
     statusEl.textContent = '💪 Not yet logged today';
   }
- 
+
   const physDone = physicalEntries.filter(p => p.date === today && p.status === 'Completed').length;
   document.getElementById('dashPhysical').textContent = `${physDone}/1`;
   document.getElementById('dashPhysicalProgress').style.width = physDone >= 1 ? '100%' : '0%';
@@ -1730,7 +1747,7 @@ function renderPhysical() {
   updateActivityFeed();
   updateTodayStatus();
 }
- 
+
 async function deletePhys(id) {
   if (!confirm('Delete this physical entry?')) return;
   try { await fbDelete('physical', id); } catch(e) { console.warn(e); }
@@ -1738,7 +1755,7 @@ async function deletePhys(id) {
   saveLocal('physical', physicalEntries);
   renderPhysical();
 }
- 
+
 function calcPhysStreak() {
   const sorted = [...physicalEntries].filter(p => p.status === 'Completed').map(p => p.date).sort().reverse();
   const unique = [...new Set(sorted)];
@@ -1753,7 +1770,7 @@ function calcPhysStreak() {
   }
   return streak;
 }
- 
+
 // ============================
 // READING
 // ============================
@@ -1764,10 +1781,10 @@ document.getElementById('addReadingBtn').addEventListener('click', async () => {
   const fileEl = document.getElementById('readProofInput');
   const file = fileEl.files[0];
   if (!title || !pages) { alert('Title and pages/chapters are required.'); return; }
- 
+
   let dataUrl = null;
   try { dataUrl = await readFile(file, 1); } catch(e) { if (e !== null) return; }
- 
+
   const today = new Date().toISOString().slice(0,10);
   let status = 'Not Completed', reason = '';
   if (dataUrl) { status = 'Completed'; }
@@ -1775,7 +1792,7 @@ document.getElementById('addReadingBtn').addEventListener('click', async () => {
     reason = prompt('No proof uploaded. Reason?') || 'No reason provided';
     if (!reason) return;
   }
- 
+
   const entry = { date: today, title, pages, notes, status, reason, proof: dataUrl || null };
   try {
     const ref = await userCol('reading').add(entry);
@@ -1792,13 +1809,13 @@ document.getElementById('addReadingBtn').addEventListener('click', async () => {
   document.getElementById('readNotesInput').value = '';
   document.getElementById('readProofInput').value = '';
 });
- 
+
 function renderReading() {
   const body = document.getElementById('readBody');
   body.innerHTML = '';
   const today = new Date().toISOString().slice(0,10);
   let todayDone = false;
- 
+
   [...readingEntries].reverse().forEach(r => {
     const pillClass = r.status === 'Completed' ? 'pill-complete' : 'pill-skipped';
     const tr = document.createElement('tr');
@@ -1813,7 +1830,7 @@ function renderReading() {
     body.appendChild(tr);
     if (r.date === today && r.status === 'Completed') todayDone = true;
   });
- 
+
   const statusEl = document.getElementById('readTodayStatus');
   if (todayDone) {
     statusEl.className = 'today-pill done';
@@ -1822,17 +1839,17 @@ function renderReading() {
     statusEl.className = 'today-pill pending';
     statusEl.textContent = '📖 Not yet logged today';
   }
- 
+
   const readDone = readingEntries.filter(r => r.date === today && r.status === 'Completed').length;
   document.getElementById('dashReading').textContent = `${readDone}/1`;
   document.getElementById('dashReadingProgress').style.width = readDone >= 1 ? '100%' : '0%';
- 
+
   const readStreak = calcReadStreak();
   document.getElementById('readStreakChip').textContent = `🔥 ${readStreak} day streak`;
   updateActivityFeed();
   updateTodayStatus();
 }
- 
+
 async function deleteRead(id) {
   if (!confirm('Delete this reading entry?')) return;
   try { await fbDelete('reading', id); } catch(e) { console.warn(e); }
@@ -1840,7 +1857,7 @@ async function deleteRead(id) {
   saveLocal('reading', readingEntries);
   renderReading();
 }
- 
+
 function calcReadStreak() {
   const sorted = [...readingEntries].filter(r => r.status === 'Completed').map(r => r.date).sort().reverse();
   const unique = [...new Set(sorted)];
@@ -1855,7 +1872,7 @@ function calcReadStreak() {
   }
   return streak;
 }
- 
+
 // ============================
 // DASHBOARD UPDATE
 // ============================
@@ -1865,11 +1882,11 @@ function updateDashboard() {
   document.getElementById('streakCountHeader').textContent = streak.count;
   const flames = streak.count > 0 ? '🔥'.repeat(Math.min(streak.count, 8)) : '💤';
   document.getElementById('streakFlames').textContent = flames;
- 
+
   // Milestones
   const mDiv = document.getElementById('milestoneBadges');
   mDiv.innerHTML = MILESTONES.map(m => `<span class="milestone ${(streak.achieved||[]).includes(m)?'achieved':''}">${m===100?'👑':'🏅'} ${m}d</span>`).join('');
- 
+
   // Tasks ring
   const total = tasks.length;
   const completed = tasks.filter(t => t.status === 'Completed').length;
@@ -1884,7 +1901,7 @@ function updateDashboard() {
   document.getElementById('dashTasksTotal').textContent = total;
   document.getElementById('dashTasksCompleted').textContent = completed;
   document.getElementById('dashTasksOverdue').textContent = overdue;
- 
+
   // Physical ring
   const today = new Date().toISOString().slice(0,10);
   const physDone = physicalEntries.filter(p => p.date === today && p.status === 'Completed').length;
@@ -1894,7 +1911,7 @@ function updateDashboard() {
   const physStreak = calcPhysStreak();
   document.getElementById('physStreakSub').textContent = `${physStreak} day streak`;
   document.getElementById('physStreakChip').textContent = `🔥 ${physStreak} day streak`;
- 
+
   // Reading ring
   const readDone = readingEntries.filter(r => r.date === today && r.status === 'Completed').length;
   setRing('ringReading', readDone >= 1 ? 1 : 0);
@@ -1903,10 +1920,10 @@ function updateDashboard() {
   const readStreak = calcReadStreak();
   document.getElementById('readStreakSub').textContent = `${readStreak} day streak`;
   document.getElementById('readStreakChip').textContent = `🔥 ${readStreak} day streak`;
- 
+
   // Week bar chart
   renderWeekBars();
- 
+
   // Month-end banner — show on last 3 days of month
   const now = new Date();
   const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
@@ -1914,14 +1931,14 @@ function updateDashboard() {
     document.getElementById('monthEndBanner').style.display = 'block';
   }
 }
- 
+
 function setRing(id, pct) {
   const circumference = 201;
   const offset = circumference - (pct * circumference);
   const el = document.getElementById(id);
   if (el) el.style.strokeDashoffset = offset;
 }
- 
+
 function renderWeekBars() {
   const el = document.getElementById('weekBars');
   if (!el) return;
@@ -1945,7 +1962,7 @@ function renderWeekBars() {
       </div>`;
   }
 }
- 
+
 // Month-end export + reset
 async function doMonthEndExport() {
   if (!confirm('Export this month\'s data to Excel and clear portal for fresh start?')) return;
@@ -1972,7 +1989,7 @@ async function doMonthEndExport() {
     alert('✅ Portal cleared! Fresh month started. Your Excel backup is in Downloads.');
   }, 2000);
 }
- 
+
 function updateTodayStatus() {
   const today = new Date().toISOString().slice(0,10);
   const physDone = physicalEntries.some(p => p.date === today && p.status === 'Completed');
@@ -1985,7 +2002,7 @@ function updateTodayStatus() {
   // notification check
   checkNotifications(physDone, readDone);
 }
- 
+
 function checkNotifications(physDone, readDone) {
   const now = new Date();
   const hour = now.getHours();
@@ -2002,7 +2019,7 @@ function checkNotifications(physDone, readDone) {
     }
   }
 }
- 
+
 // ============================
 // ACTIVITY FEED
 // ============================
@@ -2019,14 +2036,14 @@ function updateActivityFeed() {
   readingEntries.slice(-2).reverse().forEach(r => {
     items.push({ time: r.date, html: `<div style="display:flex;gap:8px;align-items:center;padding:8px 12px;background:var(--glass2);border-radius:8px;border:1px solid var(--border)"><span>📖</span><span style="color:var(--purple);font-size:0.85rem">${r.title}</span><span style="color:var(--muted);font-size:0.85rem">${r.pages}</span><span class="pill ${r.status==='Completed'?'pill-complete':'pill-skipped'}" style="margin-left:auto">${r.status}</span></div>` });
   });
- 
+
   if (items.length === 0) {
     feed.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px">No activity yet. Start tracking your progress!</div>';
   } else {
     feed.innerHTML = items.map(i => i.html).join('');
   }
 }
- 
+
 // ============================
 // EXPORT EXCEL
 // ============================
@@ -2070,19 +2087,19 @@ function buildWorkbook() {
   }
   return { wb, month };
 }
- 
+
 document.getElementById('exportBtn').addEventListener('click', () => {
   const { wb, month } = buildWorkbook();
   if (!wb.SheetNames.length) { alert('No data to export yet!'); return; }
- 
+
   // Show export options modal
   showExportOptions(wb, month);
 });
- 
+
 function showExportOptions(wb, month) {
   const existing = document.getElementById('exportOptionsModal');
   if (existing) existing.remove();
- 
+
   const modal = document.createElement('div');
   modal.id = 'exportOptionsModal';
   modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px`;
@@ -2108,18 +2125,18 @@ function showExportOptions(wb, month) {
     </div>
   `;
   document.body.appendChild(modal);
- 
+
   // store wb globally for use in sub-functions
   window._exportWb = wb;
   window._exportMonth = month;
 }
- 
+
 function exportDownload() {
   XLSX.writeFile(window._exportWb, `AST-${window._exportMonth}.xlsx`);
   document.getElementById('exportOptionsModal')?.remove();
   alert(`✅ Downloaded: AST-${window._exportMonth}.xlsx\nSave it safely — this is your permanent record!`);
 }
- 
+
 function exportWhatsApp(month) {
   XLSX.writeFile(window._exportWb, `AST-${month}.xlsx`);
   setTimeout(() => {
@@ -2128,7 +2145,7 @@ function exportWhatsApp(month) {
   }, 800);
   document.getElementById('exportOptionsModal')?.remove();
 }
- 
+
 function exportEmail(month) {
   XLSX.writeFile(window._exportWb, `AST-${month}.xlsx`);
   const email = localStorage.getItem('ast_email') || '';
@@ -2137,23 +2154,23 @@ function exportEmail(month) {
   setTimeout(() => window.open(`https://mail.google.com/mail/?view=cm&to=${email}&su=${subject}&body=${body}`, '_blank'), 800);
   document.getElementById('exportOptionsModal')?.remove();
 }
- 
+
 function exportCopyLink(month) {
   XLSX.writeFile(window._exportWb, `AST-${month}.xlsx`);
   const text = `📊 AST Study Report ${month} exported!\nFile: AST-${month}.xlsx\nPortal: https://hkunverified-creator.github.io/advance-study-portal/`;
   navigator.clipboard.writeText(text).then(() => alert('✅ Reminder text copied! Share anywhere.')).catch(() => alert('Text: ' + text));
   document.getElementById('exportOptionsModal')?.remove();
 }
- 
+
 // Month-end export + reset
 async function doMonthEndExport() {
   if (!confirm('⚠️ Month End Export!\n\nThis will:\n1. Download your Excel report\n2. Clear all portal data for fresh start\n\nProceed?')) return;
- 
+
   const { wb, month } = buildWorkbook();
   if (!wb.SheetNames.length) { alert('No data to export!'); return; }
- 
+
   showExportOptions(wb, month);
- 
+
   // After 3 seconds ask to clear
   setTimeout(async () => {
     if (!confirm('Excel ready! Now clear ALL data for fresh month start?')) return;
@@ -2173,7 +2190,7 @@ async function doMonthEndExport() {
     alert('✅ Fresh start! New month begins. Check Downloads for your Excel backup.');
   }, 3500);
 }
- 
+
 // ============================
 // CLEAR ALL
 // ============================
@@ -2192,7 +2209,7 @@ document.getElementById('clearBtn').addEventListener('click', async () => {
   updateDashboard(); updateActivityFeed();
   alert('All data cleared.');
 });
- 
+
 // ============================
 // EMAIL MODAL
 // ============================
@@ -2207,7 +2224,7 @@ document.getElementById('emailSkipBtn').addEventListener('click', () => {
   localStorage.setItem('ast_email_skipped', '1');
   document.getElementById('emailModal').classList.add('hidden');
 });
- 
+
 // ============================
 // BROWSER NOTIFICATIONS
 // ============================
@@ -2233,14 +2250,14 @@ function scheduleNotifications() {
     }
   }, 60000);
 }
- 
+
 // ============================
 // INITIAL LOAD
 // ============================
 async function loadInitialData() {
   // Show loading state
   document.getElementById('activityFeed').innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:12px">⏳ Loading data from Firebase...</div>';
- 
+
   try {
     const [subSnap, taskSnap, physSnap, readSnap] = await Promise.all([
       userCol('subjects').get(),
@@ -2264,7 +2281,7 @@ async function loadInitialData() {
     physicalEntries = loadLocal('physical') || [];
     readingEntries  = loadLocal('reading') || [];
   }
- 
+
   cleanup90Days();
   renderSubjects();
   renderTasks();
@@ -2273,13 +2290,13 @@ async function loadInitialData() {
   updateDashboard();
   updateActivityFeed();
   requestNotifPermission();
- 
+
   // Email modal
   if (!localStorage.getItem('ast_email') && !localStorage.getItem('ast_email_skipped')) {
     setTimeout(() => document.getElementById('emailModal').classList.remove('hidden'), 1500);
   }
 }
- 
+
 // ============================
 // AI STUDY ASSISTANT (ChatGPT + Claude + Gemini)
 // ============================
@@ -2290,12 +2307,12 @@ const AI_KEYS = {
   claude:  'PASTE_CLAUDE_API_KEY_HERE'     // https://console.anthropic.com/
 };
 let activeAI = 'gemini'; // default
- 
+
 document.getElementById('aiFab').addEventListener('click', () => {
   document.getElementById('aiPanel').classList.toggle('open');
   setTimeout(() => document.getElementById('aiInput').focus(), 100);
 });
- 
+
 async function sendAiMsg() {
   const input = document.getElementById('aiInput');
   const msg = input.value.trim();
@@ -2306,12 +2323,12 @@ async function sendAiMsg() {
   const typingId = 'typ_' + Date.now();
   messages.innerHTML += `<div class="ai-msg typing" id="${typingId}">⏳ ${activeAI.toUpperCase()} thinking...</div>`;
   messages.scrollTop = messages.scrollHeight;
- 
+
   const context = `You are a study assistant for a student portal called AST (Advanced Study Tracker).
 Student has ${subjects.length} subjects: ${subjects.map(s=>s.name).join(', ')||'none'}.
 Tasks: ${tasks.length} total, ${tasks.filter(t=>t.status==='Completed').length} completed.
 Respond helpfully and concisely. You can use Tanglish (Tamil+English mix) if appropriate.`;
- 
+
   let reply = '';
   try {
     if (activeAI === 'gemini') {
@@ -2346,7 +2363,7 @@ Respond helpfully and concisely. You can use Tanglish (Tamil+English mix) if app
   }
   messages.scrollTop = messages.scrollHeight;
 }
- 
+
 function switchAI(ai) {
   activeAI = ai;
   ['gemini','openai','claude'].forEach(a => {
@@ -2364,7 +2381,7 @@ function switchAI(ai) {
   const names = {gemini:'✦ Gemini',openai:'⬡ ChatGPT',claude:'◈ Claude'};
   document.getElementById('aiMessages').innerHTML += `<div class="ai-msg typing">Switched to <b>${names[ai]}</b> 🔄</div>`;
 }
- 
+
 // ============================
 // AUTH FUNCTIONS
 // ============================
@@ -2377,7 +2394,7 @@ async function signInWithGoogle() {
     console.error(e);
   }
 }
- 
+
 async function signOut() {
   if (!confirm('Sign out of AST Portal?')) return;
   await auth.signOut();
@@ -2386,34 +2403,25 @@ async function signOut() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginModal').classList.remove('hidden');
 }
- 
+
 // ============================
 // INIT — Auth State Listener
 // ============================
 document.getElementById('googleSignInBtn').addEventListener('click', signInWithGoogle);
- 
+
 auth.onAuthStateChanged(async (user) => {
+  // Hide any loading state
+  const loader = document.getElementById('globalLoader');
+  if (loader) loader.remove();
+
   if (user) {
-    // User is signed in
     currentUser = user;
- 
-    // Update header user info
     document.getElementById('userName').textContent = user.displayName || user.email;
     const avatar = document.getElementById('userAvatar');
-    if (user.photoURL) {
-      avatar.src = user.photoURL;
-      avatar.style.display = 'block';
-    }
- 
-    // Hide login modal
+    if (user.photoURL) { avatar.src = user.photoURL; avatar.style.display = 'block'; }
     document.getElementById('loginModal').classList.add('hidden');
- 
-    // Check if character already selected
     const savedCharId = localStorage.getItem('ast_character_' + user.uid);
-    if (savedCharId) {
-      selectedChar = CHARACTERS.find(c => c.id === savedCharId) || null;
-    }
- 
+    if (savedCharId) selectedChar = CHARACTERS.find(c => c.id === savedCharId) || null;
     if (selectedChar) {
       selectedCharModal = selectedChar;
       document.getElementById('charModal').classList.add('hidden');
@@ -2427,7 +2435,8 @@ auth.onAuthStateChanged(async (user) => {
       document.getElementById('app').style.display = 'block';
     }
   } else {
-    // Not signed in — show login
+    document.getElementById('loginModal').style.opacity = '1';
+    document.getElementById('loginModal').style.pointerEvents = 'all';
     document.getElementById('loginModal').classList.remove('hidden');
     document.getElementById('charModal').classList.add('hidden');
     document.getElementById('app').style.display = 'none';
