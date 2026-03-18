@@ -367,15 +367,6 @@
     /* === FORMS === */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
-    @media (max-width: 600px) {
-      .modal-inner { padding: 20px; }
-      .dash-hero { flex-direction: column; }
-      .char-hero { min-width: auto; }
-      .rings-row { gap: 8px; }
-      .ring-svg { width: 65px; height: 65px; }
-      .header-logo { font-size: 1rem; }
-      .ai-panel { width: calc(100vw - 32px); right: 16px; }
-    }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group.full { grid-column: 1 / -1; }
     label { font-size: 0.82rem; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -620,66 +611,19 @@
     /* Scrollable history */
     .history-wrap { max-height: 300px; overflow-y: auto; }
 
-    /* === RING CHARTS === */
-    .rings-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; }
-    .ring-card { flex:1; min-width:90px; text-align:center; background:var(--glass2); border:1px solid var(--border); border-radius:12px; padding:12px 8px; transition:all 0.2s; }
-    .ring-card:hover { border-color:var(--cyan); transform:translateY(-2px); }
-    .ring-svg { width:80px; height:80px; }
-    .ring-label { font-size:0.8rem; color:var(--white); font-weight:600; margin-top:6px; }
-    .ring-sub { font-size:0.7rem; color:var(--muted); margin-top:2px; }
-
-    /* === WEEK BAR CHART === */
-    .week-chart { background:var(--glass2); border:1px solid var(--border); border-radius:10px; padding:12px; }
-    .week-bars { display:flex; gap:6px; align-items:flex-end; height:50px; }
-    .week-bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; }
-    .week-bar-wrap { width:100%; display:flex; flex-direction:column; gap:2px; align-items:center; height:40px; justify-content:flex-end; }
-    .week-bar { width:100%; border-radius:3px 3px 0 0; min-height:3px; transition:height 0.8s ease; }
-    .week-bar.phys { background:var(--green); }
-    .week-bar.read { background:var(--purple); }
-    .week-day-label { font-size:0.62rem; color:var(--muted); font-family:'Share Tech Mono',monospace; }
-
-    /* === AI CHAT === */
-    .ai-fab { position:fixed; bottom:24px; right:24px; width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--purple)); border:none; cursor:pointer; font-size:1.4rem; box-shadow:var(--glow-cyan),var(--shadow); z-index:500; transition:all 0.2s; display:flex;align-items:center;justify-content:center; }
-    .ai-fab:hover { transform:scale(1.1); }
-    .ai-panel { position:fixed; bottom:90px; right:24px; width:340px; max-height:500px; background:rgba(8,0,20,0.97); border:1px solid var(--border); border-radius:16px; box-shadow:var(--glow-purple),var(--shadow); z-index:500; display:none; flex-direction:column; overflow:hidden; }
-    .ai-panel.open { display:flex; }
-    .ai-header { padding:14px 16px; background:rgba(191,0,255,0.1); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
-    .ai-title { font-family:'Orbitron',sans-serif; font-size:0.85rem; color:var(--purple); font-weight:700; }
-    .ai-messages { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; max-height:340px; }
-    .ai-msg { padding:8px 12px; border-radius:10px; font-size:0.85rem; line-height:1.5; max-width:85%; }
-    .ai-msg.user { background:rgba(0,245,255,0.1); border:1px solid var(--border-cyan); color:var(--white); align-self:flex-end; }
-    .ai-msg.bot { background:rgba(191,0,255,0.1); border:1px solid var(--border); color:var(--white); align-self:flex-start; }
-    .ai-msg.typing { color:var(--muted); font-style:italic; }
-    .ai-input-row { padding:10px; border-top:1px solid var(--border); display:flex; gap:8px; }
-    .ai-input-row input { flex:1; font-size:0.85rem; padding:8px 12px; }
-    .ai-input-row button { padding:8px 14px; font-size:0.85rem; }
-
-    /* hide old progress bars since using rings now */
-    #dashTasksProgress, #dashPhysicalProgress, #dashReadingProgress { display:none; }
-
-    
+    @media (max-width: 600px) {
+      .modal-inner { padding: 20px; }
+      .dash-hero { flex-direction: column; }
+      .char-hero { min-width: auto; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .header-logo { font-size: 1rem; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- GLOBAL LOADER -->
-<div id="globalLoader" style="position:fixed;inset:0;background:#04000f;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
-  <div style="font-size:3rem;animation:heroFloat 1.5s ease-in-out infinite">⚡</div>
-  <div style="font-family:'Orbitron',sans-serif;font-size:1.2rem;color:#00f5ff;text-shadow:0 0 20px rgba(0,245,255,0.5)">AST PORTAL</div>
-  <div style="color:#7b6fa0;font-size:0.85rem">Initializing...</div>
-  <div style="width:120px;height:3px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;margin-top:8px">
-    <div style="height:100%;background:linear-gradient(90deg,#00f5ff,#bf00ff);border-radius:3px;animation:loadBar 1.5s ease-in-out infinite"></div>
-  </div>
-</div>
-<style>
-@keyframes loadBar {
-  0% { width:0%;margin-left:0 }
-  50% { width:100%;margin-left:0 }
-  100% { width:0%;margin-left:100% }
-}
-</style>
-
 <!-- ===== LOGIN MODAL ===== -->
-<div class="modal-overlay" id="loginModal" style="opacity:1">
+<div class="modal-overlay" id="loginModal">
   <div class="modal-box sm">
     <div class="modal-inner" style="text-align:center">
       <div style="font-size:3rem;margin-bottom:12px">⚡</div>
@@ -794,11 +738,10 @@
   <!-- ===== DASHBOARD ===== -->
   <div class="section active" id="sec-dashboard">
 
-    <!-- ===== DASHBOARD ===== -->
-    <!-- INFOGRAPHIC DASHBOARD -->
+    <!-- Character Hero + Streak -->
     <div class="card cyan-glow">
       <div class="dash-hero">
-        <!-- Character -->
+        <!-- Character Display -->
         <div class="char-hero" id="charHeroCard" onclick="openCharModal()" title="Click to change guardian">
           <span class="big-emoji" id="heroEmoji">⚔️</span>
           <div class="char-hero-name" id="heroName">RYUKEN</div>
@@ -807,128 +750,67 @@
           <div class="change-char-hint">Click to change guardian</div>
         </div>
 
-        <!-- Infographic Stats -->
+        <!-- Stats -->
         <div class="dash-stats">
-          <!-- Streak -->
+          <!-- Streak Panel -->
           <div class="streak-panel">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
               <div class="streak-flames" id="streakFlames">🔥</div>
               <div>
                 <div class="streak-count" id="streakDisplay">0</div>
-                <div class="streak-info">DAY COMBO STREAK · Physical + Reading both required</div>
+                <div class="streak-info">DAY COMBO STREAK</div>
               </div>
             </div>
+            <div style="font-size:0.82rem;color:var(--muted);margin-bottom:8px;">Complete Physical + Reading daily to keep your streak alive.</div>
             <div class="milestone-badges" id="milestoneBadges"></div>
           </div>
 
-          <!-- Ring Charts Row -->
-          <div class="rings-row mt">
-            <!-- Tasks Ring -->
-            <div class="ring-card">
-              <svg class="ring-svg" viewBox="0 0 80 80">
-                <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-                <circle id="ringTasks" cx="40" cy="40" r="32" fill="none" stroke="url(#gradTasks)" stroke-width="8"
-                  stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round"
-                  transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>
-                <defs>
-                  <linearGradient id="gradTasks" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#00f5ff"/>
-                    <stop offset="100%" stop-color="#bf00ff"/>
-                  </linearGradient>
-                </defs>
-                <text x="40" y="37" text-anchor="middle" fill="#00f5ff" font-size="13" font-family="Orbitron" font-weight="700" id="ringTasksText">0</text>
-                <text x="40" y="50" text-anchor="middle" fill="#7b6fa0" font-size="7" font-family="Rajdhani">TASKS</text>
-              </svg>
-              <div class="ring-label">📝 <span id="taskCompletedLabel">0/0</span></div>
-              <div class="ring-sub">Completed</div>
+          <!-- 4 stat cards -->
+          <div class="stats-grid mt">
+            <div class="stat-card">
+              <div class="stat-label">📝 Tasks</div>
+              <div class="stat-value" id="dashTasksTotal">0</div>
+              <div class="stat-sub">Completed: <span id="dashTasksCompleted">0</span> · Overdue: <span id="dashTasksOverdue">0</span></div>
+              <div class="progress-bar"><div class="progress-fill" id="dashTasksProgress" style="width:0%"></div></div>
             </div>
-            <!-- Physical Ring -->
-            <div class="ring-card">
-              <svg class="ring-svg" viewBox="0 0 80 80">
-                <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-                <circle id="ringPhysical" cx="40" cy="40" r="32" fill="none" stroke="url(#gradPhys)" stroke-width="8"
-                  stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round"
-                  transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>
-                <defs>
-                  <linearGradient id="gradPhys" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#00ff8c"/>
-                    <stop offset="100%" stop-color="#00f5ff"/>
-                  </linearGradient>
-                </defs>
-                <text x="40" y="37" text-anchor="middle" fill="#00ff8c" font-size="13" font-family="Orbitron" font-weight="700" id="ringPhysText">0</text>
-                <text x="40" y="50" text-anchor="middle" fill="#7b6fa0" font-size="7" font-family="Rajdhani">PHYSICAL</text>
-              </svg>
-              <div class="ring-label">💪 <span id="physDoneLabel">0/1</span></div>
-              <div class="ring-sub" id="physStreakSub">0 day streak</div>
+            <div class="stat-card">
+              <div class="stat-label">💪 Physical</div>
+              <div class="stat-value" id="dashPhysical">0/1</div>
+              <div class="stat-sub" id="dashPhysicalSub">Today 10PM deadline</div>
+              <div class="progress-bar"><div class="progress-fill" id="dashPhysicalProgress" style="width:0%;background:linear-gradient(90deg,var(--green),var(--cyan))"></div></div>
             </div>
-            <!-- Reading Ring -->
-            <div class="ring-card">
-              <svg class="ring-svg" viewBox="0 0 80 80">
-                <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-                <circle id="ringReading" cx="40" cy="40" r="32" fill="none" stroke="url(#gradRead)" stroke-width="8"
-                  stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round"
-                  transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>
-                <defs>
-                  <linearGradient id="gradRead" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#bf00ff"/>
-                    <stop offset="100%" stop-color="#ff2d78"/>
-                  </linearGradient>
-                </defs>
-                <text x="40" y="37" text-anchor="middle" fill="#bf00ff" font-size="13" font-family="Orbitron" font-weight="700" id="ringReadText">0</text>
-                <text x="40" y="50" text-anchor="middle" fill="#7b6fa0" font-size="7" font-family="Rajdhani">READING</text>
-              </svg>
-              <div class="ring-label">📖 <span id="readDoneLabel">0/1</span></div>
-              <div class="ring-sub" id="readStreakSub">0 day streak</div>
+            <div class="stat-card">
+              <div class="stat-label">📖 Reading</div>
+              <div class="stat-value" id="dashReading">0/1</div>
+              <div class="stat-sub" id="dashReadingSub">Today 12AM deadline</div>
+              <div class="progress-bar"><div class="progress-fill" id="dashReadingProgress" style="width:0%;background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div>
             </div>
-            <!-- Credits Ring -->
-            <div class="ring-card">
-              <svg class="ring-svg" viewBox="0 0 80 80">
-                <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-                <circle id="ringCredits" cx="40" cy="40" r="32" fill="none" stroke="url(#gradCred)" stroke-width="8"
-                  stroke-dasharray="201" stroke-dashoffset="150" stroke-linecap="round"
-                  transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>
-                <defs>
-                  <linearGradient id="gradCred" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#ffe600"/>
-                    <stop offset="100%" stop-color="#ff6b00"/>
-                  </linearGradient>
-                </defs>
-                <text x="40" y="37" text-anchor="middle" fill="#ffe600" font-size="13" font-family="Orbitron" font-weight="700" id="dashCredits">0</text>
-                <text x="40" y="50" text-anchor="middle" fill="#7b6fa0" font-size="7" font-family="Rajdhani">CREDITS</text>
-              </svg>
-              <div class="ring-label">🎓 <span id="dashSubCount">0</span> Subjects</div>
-              <div class="ring-sub">Registered</div>
+            <div class="stat-card">
+              <div class="stat-label">🎓 Credits</div>
+              <div class="stat-value" id="dashCredits">0</div>
+              <div class="stat-sub"><span id="dashSubCount">0</span> subjects registered</div>
             </div>
-          </div>
-
-          <!-- Week Bar Chart -->
-          <div class="week-chart mt">
-            <div style="font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">THIS WEEK ACTIVITY</div>
-            <div class="week-bars" id="weekBars"></div>
           </div>
         </div>
       </div>
 
-      <!-- Today Status -->
-      <div class="mt" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-        <div style="font-size:0.78rem;color:var(--muted);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">TODAY:</div>
+      <!-- Today Status Summary -->
+      <div>
+        <div style="font-size:0.8rem;color:var(--muted);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">TODAY'S STATUS</div>
         <div class="today-status" id="todayStatus">
           <span class="today-pill pending">💪 Physical: Pending</span>
           <span class="today-pill pending">📖 Reading: Pending</span>
         </div>
-        <!-- Month-end export reminder -->
-        <div id="monthEndBanner" style="display:none;margin-left:auto">
-          <button class="btn btn-primary btn-sm" onclick="doMonthEndExport()" style="font-size:0.8rem;padding:6px 14px;">
-            📊 Month End — Export & Reset
-          </button>
-        </div>
       </div>
     </div>
 
-    <!-- Activity Feed -->
+    <!-- Quick Activity Feed -->
     <div class="card">
       <div class="card-header">
-        <div><div class="card-title" style="font-size:0.95rem;">⚡ RECENT ACTIVITY</div></div>
+        <div>
+          <div class="card-title" style="font-size:0.95rem;">⚡ RECENT ACTIVITY</div>
+          <div class="card-sub">Latest entries across all categories</div>
+        </div>
       </div>
       <div id="activityFeed" style="display:flex;flex-direction:column;gap:8px;">
         <div style="color:var(--muted);font-size:0.85rem;">No activity yet. Start tracking!</div>
@@ -964,6 +846,10 @@
         <div class="form-group">
           <label>Syllabus (PDF/Image, &lt; 1MB)</label>
           <input id="subjectSyllabusInput" type="file" accept=".pdf,image/*"/>
+        </div>
+        <div class="form-group">
+          <label>Quick Preview</label>
+          <div id="syllabusPreview">Click a subject from the table to preview syllabus.</div>
         </div>
       </div>
 
@@ -1156,33 +1042,9 @@
     </div>
   </div>
 
-<!-- AI STUDY ASSISTANT -->
-<button class="ai-fab" id="aiFab" title="AI Study Assistant">🤖</button>
-<div class="ai-panel" id="aiPanel">
-  <div class="ai-header">
-    <span style="font-size:1.1rem">🤖</span>
-    <div>
-      <div class="ai-title">AI STUDY ASSISTANT</div>
-      <div style="font-size:0.68rem;color:var(--muted)">Switch between 3 AIs below</div>
-    </div>
-    <button onclick="document.getElementById('aiPanel').classList.remove('open')" style="margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;">✕</button>
-  </div>
-  <!-- AI Switcher -->
-  <div style="display:flex;gap:4px;padding:8px;border-bottom:1px solid rgba(191,0,255,0.2)">
-    <button onclick="switchAI('gemini')" id="btn-gemini" style="flex:1;padding:6px;border-radius:8px;border:1px solid rgba(0,200,83,0.5);background:rgba(0,200,83,0.15);color:#00c853;font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif">✦ GEMINI</button>
-    <button onclick="switchAI('openai')" id="btn-openai" style="flex:1;padding:6px;border-radius:8px;border:1px solid rgba(191,0,255,0.3);background:transparent;color:var(--muted);font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif">⬡ CHATGPT</button>
-    <button onclick="switchAI('claude')" id="btn-claude" style="flex:1;padding:6px;border-radius:8px;border:1px solid rgba(191,0,255,0.3);background:transparent;color:var(--muted);font-size:0.72rem;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif">◈ CLAUDE</button>
-  </div>
-  <div class="ai-messages" id="aiMessages">
-    <div class="ai-msg bot">Vanakkam! 👋 I'm your study assistant.<br/>Switch between <b style="color:#00c853">Gemini</b>, <b style="color:#bf00ff">ChatGPT</b> or <b style="color:#00f5ff">Claude</b> above!<br/>Ask me anything about your subjects! 🔥</div>
-  </div>
-  <div class="ai-input-row">
-    <input id="aiInput" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')sendAiMsg()"/>
-    <button class="btn btn-primary btn-sm" onclick="sendAiMsg()">→</button>
-  </div>
-</div>
+</div><!-- end #app -->
 
-
+<script>
 // ============================
 // CHARACTERS
 // ============================
@@ -1293,35 +1155,24 @@ function saveStreak(data) { saveLocal('streak', data); }
 
 function recalcStreak() {
   const today = new Date().toISOString().slice(0,10);
-  // BOTH must be completed on SAME day to count streak
   const physDone = physicalEntries.some(p => p.date === today && p.status === 'Completed');
   const readDone = readingEntries.some(r => r.date === today && r.status === 'Completed');
-  const bothDone = physDone && readDone; // ← KEY FIX: both required
-
   const streak = getStreak();
   const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
   const yStr = yesterday.toISOString().slice(0,10);
-
-  if (bothDone) {
+  if (physDone && readDone) {
     if (streak.lastDate === today) {
-      // already counted today — no change
+      // already counted today
     } else if (streak.lastDate === yStr) {
       streak.count += 1; streak.lastDate = today;
     } else if (!streak.lastDate) {
       streak.count = 1; streak.lastDate = today;
     } else {
-      // gap in days — reset to 1
       streak.count = 1; streak.lastDate = today;
     }
-  } else {
-    // Only one done or none — streak does NOT increase
-    // If yesterday was the last streak day and today isn't both done, don't break yet
-    // Streak breaks only when a new day passes without both done
-    if (streak.lastDate && streak.lastDate < yStr) {
-      streak.count = 0; // missed yesterday — streak broken
-    }
+  } else if (streak.lastDate !== today && streak.lastDate !== yStr) {
+    if (streak.count > 0 && streak.lastDate && streak.lastDate < yStr) streak.count = 0;
   }
-
   const prevAchieved = streak.achieved || [];
   MILESTONES.forEach(m => {
     if (streak.count >= m && !prevAchieved.includes(m)) {
@@ -1518,7 +1369,7 @@ function renderSubjects() {
       <td><button class="link-btn" onclick="fillSubjectForm('${s.code}')">${s.code}</button></td>
       <td>${s.name}</td>
       <td>${s.credits || '-'}</td>
-      <td>${s.syllabus ? `<button class="link-btn" onclick="viewSyllabusModal('${s.id}')">👁 View</button>` : '<span style="color:var(--muted);font-size:0.8rem;">None</span>'}</td>
+      <td>${s.syllabus ? `<button class="link-btn" onclick="previewSyllabus('${s.code}')">👁 View</button>` : '<span style="color:var(--muted);font-size:0.8rem;">None</span>'}</td>
       <td><button class="delete-btn" onclick="deleteSubject('${s.id}')">✕</button></td>
     `;
     body.appendChild(tr);
@@ -1537,17 +1388,15 @@ function fillSubjectForm(code) {
   document.getElementById('subjectCreditsInput').value = s.credits || '';
   previewSyllabus(code);
 }
-function viewSyllabusModal(id) {
-  const s = subjects.find(x => x.id === id);
-  if (!s || !s.syllabus) { alert('No syllabus uploaded for this subject.'); return; }
-  const modal = document.getElementById('proofModal');
-  const content = document.getElementById('proofContent');
+function previewSyllabus(code) {
+  const s = subjects.find(x => x.code === code);
+  const el = document.getElementById('syllabusPreview');
+  if (!s || !s.syllabus) { el.innerHTML = `<span style="color:var(--muted);font-size:0.85rem;">No syllabus for ${code}</span>`; return; }
   if (s.syllabus.startsWith('data:application/pdf')) {
-    content.innerHTML = `<iframe src="${s.syllabus}" style="width:90vw;height:85vh;border:none;border-radius:8px;"></iframe>`;
+    el.innerHTML = `<object data="${s.syllabus}" type="application/pdf" width="100%" height="150px">PDF preview not supported</object>`;
   } else {
-    content.innerHTML = `<img src="${s.syllabus}" alt="Syllabus" style="max-width:90vw;max-height:85vh;border-radius:8px;"/>`;
+    el.innerHTML = `<img src="${s.syllabus}" alt="Syllabus" style="max-width:100%;max-height:150px;border-radius:8px;"/>`;
   }
-  modal.classList.add('open');
 }
 async function deleteSubject(id) {
   if (!confirm('Delete subject and all its tasks?')) return;
@@ -1613,10 +1462,9 @@ function renderTasks() {
     let status = t.status;
     if (status !== 'Completed' && dl < now) { status = 'Overdue'; overdue++; }
     else if (status === 'Completed') completed++;
-
+    
     const pillClass = status === 'Completed' ? 'pill-complete' : status === 'Overdue' ? 'pill-overdue' : 'pill-pending';
     const badgeClass = t.priority === 'Low' ? 'badge-low' : t.priority === 'Medium' ? 'badge-medium' : t.priority === 'High' ? 'badge-high' : 'badge-top';
-    const hasProof = t.proof || t.proofName;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${i+1}</td>
@@ -1626,38 +1474,20 @@ function renderTasks() {
       <td><span class="badge ${badgeClass}">${t.priority}</span></td>
       <td style="font-size:0.8rem;color:var(--muted)">${t.deadline}</td>
       <td><span class="pill ${pillClass}">${status}</span></td>
-      <td>${hasProof ? `<span style="color:var(--green);font-size:0.8rem">✅ Proof</span>` : `<button class="link-btn" onclick="uploadProofForTask('${t.id}')">📎 Add Proof</button>`}</td>
+      <td>${proofLink(t.proof, t.id, 'task')}</td>
       <td><button class="delete-btn" onclick="deleteTask('${t.id}')">✕</button></td>
     `;
     body.appendChild(tr);
   });
 
-  document.getElementById('tasksCountLabel').textContent = `${tasks.length} tasks · ${completed} done`;
-  updateDashboard();
+  const total = tasks.length;
+  const pct = total ? (completed / total) * 100 : 0;
+  document.getElementById('tasksCountLabel').textContent = `${total} tasks · ${completed} done`;
+  document.getElementById('dashTasksTotal').textContent = total;
+  document.getElementById('dashTasksCompleted').textContent = completed;
+  document.getElementById('dashTasksOverdue').textContent = overdue;
+  document.getElementById('dashTasksProgress').style.width = pct + '%';
   updateActivityFeed();
-}
-
-// Upload proof for existing pending task
-async function uploadProofForTask(taskId) {
-  const input = document.createElement('input');
-  input.type = 'file'; input.accept = '.pdf,image/*';
-  input.onchange = async () => {
-    const file = input.files[0];
-    if (!file) return;
-    if (file.size > 1 * 1024 * 1024) { alert('File must be under 1MB'); return; }
-    const t = tasks.find(x => x.id === taskId);
-    if (!t) return;
-    // Store only filename — not base64 (saves portal memory)
-    t.proofName = file.name;
-    t.status = 'Completed';
-    try {
-      await userCol('tasks').doc(taskId).update({ status: 'Completed', proofName: file.name, proof: null });
-    } catch(e) { console.warn(e); }
-    saveLocal('tasks', tasks);
-    renderTasks();
-    alert(`✅ Proof "${file.name}" recorded! Task marked Completed.`);
-  };
-  input.click();
 }
 
 async function deleteTask(id) {
@@ -1880,114 +1710,14 @@ function updateDashboard() {
   const streak = recalcStreak();
   document.getElementById('streakDisplay').textContent = streak.count;
   document.getElementById('streakCountHeader').textContent = streak.count;
-  const flames = streak.count > 0 ? '🔥'.repeat(Math.min(streak.count, 8)) : '💤';
-  document.getElementById('streakFlames').textContent = flames;
+  
+  // Flames
+  const flames = '🔥'.repeat(Math.min(streak.count, 10));
+  document.getElementById('streakFlames').textContent = flames || '💤';
 
   // Milestones
   const mDiv = document.getElementById('milestoneBadges');
-  mDiv.innerHTML = MILESTONES.map(m => `<span class="milestone ${(streak.achieved||[]).includes(m)?'achieved':''}">${m===100?'👑':'🏅'} ${m}d</span>`).join('');
-
-  // Tasks ring
-  const total = tasks.length;
-  const completed = tasks.filter(t => t.status === 'Completed').length;
-  const overdue = tasks.filter(t => {
-    if (t.status === 'Completed') return false;
-    return new Date(t.deadline.replace(' ','T')) < new Date();
-  }).length;
-  const taskPct = total ? completed/total : 0;
-  setRing('ringTasks', taskPct);
-  document.getElementById('ringTasksText').textContent = completed;
-  document.getElementById('taskCompletedLabel').textContent = `${completed}/${total}`;
-  document.getElementById('dashTasksTotal').textContent = total;
-  document.getElementById('dashTasksCompleted').textContent = completed;
-  document.getElementById('dashTasksOverdue').textContent = overdue;
-
-  // Physical ring
-  const today = new Date().toISOString().slice(0,10);
-  const physDone = physicalEntries.filter(p => p.date === today && p.status === 'Completed').length;
-  setRing('ringPhysical', physDone >= 1 ? 1 : 0);
-  document.getElementById('ringPhysText').textContent = physDone;
-  document.getElementById('physDoneLabel').textContent = `${physDone}/1`;
-  const physStreak = calcPhysStreak();
-  document.getElementById('physStreakSub').textContent = `${physStreak} day streak`;
-  document.getElementById('physStreakChip').textContent = `🔥 ${physStreak} day streak`;
-
-  // Reading ring
-  const readDone = readingEntries.filter(r => r.date === today && r.status === 'Completed').length;
-  setRing('ringReading', readDone >= 1 ? 1 : 0);
-  document.getElementById('ringReadText').textContent = readDone;
-  document.getElementById('readDoneLabel').textContent = `${readDone}/1`;
-  const readStreak = calcReadStreak();
-  document.getElementById('readStreakSub').textContent = `${readStreak} day streak`;
-  document.getElementById('readStreakChip').textContent = `🔥 ${readStreak} day streak`;
-
-  // Week bar chart
-  renderWeekBars();
-
-  // Month-end banner — show on last 3 days of month
-  const now = new Date();
-  const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
-  if (now.getDate() >= lastDay - 2) {
-    document.getElementById('monthEndBanner').style.display = 'block';
-  }
-}
-
-function setRing(id, pct) {
-  const circumference = 201;
-  const offset = circumference - (pct * circumference);
-  const el = document.getElementById(id);
-  if (el) el.style.strokeDashoffset = offset;
-}
-
-function renderWeekBars() {
-  const el = document.getElementById('weekBars');
-  if (!el) return;
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const today = new Date();
-  el.innerHTML = '';
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(today); d.setDate(today.getDate() - i);
-    const dStr = d.toISOString().slice(0,10);
-    const dayName = days[d.getDay()];
-    const isToday = i === 0;
-    const physH = physicalEntries.some(p => p.date === dStr && p.status === 'Completed') ? 20 : 3;
-    const readH = readingEntries.some(r => r.date === dStr && r.status === 'Completed') ? 20 : 3;
-    el.innerHTML += `
-      <div class="week-bar-col">
-        <div class="week-bar-wrap">
-          <div class="week-bar phys" style="height:${physH}px" title="Physical"></div>
-          <div class="week-bar read" style="height:${readH}px" title="Reading"></div>
-        </div>
-        <div class="week-day-label" style="color:${isToday?'var(--cyan)':'var(--muted)'}">${isToday?'NOW':dayName}</div>
-      </div>`;
-  }
-}
-
-// Month-end export + reset
-async function doMonthEndExport() {
-  if (!confirm('Export this month\'s data to Excel and clear portal for fresh start?')) return;
-  // Export first
-  document.getElementById('exportBtn').click();
-  // Wait for download then clear Firebase + local
-  setTimeout(async () => {
-    if (!confirm('Excel downloaded? Now clear all data for fresh start?')) return;
-    try {
-      // Delete all from Firebase
-      const batches = ['subjects','tasks','physical','reading'];
-      for (const col of batches) {
-        const snap = await userCol(col).get();
-        snap.docs.forEach(d => d.ref.delete());
-      }
-    } catch(e) { console.warn(e); }
-    subjects = []; tasks = []; physicalEntries = []; readingEntries = [];
-    ['subjects','tasks','physical','reading'].forEach(k => {
-      const uid = currentUser ? currentUser.uid : 'guest';
-      localStorage.removeItem('ast_'+uid+'_'+k);
-    });
-    renderSubjects(); renderTasks(); renderPhysical(); renderReading();
-    updateDashboard(); updateActivityFeed();
-    alert('✅ Portal cleared! Fresh month started. Your Excel backup is in Downloads.');
-  }, 2000);
+  mDiv.innerHTML = MILESTONES.map(m => `<span class="milestone ${(streak.achieved||[]).includes(m) ? 'achieved' : ''}">${m === 100 ? '👑' : '🏅'} ${m}d</span>`).join('');
 }
 
 function updateTodayStatus() {
@@ -2047,167 +1777,38 @@ function updateActivityFeed() {
 // ============================
 // EXPORT EXCEL
 // ============================
-// ============================
-// EXCEL EXPORT (Full — all 4 options)
-// ============================
-function buildWorkbook() {
+document.getElementById('exportBtn').addEventListener('click', () => {
   const wb = XLSX.utils.book_new();
-  const month = new Date().toISOString().slice(0,7);
   if (subjects.length) {
-    const ws = XLSX.utils.json_to_sheet(subjects.map((s,i) => ({
-      'S.No':i+1, Code:s.code, Name:s.name, Credits:s.credits,
-      'Syllabus':s.syllabus?'Uploaded':'No'
-    })));
+    const ws = XLSX.utils.json_to_sheet(subjects.map((s,i) => ({ 'S.No': i+1, Code: s.code, Name: s.name, Credits: s.credits, Syllabus: s.syllabus ? 'Yes' : 'No' })));
     XLSX.utils.book_append_sheet(wb, ws, 'Subjects');
   }
   if (tasks.length) {
-    const ws = XLSX.utils.json_to_sheet(tasks.map((t,i) => ({
-      'S.No':i+1, Code:t.subjectCode, Subject:t.subjectName||'',
-      Lesson:t.lesson, Topic:t.topic, Type:t.type, Priority:t.priority,
-      Deadline:t.deadline, Status:t.status,
-      'Proof File':t.proofName||(t.proof?'Uploaded':'No proof')
-    })));
+    const ws = XLSX.utils.json_to_sheet(tasks.map((t,i) => ({ 'S.No': i+1, Code: t.subjectCode, Lesson: t.lesson, Topic: t.topic, Type: t.type, Priority: t.priority, Deadline: t.deadline, Status: t.status, Proof: t.proof ? 'Yes' : 'No' })));
     XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
   }
   if (physicalEntries.length) {
-    const ws = XLSX.utils.json_to_sheet(physicalEntries.map((p,i) => ({
-      'S.No':i+1, Date:p.date, Activity:p.name, Category:p.category,
-      Description:p.description||'', Deadline:p.deadline, Status:p.status,
-      'Proof File':p.proofName||(p.proof?'Uploaded':'No proof'), Reason:p.reason||''
-    })));
+    const ws = XLSX.utils.json_to_sheet(physicalEntries.map((p,i) => ({ 'S.No': i+1, Date: p.date, Activity: p.name, Category: p.category, Deadline: p.deadline, Status: p.status, Proof: p.proof ? 'Yes' : 'No', Reason: p.reason })));
     XLSX.utils.book_append_sheet(wb, ws, 'Physical');
   }
   if (readingEntries.length) {
-    const ws = XLSX.utils.json_to_sheet(readingEntries.map((r,i) => ({
-      'S.No':i+1, Date:r.date, Title:r.title, Pages:r.pages,
-      Notes:r.notes||'', Status:r.status,
-      'Proof File':r.proofName||(r.proof?'Uploaded':'No proof')
-    })));
+    const ws = XLSX.utils.json_to_sheet(readingEntries.map((r,i) => ({ 'S.No': i+1, Date: r.date, Title: r.title, Pages: r.pages, Notes: r.notes, Status: r.status, Proof: r.proof ? 'Yes' : 'No' })));
     XLSX.utils.book_append_sheet(wb, ws, 'Reading');
   }
-  return { wb, month };
-}
-
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const { wb, month } = buildWorkbook();
   if (!wb.SheetNames.length) { alert('No data to export yet!'); return; }
-
-  // Show export options modal
-  showExportOptions(wb, month);
+  XLSX.writeFile(wb, `AST-${new Date().toISOString().slice(0,7)}.xlsx`);
 });
-
-function showExportOptions(wb, month) {
-  const existing = document.getElementById('exportOptionsModal');
-  if (existing) existing.remove();
-
-  const modal = document.createElement('div');
-  modal.id = 'exportOptionsModal';
-  modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px`;
-  modal.innerHTML = `
-    <div style="background:rgba(8,0,20,0.98);border:1px solid rgba(191,0,255,0.4);border-radius:20px;padding:32px;max-width:420px;width:100%">
-      <div style="font-family:'Orbitron',sans-serif;font-size:1.1rem;color:#00f5ff;margin-bottom:6px">📊 EXPORT OPTIONS</div>
-      <div style="color:#7b6fa0;font-size:0.85rem;margin-bottom:24px">Choose how to export AST-${month}.xlsx</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <button class="btn btn-primary" onclick="exportDownload()" style="justify-content:flex-start;gap:12px">
-          💾 Download to Device
-        </button>
-        <button class="btn" style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.5);color:#00c853;justify-content:flex-start;gap:12px" onclick="exportWhatsApp('${month}')">
-          📱 Share via WhatsApp
-        </button>
-        <button class="btn" style="background:rgba(0,136,255,0.15);border:1px solid rgba(0,136,255,0.5);color:#0088ff;justify-content:flex-start;gap:12px" onclick="exportEmail('${month}')">
-          📧 Open in Email (Gmail)
-        </button>
-        <button class="btn btn-ghost" onclick="exportCopyLink('${month}')" style="justify-content:flex-start;gap:12px">
-          🔗 Copy Reminder Text
-        </button>
-      </div>
-      <button onclick="document.getElementById('exportOptionsModal').remove()" style="margin-top:16px;background:none;border:none;color:#7b6fa0;cursor:pointer;font-size:0.85rem;width:100%">✕ Close</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
-
-  // store wb globally for use in sub-functions
-  window._exportWb = wb;
-  window._exportMonth = month;
-}
-
-function exportDownload() {
-  XLSX.writeFile(window._exportWb, `AST-${window._exportMonth}.xlsx`);
-  document.getElementById('exportOptionsModal')?.remove();
-  alert(`✅ Downloaded: AST-${window._exportMonth}.xlsx\nSave it safely — this is your permanent record!`);
-}
-
-function exportWhatsApp(month) {
-  XLSX.writeFile(window._exportWb, `AST-${month}.xlsx`);
-  setTimeout(() => {
-    const msg = encodeURIComponent(`📊 My AST Study Report - ${month}\nFile: AST-${month}.xlsx\nDownloaded & ready to share!`);
-    window.open(`https://wa.me/?text=${msg}`, '_blank');
-  }, 800);
-  document.getElementById('exportOptionsModal')?.remove();
-}
-
-function exportEmail(month) {
-  XLSX.writeFile(window._exportWb, `AST-${month}.xlsx`);
-  const email = localStorage.getItem('ast_email') || '';
-  const subject = encodeURIComponent(`AST Study Report - ${month}`);
-  const body = encodeURIComponent(`Hi,\n\nPlease find my Advanced Study Tracker report for ${month}.\n\nFile: AST-${month}.xlsx (downloaded to your device - attach manually)\n\nGenerated from AST Portal.`);
-  setTimeout(() => window.open(`https://mail.google.com/mail/?view=cm&to=${email}&su=${subject}&body=${body}`, '_blank'), 800);
-  document.getElementById('exportOptionsModal')?.remove();
-}
-
-function exportCopyLink(month) {
-  XLSX.writeFile(window._exportWb, `AST-${month}.xlsx`);
-  const text = `📊 AST Study Report ${month} exported!\nFile: AST-${month}.xlsx\nPortal: https://hkunverified-creator.github.io/advance-study-portal/`;
-  navigator.clipboard.writeText(text).then(() => alert('✅ Reminder text copied! Share anywhere.')).catch(() => alert('Text: ' + text));
-  document.getElementById('exportOptionsModal')?.remove();
-}
-
-// Month-end export + reset
-async function doMonthEndExport() {
-  if (!confirm('⚠️ Month End Export!\n\nThis will:\n1. Download your Excel report\n2. Clear all portal data for fresh start\n\nProceed?')) return;
-
-  const { wb, month } = buildWorkbook();
-  if (!wb.SheetNames.length) { alert('No data to export!'); return; }
-
-  showExportOptions(wb, month);
-
-  // After 3 seconds ask to clear
-  setTimeout(async () => {
-    if (!confirm('Excel ready! Now clear ALL data for fresh month start?')) return;
-    try {
-      for (const col of ['subjects','tasks','physical','reading']) {
-        const snap = await userCol(col).get();
-        const batch = db.batch();
-        snap.docs.forEach(d => batch.delete(d.ref));
-        await batch.commit();
-      }
-    } catch(e) { console.warn('Firebase clear error:', e); }
-    subjects = []; tasks = []; physicalEntries = []; readingEntries = [];
-    const uid = currentUser?.uid || 'guest';
-    ['subjects','tasks','physical','reading'].forEach(k => localStorage.removeItem(`ast_${uid}_${k}`));
-    renderSubjects(); renderTasks(); renderPhysical(); renderReading();
-    updateDashboard(); updateActivityFeed();
-    alert('✅ Fresh start! New month begins. Check Downloads for your Excel backup.');
-  }, 3500);
-}
 
 // ============================
 // CLEAR ALL
 // ============================
-document.getElementById('clearBtn').addEventListener('click', async () => {
-  if (!confirm('Clear ALL data? Export Excel first if you need a backup!')) return;
-  try {
-    for (const col of ['subjects','tasks','physical','reading']) {
-      const snap = await userCol(col).get();
-      snap.docs.forEach(d => d.ref.delete());
-    }
-  } catch(e) { console.warn(e); }
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (!confirm('Clear ALL data from this browser? This cannot be undone.')) return;
   subjects = []; tasks = []; physicalEntries = []; readingEntries = [];
-  const uid = currentUser?.uid || 'guest';
-  ['subjects','tasks','physical','reading'].forEach(k => localStorage.removeItem(`ast_${uid}_${k}`));
+  ['subjects','tasks','physical','reading'].forEach(k => localStorage.removeItem('ast_' + k));
   renderSubjects(); renderTasks(); renderPhysical(); renderReading();
   updateDashboard(); updateActivityFeed();
-  alert('All data cleared.');
+  alert('All local data cleared.');
 });
 
 // ============================
@@ -2298,91 +1899,6 @@ async function loadInitialData() {
 }
 
 // ============================
-// AI STUDY ASSISTANT (ChatGPT + Claude + Gemini)
-// ============================
-// 🔑 ADD YOUR API KEYS BELOW:
-const AI_KEYS = {
-  gemini:  'PASTE_GEMINI_API_KEY_HERE',    // free at https://aistudio.google.com/app/apikey
-  openai:  'PASTE_OPENAI_API_KEY_HERE',    // https://platform.openai.com/api-keys
-  claude:  'PASTE_CLAUDE_API_KEY_HERE'     // https://console.anthropic.com/
-};
-let activeAI = 'gemini'; // default
-
-document.getElementById('aiFab').addEventListener('click', () => {
-  document.getElementById('aiPanel').classList.toggle('open');
-  setTimeout(() => document.getElementById('aiInput').focus(), 100);
-});
-
-async function sendAiMsg() {
-  const input = document.getElementById('aiInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = '';
-  const messages = document.getElementById('aiMessages');
-  messages.innerHTML += `<div class="ai-msg user">${msg}</div>`;
-  const typingId = 'typ_' + Date.now();
-  messages.innerHTML += `<div class="ai-msg typing" id="${typingId}">⏳ ${activeAI.toUpperCase()} thinking...</div>`;
-  messages.scrollTop = messages.scrollHeight;
-
-  const context = `You are a study assistant for a student portal called AST (Advanced Study Tracker).
-Student has ${subjects.length} subjects: ${subjects.map(s=>s.name).join(', ')||'none'}.
-Tasks: ${tasks.length} total, ${tasks.filter(t=>t.status==='Completed').length} completed.
-Respond helpfully and concisely. You can use Tanglish (Tamil+English mix) if appropriate.`;
-
-  let reply = '';
-  try {
-    if (activeAI === 'gemini') {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${AI_KEYS.gemini}`,{
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({contents:[{parts:[{text:context+'\n\nStudent: '+msg}]}]})
-      });
-      const d = await r.json();
-      reply = d?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response from Gemini.';
-    } else if (activeAI === 'openai') {
-      const r = await fetch('https://api.openai.com/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEYS.openai},
-        body: JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:context},{role:'user',content:msg}],max_tokens:500})
-      });
-      const d = await r.json();
-      reply = d?.choices?.[0]?.message?.content || 'No response from ChatGPT.';
-    } else if (activeAI === 'claude') {
-      const r = await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':AI_KEYS.claude,'anthropic-version':'2023-06-01'},
-        body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:context+'\n\nStudent: '+msg}]})
-      });
-      const d = await r.json();
-      reply = d?.content?.[0]?.text || 'No response from Claude.';
-    }
-    document.getElementById(typingId)?.remove();
-    messages.innerHTML += `<div class="ai-msg bot">${reply.replace(/\n/g,'<br/>')}</div>`;
-  } catch(e) {
-    document.getElementById(typingId)?.remove();
-    messages.innerHTML += `<div class="ai-msg bot" style="color:var(--red)">⚠️ Error: ${e.message}. Check your API key for ${activeAI}!</div>`;
-  }
-  messages.scrollTop = messages.scrollHeight;
-}
-
-function switchAI(ai) {
-  activeAI = ai;
-  ['gemini','openai','claude'].forEach(a => {
-    const btn = document.getElementById('btn-'+a);
-    if (!btn) return;
-    const colors = {gemini:'rgba(0,200,83,0.15)',openai:'rgba(191,0,255,0.15)',claude:'rgba(0,245,255,0.15)'};
-    const borders = {gemini:'rgba(0,200,83,0.5)',openai:'rgba(191,0,255,0.5)',claude:'rgba(0,245,255,0.5)'};
-    const textColors = {gemini:'#00c853',openai:'#bf00ff',claude:'#00f5ff'};
-    if (a === ai) {
-      btn.style.background = colors[a]; btn.style.borderColor = borders[a]; btn.style.color = textColors[a];
-    } else {
-      btn.style.background = 'transparent'; btn.style.borderColor = 'rgba(191,0,255,0.3)'; btn.style.color = 'var(--muted)';
-    }
-  });
-  const names = {gemini:'✦ Gemini',openai:'⬡ ChatGPT',claude:'◈ Claude'};
-  document.getElementById('aiMessages').innerHTML += `<div class="ai-msg typing">Switched to <b>${names[ai]}</b> 🔄</div>`;
-}
-
-// ============================
 // AUTH FUNCTIONS
 // ============================
 async function signInWithGoogle() {
@@ -2410,18 +1926,27 @@ async function signOut() {
 document.getElementById('googleSignInBtn').addEventListener('click', signInWithGoogle);
 
 auth.onAuthStateChanged(async (user) => {
-  // Hide any loading state
-  const loader = document.getElementById('globalLoader');
-  if (loader) loader.remove();
-
   if (user) {
+    // User is signed in
     currentUser = user;
+
+    // Update header user info
     document.getElementById('userName').textContent = user.displayName || user.email;
     const avatar = document.getElementById('userAvatar');
-    if (user.photoURL) { avatar.src = user.photoURL; avatar.style.display = 'block'; }
+    if (user.photoURL) {
+      avatar.src = user.photoURL;
+      avatar.style.display = 'block';
+    }
+
+    // Hide login modal
     document.getElementById('loginModal').classList.add('hidden');
+
+    // Check if character already selected
     const savedCharId = localStorage.getItem('ast_character_' + user.uid);
-    if (savedCharId) selectedChar = CHARACTERS.find(c => c.id === savedCharId) || null;
+    if (savedCharId) {
+      selectedChar = CHARACTERS.find(c => c.id === savedCharId) || null;
+    }
+
     if (selectedChar) {
       selectedCharModal = selectedChar;
       document.getElementById('charModal').classList.add('hidden');
@@ -2435,8 +1960,7 @@ auth.onAuthStateChanged(async (user) => {
       document.getElementById('app').style.display = 'block';
     }
   } else {
-    document.getElementById('loginModal').style.opacity = '1';
-    document.getElementById('loginModal').style.pointerEvents = 'all';
+    // Not signed in — show login
     document.getElementById('loginModal').classList.remove('hidden');
     document.getElementById('charModal').classList.add('hidden');
     document.getElementById('app').style.display = 'none';
