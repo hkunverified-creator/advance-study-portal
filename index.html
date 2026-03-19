@@ -1176,12 +1176,13 @@ function recalcStreak() {
   const today = new Date().toISOString().slice(0,10);
   const physDone = physicalEntries.some(p => p.date === today && p.status === 'Completed');
   const readDone = readingEntries.some(r => r.date === today && r.status === 'Completed');
+  const bothDone = physDone && readDone;
   const streak = getStreak();
   const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
   const yStr = yesterday.toISOString().slice(0,10);
-  if (physDone && readDone) {
+  if (bothDone) {
     if (streak.lastDate === today) {
-      // already counted today
+      // already counted
     } else if (streak.lastDate === yStr) {
       streak.count += 1; streak.lastDate = today;
     } else if (!streak.lastDate) {
@@ -1189,8 +1190,10 @@ function recalcStreak() {
     } else {
       streak.count = 1; streak.lastDate = today;
     }
-  } else if (streak.lastDate !== today && streak.lastDate !== yStr) {
-    if (streak.count > 0 && streak.lastDate && streak.lastDate < yStr) streak.count = 0;
+  } else {
+    if (streak.lastDate && streak.lastDate < yStr) {
+      streak.count = 0;
+    }
   }
   const prevAchieved = streak.achieved || [];
   MILESTONES.forEach(m => {
