@@ -2123,7 +2123,7 @@ Student Stats: ${subjects.length} subjects, ${tasks.length} tasks (${tasks.filte
           'X-Title':'AST Portal'
         },
         body:JSON.stringify({
-          model:'google/gemini-flash-1.5',
+          model:'google/gemini-2.0-flash-lite:free',
           messages:[{role:'user',content:context+'\n\nStudent: '+msg}]
         })
       });
