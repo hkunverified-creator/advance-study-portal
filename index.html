@@ -1779,8 +1779,10 @@ function updateDashboard() {
   setRing('ringTasks', total ? completed/total : 0);
   document.getElementById('ringTasksText').textContent = completed;
   document.getElementById('taskCompletedLabel').textContent = completed+'/'+total;
-  const dTotal = document.getElementById('dashTasksTotal'); if(dTotal) dTotal.textContent = total;
-  const dComp = document.getElementById('dashTasksCompleted'); if(dComp) dComp.textContent = completed;
+  const dTotal = document.getElementById('dashTasksTotal');
+  if(dTotal) dTotal.textContent = total;
+  const dComp = document.getElementById('dashTasksCompleted');
+  if(dComp) dComp.textContent = completed;
   const overdueEl = document.getElementById('dashTasksOverdue');
   if(overdueEl) overdueEl.textContent = overdue;
 
