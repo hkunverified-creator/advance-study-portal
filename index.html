@@ -1530,8 +1530,8 @@ function renderTasks() {
   const total = tasks.length;
   const pct = total ? (completed / total) * 100 : 0;
   document.getElementById('tasksCountLabel').textContent = `${total} tasks · ${completed} done`;
-  document.getElementById('dashTasksTotal').textContent = total;
-  document.getElementById('dashTasksCompleted').textContent = completed;
+  const dTotal = document.getElementById('dashTasksTotal'); if(dTotal) dTotal.textContent = total;
+  const dComp = document.getElementById('dashTasksCompleted'); if(dComp) dComp.textContent = completed;
   const overdueEl = document.getElementById('dashTasksOverdue');
 if (overdueEl) overdueEl.textContent = overdue;
   document.getElementById('dashTasksProgress').style.width = pct + '%';
@@ -1776,8 +1776,8 @@ function updateDashboard() {
   setRing('ringTasks', total ? completed/total : 0);
   document.getElementById('ringTasksText').textContent = completed;
   document.getElementById('taskCompletedLabel').textContent = completed+'/'+total;
-  document.getElementById('dashTasksTotal').textContent = total;
-  document.getElementById('dashTasksCompleted').textContent = completed;
+  const dTotal = document.getElementById('dashTasksTotal'); if(dTotal) dTotal.textContent = total;
+  const dComp = document.getElementById('dashTasksCompleted'); if(dComp) dComp.textContent = completed;
   const overdueEl = document.getElementById('dashTasksOverdue');
   if(overdueEl) overdueEl.textContent = overdue;
 
