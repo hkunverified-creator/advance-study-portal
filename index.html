@@ -870,10 +870,6 @@
           <label>Syllabus (PDF/Image, &lt; 1MB)</label>
           <input id="subjectSyllabusInput" type="file" accept=".pdf,image/*"/>
         </div>
-        <div class="form-group">
-          <label>Quick Preview</label>
-          <div id="syllabusPreview">Click a subject from the table to preview syllabus.</div>
-        </div>
       </div>
 
       <div class="btn-row">
@@ -1392,7 +1388,7 @@ function renderSubjects() {
       <td><button class="link-btn" onclick="fillSubjectForm('${s.code}')">${s.code}</button></td>
       <td>${s.name}</td>
       <td>${s.credits || '-'}</td>
-      <td>${s.syllabus ? `<button class="link-btn" onclick="previewSyllabus('${s.code}')">👁 View</button>` : '<span style="color:var(--muted);font-size:0.8rem;">None</span>'}</td>
+      <td>${s.syllabus ? `<button class="link-btn" onclick="viewSyllabusModal('${s.id}')">👁 View</button>` : '<span style="color:var(--muted);font-size:0.8rem;">None</span>'}</td>
       <td><button class="delete-btn" onclick="deleteSubject('${s.id}')">✕</button></td>
     `;
     body.appendChild(tr);
@@ -1411,15 +1407,17 @@ function fillSubjectForm(code) {
   document.getElementById('subjectCreditsInput').value = s.credits || '';
   previewSyllabus(code);
 }
-function previewSyllabus(code) {
-  const s = subjects.find(x => x.code === code);
-  const el = document.getElementById('syllabusPreview');
-  if (!s || !s.syllabus) { el.innerHTML = `<span style="color:var(--muted);font-size:0.85rem;">No syllabus for ${code}</span>`; return; }
+function viewSyllabusModal(id) {
+  const s = subjects.find(x => x.id === id);
+  if (!s || !s.syllabus) { alert('No syllabus uploaded!'); return; }
+  const modal = document.getElementById('proofModal');
+  const content = document.getElementById('proofContent');
   if (s.syllabus.startsWith('data:application/pdf')) {
-    el.innerHTML = `<object data="${s.syllabus}" type="application/pdf" width="100%" height="150px">PDF preview not supported</object>`;
+    content.innerHTML = `<iframe src="${s.syllabus}" style="width:90vw;height:85vh;border:none;border-radius:8px;"></iframe>`;
   } else {
-    el.innerHTML = `<img src="${s.syllabus}" alt="Syllabus" style="max-width:100%;max-height:150px;border-radius:8px;"/>`;
+    content.innerHTML = `<img src="${s.syllabus}" alt="Syllabus" style="max-width:90vw;max-height:85vh;border-radius:8px;"/>`;
   }
+  modal.classList.add('open');
 }
 async function deleteSubject(id) {
   if (!confirm('Delete subject and all its tasks?')) return;
