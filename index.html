@@ -583,6 +583,8 @@
     }
     .delete-btn:hover { background: rgba(255,40,40,0.15); }
     .mt { margin-top: 12px; }
+    .ring-card { text-align:center; background:var(--glass2); border:1px solid var(--border); border-radius:12px; padding:12px 6px; }
+.ring-card svg { width:110px; height:110px; }
     .mt2 { margin-top: 20px; }
     .flex-center { display: flex; align-items: center; gap: 10px; }
     .neon-text-cyan { color: var(--cyan); text-shadow: var(--glow-cyan); }
@@ -766,9 +768,9 @@
           </div>
 
           <!-- Ring Charts -->
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:12px;">
   <div class="ring-card">
-    <svg viewBox="0 0 80 80" width="80" height="80">
+    <svg viewBox="0 0 80 80" width="110" height="110">
       <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
       <circle id="ringTasks" cx="40" cy="40" r="32" fill="none" stroke="url(#gradTasks)" stroke-width="8" stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round" transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>
       <defs><linearGradient id="gradTasks" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#bf00ff"/></linearGradient></defs>
@@ -779,7 +781,7 @@
     <div style="font-size:0.7rem;color:var(--muted)">Completed</div>
   </div>
   <div class="ring-card">
-    <svg viewBox="0 0 80 80" width="80" height="80">
+    <svg viewBox="0 0 80 80" width="110" height="110">
       <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
       <circle id="ringPhysical" cx="40" cy="40" r="32" fill="none" stroke="url(#gradPhys)" stroke-width="8" stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round" transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>
       <defs><linearGradient id="gradPhys" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00ff8c"/><stop offset="100%" stop-color="#00f5ff"/></linearGradient></defs>
@@ -790,7 +792,7 @@
     <div style="font-size:0.7rem;color:var(--muted)" id="physStreakSub">0 day streak</div>
   </div>
   <div class="ring-card">
-    <svg viewBox="0 0 80 80" width="80" height="80">
+    <svg viewBox="0 0 80 80" width="110" height="110">
       <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
       <circle id="ringReading" cx="40" cy="40" r="32" fill="none" stroke="url(#gradRead)" stroke-width="8" stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round" transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>
       <defs><linearGradient id="gradRead" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#bf00ff"/><stop offset="100%" stop-color="#ff2d78"/></linearGradient></defs>
@@ -801,7 +803,7 @@
     <div style="font-size:0.7rem;color:var(--muted)" id="readStreakSub">0 day streak</div>
   </div>
   <div class="ring-card">
-    <svg viewBox="0 0 80 80" width="80" height="80">
+    <svg viewBox="0 0 80 80" width="110" height="110">
       <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
       <circle id="ringCredits" cx="40" cy="40" r="32" fill="none" stroke="url(#gradCred)" stroke-width="8" stroke-dasharray="201" stroke-dashoffset="150" stroke-linecap="round" transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>
       <defs><linearGradient id="gradCred" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#ffe600"/><stop offset="100%" stop-color="#ff6b00"/></linearGradient></defs>
