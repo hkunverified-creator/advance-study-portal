@@ -612,6 +612,7 @@
 
     /* Scrollable history */
     .history-wrap { max-height: 300px; overflow-y: auto; }
+    #aiPanel.open { display: flex !important; }
 
     @media (max-width: 600px) {
       .modal-inner { padding: 20px; }
@@ -1431,7 +1432,6 @@ function fillSubjectForm(code) {
   document.getElementById('subjectCodeInput').value = s.code;
   document.getElementById('subjectNameInput').value = s.name;
   document.getElementById('subjectCreditsInput').value = s.credits || '';
-  previewSyllabus(code);
 }
 function viewSyllabusModal(id) {
   const s = subjects.find(x => x.id === id);
@@ -1758,14 +1758,48 @@ function updateDashboard() {
   const streak = recalcStreak();
   document.getElementById('streakDisplay').textContent = streak.count;
   document.getElementById('streakCountHeader').textContent = streak.count;
-  
-  // Flames
   const flames = '🔥'.repeat(Math.min(streak.count, 10));
   document.getElementById('streakFlames').textContent = flames || '💤';
-
-  // Milestones
   const mDiv = document.getElementById('milestoneBadges');
-  mDiv.innerHTML = MILESTONES.map(m => `<span class="milestone ${(streak.achieved||[]).includes(m) ? 'achieved' : ''}">${m === 100 ? '👑' : '🏅'} ${m}d</span>`).join('');
+  mDiv.innerHTML = MILESTONES.map(m => `<span class="milestone ${(streak.achieved||[]).includes(m)?'achieved':''}">${m===100?'👑':'🏅'} ${m}d</span>`).join('');
+
+  const total = tasks.length;
+  const completed = tasks.filter(t=>t.status==='Completed').length;
+  const overdue = tasks.filter(t=>{
+    if(t.status==='Completed') return false;
+    return new Date(t.deadline.replace(' ','T')) < new Date();
+  }).length;
+  setRing('ringTasks', total ? completed/total : 0);
+  document.getElementById('ringTasksText').textContent = completed;
+  document.getElementById('taskCompletedLabel').textContent = completed+'/'+total;
+  document.getElementById('dashTasksTotal').textContent = total;
+  document.getElementById('dashTasksCompleted').textContent = completed;
+  const overdueEl = document.getElementById('dashTasksOverdue');
+  if(overdueEl) overdueEl.textContent = overdue;
+
+  const today = new Date().toISOString().slice(0,10);
+  const physDone = physicalEntries.filter(p=>p.date===today&&p.status==='Completed').length;
+  setRing('ringPhysical', physDone>=1?1:0);
+  document.getElementById('ringPhysText').textContent = physDone;
+  document.getElementById('physDoneLabel').textContent = physDone+'/1';
+  document.getElementById('physStreakSub').textContent = calcPhysStreak()+' day streak';
+  document.getElementById('physStreakChip').textContent = '🔥 '+calcPhysStreak()+' day streak';
+
+  const readDone = readingEntries.filter(r=>r.date===today&&r.status==='Completed').length;
+  setRing('ringReading', readDone>=1?1:0);
+  document.getElementById('ringReadText').textContent = readDone;
+  document.getElementById('readDoneLabel').textContent = readDone+'/1';
+  document.getElementById('readStreakSub').textContent = calcReadStreak()+' day streak';
+  document.getElementById('readStreakChip').textContent = '🔥 '+calcReadStreak()+' day streak';
+
+  const totalCredits = subjects.reduce((sum,s)=>sum+(s.credits||0),0);
+  document.getElementById('dashCredits').textContent = totalCredits;
+  document.getElementById('dashSubCount').textContent = subjects.length;
+}
+
+function setRing(id, pct) {
+  const el = document.getElementById(id);
+  if (el) el.style.strokeDashoffset = 201 - (pct * 201);
 }
 
 function updateTodayStatus() {
