@@ -1617,8 +1617,10 @@ function renderPhysical() {
   }
 
   const physDone = physicalEntries.filter(p => p.date === today && p.status === 'Completed').length;
-  document.getElementById('dashPhysical').textContent = `${physDone}/1`;
-  document.getElementById('dashPhysicalProgress').style.width = physDone >= 1 ? '100%' : '0%';
+  const dashPhys = document.getElementById('dashPhysical');
+if(dashPhys) dashPhys.textContent = physDone+'/1';
+const dashPhysProgress = document.getElementById('dashPhysicalProgress');
+if(dashPhysProgress) dashPhysProgress.style.width = physDone >= 1 ? '100%' : '0%';
   
   const physStreak = calcPhysStreak();
   document.getElementById('physStreakChip').textContent = `🔥 ${physStreak} day streak`;
@@ -1719,8 +1721,10 @@ function renderReading() {
   }
 
   const readDone = readingEntries.filter(r => r.date === today && r.status === 'Completed').length;
-  document.getElementById('dashReading').textContent = `${readDone}/1`;
-  document.getElementById('dashReadingProgress').style.width = readDone >= 1 ? '100%' : '0%';
+  const dashRead = document.getElementById('dashReading');
+if(dashRead) dashRead.textContent = readDone+'/1';
+const dashReadProgress = document.getElementById('dashReadingProgress');
+if(dashReadProgress) dashReadProgress.style.width = readDone >= 1 ? '100%' : '0%';
 
   const readStreak = calcReadStreak();
   document.getElementById('readStreakChip').textContent = `🔥 ${readStreak} day streak`;
