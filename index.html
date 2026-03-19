@@ -1532,7 +1532,8 @@ function renderTasks() {
   document.getElementById('tasksCountLabel').textContent = `${total} tasks · ${completed} done`;
   document.getElementById('dashTasksTotal').textContent = total;
   document.getElementById('dashTasksCompleted').textContent = completed;
-  document.getElementById('dashTasksOverdue').textContent = overdue;
+  const overdueEl = document.getElementById('dashTasksOverdue');
+if (overdueEl) overdueEl.textContent = overdue;
   document.getElementById('dashTasksProgress').style.width = pct + '%';
   updateActivityFeed();
 }
@@ -2020,9 +2021,6 @@ const AI_KEYS = {
   claude: 'PASTE_CLAUDE_KEY_HERE'
 };
 let activeAI = 'gemini';
-
-document.getElementById('aiPanel').style.display = 'flex';
-document.getElementById('aiPanel').style.display = 'none';
 
 function switchAI(ai) {
   activeAI = ai;
