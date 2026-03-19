@@ -1530,11 +1530,14 @@ function renderTasks() {
   const total = tasks.length;
   const pct = total ? (completed / total) * 100 : 0;
   document.getElementById('tasksCountLabel').textContent = `${total} tasks · ${completed} done`;
-  const dTotal = document.getElementById('dashTasksTotal'); if(dTotal) dTotal.textContent = total;
-  const dComp = document.getElementById('dashTasksCompleted'); if(dComp) dComp.textContent = completed;
+  const dTotal = document.getElementById('dashTasksTotal');
+  if(dTotal) dTotal.textContent = total;
+  const dComp = document.getElementById('dashTasksCompleted');
+  if(dComp) dComp.textContent = completed;
   const overdueEl = document.getElementById('dashTasksOverdue');
-if (overdueEl) overdueEl.textContent = overdue;
-  document.getElementById('dashTasksProgress').style.width = pct + '%';
+  if(overdueEl) overdueEl.textContent = overdue;
+  const dProg = document.getElementById('dashTasksProgress');
+  if(dProg) dProg.style.width = pct + '%';
   updateActivityFeed();
 }
 
