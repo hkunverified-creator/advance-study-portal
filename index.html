@@ -2160,7 +2160,7 @@ Student Stats: ${subjects.length} subjects, ${tasks.length} tasks (${tasks.filte
       });
       const d = await r.json();
       reply = d?.choices?.[0]?.message?.content || 'No response!';
-    }, 
+    } 
         body:JSON.stringify({
           model:'mistralai/mistral-7b-instruct:free',
           messages:[{role:'user',content:context+'\n\nStudent: '+msg}]
