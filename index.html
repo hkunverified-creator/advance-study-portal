@@ -2160,14 +2160,6 @@ Student Stats: ${subjects.length} subjects, ${tasks.length} tasks (${tasks.filte
       });
       const d = await r.json();
       reply = d?.choices?.[0]?.message?.content || 'No response!';
-    } 
-        body:JSON.stringify({
-          model:'mistralai/mistral-7b-instruct:free',
-          messages:[{role:'user',content:context+'\n\nStudent: '+msg}]
-        })
-      });
-      const d = await r.json();
-      reply = d?.choices?.[0]?.message?.content || 'No response!';
     }
     document.getElementById(typingId)?.remove();
     messages.innerHTML += `<div style="padding:8px 12px;border-radius:10px;font-size:0.85rem;background:rgba(191,0,255,0.1);border:1px solid rgba(191,0,255,0.2);color:#e8e0ff;max-width:90%;">${reply.replace(/\n/g,'<br/>')}</div>`;
