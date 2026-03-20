@@ -2162,22 +2162,6 @@ Student Stats: ${subjects.length} subjects, ${tasks.length} tasks (${tasks.filte
       const d = await r.json();
       reply = d?.choices?.[0]?.message?.content || 'No response!';
     }
-      const r = await fetch('https://api.openai.com/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI_KEYS.openai},
-        body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:context},{role:'user',content:msg}],max_tokens:500})
-      });
-      const d = await r.json();
-      reply = d?.choices?.[0]?.message?.content || 'No response!';
-    } else if (activeAI === 'claude') {
-      const r = await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','x-api-key':AI_KEYS.claude,'anthropic-version':'2023-06-01'},
-        body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:context+'\n\nStudent: '+msg}]})
-      });
-      const d = await r.json();
-      reply = d?.content?.[0]?.text || 'No response!';
-    }
     document.getElementById(typingId)?.remove();
     messages.innerHTML += `<div style="padding:8px 12px;border-radius:10px;font-size:0.85rem;background:rgba(191,0,255,0.1);border:1px solid rgba(191,0,255,0.2);color:#e8e0ff;max-width:90%;">${reply.replace(/\n/g,'<br/>')}</div>`;
   } catch(e) {
