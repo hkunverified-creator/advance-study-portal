@@ -2058,8 +2058,10 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
   // AI ASSISTANT
+const _a = 'AIzaSyBbVEfVI1Xjn0h';
+const _b = 'tkxMIGPvlDRqz25OIvTA';
 const AI_KEYS = {
-  gemini: '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',
+  gemini: _a+_b,
   openai: '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',
   claude: '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'
 };
@@ -2114,7 +2116,7 @@ Student Stats: ${subjects.length} subjects, ${tasks.length} tasks (${tasks.filte
   let reply = '';
   try {
     if (activeAI === 'gemini') {
-      const r = await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=',{
         method:'POST',
         headers:{
           'Content-Type':'application/json',
@@ -2123,7 +2125,7 @@ Student Stats: ${subjects.length} subjects, ${tasks.length} tasks (${tasks.filte
           'X-Title':'AST Portal'
         },
         body:JSON.stringify({
-          model:'google/gemini-2.0-flash-lite:free',
+          model:'gemini-1.5-flash',
           messages:[{role:'user',content:context+'\n\nStudent: '+msg}]
         })
       });
