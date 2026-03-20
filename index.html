@@ -2131,30 +2131,36 @@ Student Stats: ${subjects.length} subjects, ${tasks.length} tasks (${tasks.filte
       const d = await r.json();
       reply = d?.choices?.[0]?.message?.content || 'No response!';
     } else if (activeAI === 'openai') {
-      const r = await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',
         headers:{
           'Content-Type':'application/json',
-          'Authorization':'Bearer '+AI_KEYS.openai,
-          'HTTP-Referer':'https://hkunverified-creator.github.io',
-          'X-Title':'AST Portal'
+          'Authorization':'Bearer '+AI_KEYS.gemini
         },
         body:JSON.stringify({
-          model:'meta-llama/llama-3.1-8b-instruct:free',
-          messages:[{role:'user',content:context+'\n\nStudent: '+msg}]
+          model:'mixtral-8x7b-32768',
+          messages:[{role:'user',content:context+'\n\nStudent: '+msg}],
+          max_tokens:1000
         })
       });
       const d = await r.json();
       reply = d?.choices?.[0]?.message?.content || 'No response!';
     } else if (activeAI === 'claude') {
-      const r = await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',
         headers:{
           'Content-Type':'application/json',
-          'Authorization':'Bearer '+AI_KEYS.claude,
-          'HTTP-Referer':'https://hkunverified-creator.github.io',
-          'X-Title':'AST Portal'
+          'Authorization':'Bearer '+AI_KEYS.gemini
         },
+        body:JSON.stringify({
+          model:'gemma2-9b-it',
+          messages:[{role:'user',content:context+'\n\nStudent: '+msg}],
+          max_tokens:1000
+        })
+      });
+      const d = await r.json();
+      reply = d?.choices?.[0]?.message?.content || 'No response!';
+    }, 
         body:JSON.stringify({
           model:'mistralai/mistral-7b-instruct:free',
           messages:[{role:'user',content:context+'\n\nStudent: '+msg}]
