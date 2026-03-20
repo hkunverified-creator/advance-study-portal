@@ -2061,7 +2061,7 @@ auth.onAuthStateChanged(async (user) => {
 const _a = 'AIzaSyBbVEfVI1Xjn0h';
 const _b = 'tkxMIGPvlDRqz25OIvTA';
 const AI_KEYS = {
-  gemini: atob('QUl6YVN5REpuVU5oSzhxY2N3ajhvc3hGVTlPYmlfMVN4c2lrTXJB'),
+  gemini: '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',
   openai: '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',
   claude: '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'
 };
@@ -2116,17 +2116,16 @@ Student Stats: ${subjects.length} subjects, ${tasks.length} tasks (${tasks.filte
   let reply = '';
   try {
     if (activeAI === 'gemini') {
-      const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=',{
+      const r = await fetch('https://api.groq.com/openai/v1/chat/completions',{
         method:'POST',
         headers:{
           'Content-Type':'application/json',
-          'Authorization':'Bearer '+AI_KEYS.gemini,
-          'HTTP-Referer':'https://hkunverified-creator.github.io',
-          'X-Title':'AST Portal'
+          'Authorization':'Bearer '+AI_KEYS.gemini
         },
         body:JSON.stringify({
-          model:'gemini-1.5-flash',
-          messages:[{role:'user',content:context+'\n\nStudent: '+msg}]
+          model:'llama-3.1-8b-instant',
+          messages:[{role:'user',content:context+'\n\nStudent: '+msg}],
+          max_tokens:1000
         })
       });
       const d = await r.json();
