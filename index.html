@@ -13,38 +13,50 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <style>
     :root {
-      --bg: #04000f;
-      --bg2: #080014;
-      --glass: rgba(12,4,30,0.75);
-      --glass2: rgba(20,8,50,0.6);
-      --cyan: #00f5ff;
-      --purple: #bf00ff;
-      --green: #00ff8c;
-      --yellow: #ffe600;
-      --pink: #ff2d78;
-      --orange: #ff6b00;
-      --red: #ff2828;
-      --white: #e8e0ff;
-      --muted: #7b6fa0;
-      --border: rgba(191,0,255,0.25);
-      --border-cyan: rgba(0,245,255,0.3);
-      --glow-cyan: 0 0 20px rgba(0,245,255,0.5), 0 0 40px rgba(0,245,255,0.2);
-      --glow-purple: 0 0 20px rgba(191,0,255,0.5), 0 0 40px rgba(191,0,255,0.2);
-      --glow-green: 0 0 20px rgba(0,255,140,0.5);
-      --r: 14px;
-      --shadow: 0 20px 60px rgba(0,0,0,0.8);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Rajdhani', sans-serif;
-      background: var(--bg);
-      color: var(--white);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
+  --bg: #04000f;
+  --bg2: #080014;
+  --glass: rgba(12,4,30,0.75);
+  --glass2: rgba(20,8,50,0.6);
+  --cyan: #00f5ff;
+  --purple: #bf00ff;
+  --green: #00ff8c;
+  --yellow: #ffe600;
+  --pink: #ff2d78;
+  --orange: #ff6b00;
+  --red: #ff2828;
+  --white: #e8e0ff;
+  --muted: #7b6fa0;
+  --border: rgba(191,0,255,0.25);
+  --border-cyan: rgba(0,245,255,0.3);
+  --glow-cyan: 0 0 20px rgba(0,245,255,0.5), 0 0 40px rgba(0,245,255,0.2);
+  --glow-purple: 0 0 20px rgba(191,0,255,0.5), 0 0 40px rgba(191,0,255,0.2);
+  --glow-green: 0 0 20px rgba(0,255,140,0.5);
+  --r: 14px;
+  --shadow: 0 20px 60px rgba(0,0,0,0.8);
+}
+body.theme-light {
+  --bg: #f0f4ff;
+  --bg2: #e8eeff;
+  --glass: rgba(255,255,255,0.85);
+  --glass2: rgba(240,244,255,0.9);
+  --white: #1a1a2e;
+  --muted: #5a5a8a;
+  --border: rgba(100,0,200,0.2);
+  --border-cyan: rgba(0,150,200,0.3);
+  --shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+body.theme-purple {
+  --bg: #0d0020;
+  --bg2: #120028;
+  --glass: rgba(30,0,60,0.85);
+  --glass2: rgba(40,0,80,0.7);
+  --cyan: #ff00ff;
+  --purple: #ff6600;
+  --white: #ffe0ff;
+  --muted: #aa88cc;
+  --border: rgba(255,0,255,0.25);
+  --border-cyan: rgba(255,100,0,0.3);
+}
     /* === ANIMATED BACKGROUND === */
     body::before {
       content: '';
